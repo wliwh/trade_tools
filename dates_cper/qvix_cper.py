@@ -2,14 +2,15 @@ import sqlite3 as sq
 import akshare as ak
 import pandas as pd
 import numpy as np
-import datetime
 import os
-
+import sys
+sys.path.append('..')
 os.chdir(os.path.dirname(__file__))
-sh_trade_date_list = ak.tool_trade_date_hist_sina()
-today_date = datetime.datetime.now().date()
-near_trade_date = sh_trade_date_list[sh_trade_date_list<=today_date].dropna().iloc[-1,0]
-near_trade_date = near_trade_date.strftime('%Y-%m-%d')
+from common.smooth_tool import get_near_trade_date
+
+
+near_trade_date = get_near_trade_date()
+
 
 def make_qvix_daily_db(cns, tb, nm: str):
     ''' 更新 qvix 日频数据
@@ -32,7 +33,7 @@ def make_qvix_daily_db(cns, tb, nm: str):
         qdt = con.execute(
             'select * from QVIX{}_DAILY where ID=(select MAX(ID) from QVIX{}_DAILY)'.format(nm, nm))
         qdt = qdt.fetchall()[0][1]
-        print("qvix_{} table closest day: {}".format(nm, qdt))
+        print("qvix_{} days up-to-date!".format(nm))
         tb = tb[tb['date'] > pd.to_datetime(qdt).date()]
     if tb.empty:
         return
@@ -40,6 +41,7 @@ def make_qvix_daily_db(cns, tb, nm: str):
         dt = k[0].strftime('%Y-%m-%d')
         con.execute("insert into QVIX{}_DAILY (DT,OPEN,HIGH,LOW,CLOSE) VALUES (?,?,?,?,?)".format(
             nm), (dt, k[1], k[2], k[3], k[4]))
+    print("qvix_{} days up-to-date. ({})".format(nm, dt))
 
 
 def make_qvix_minute_db(cns, tb, nm: str):
@@ -62,13 +64,13 @@ def make_qvix_minute_db(cns, tb, nm: str):
             'select QVIX from QVIX{}_MIN where ID>=(select MAX(ID) from QVIX{}_MIN)-20'.format(nm, nm))
         qdt = np.array(qdt.fetchall())[:, 0]
         if all(qdt == tb.iloc[-21:, 1].values):
-            print("qvix_{} trades date ready!".format(nm))
+            print("qvix_{} minutes up-to-date!".format(nm))
             return
     dtm = near_trade_date
     for k in tb.values:
         con.execute('insert into QVIX{}_MIN (DT,TM,QVIX) VALUES (?,?,?)'.format(
             nm), (dtm, k[0], k[1]))
-    print("qvix_{} trades date ready ({}).".format(nm, dtm))
+    print("qvix_{} minutes ready ({}).".format(nm, dtm))
 
 
 def db_update(tb, nm: str, freq: str = 'd'):
@@ -89,4 +91,4 @@ def vix_update():
     db_update(ak.option_300etf_min_qvix(), '300', 'm')
 
 
-# vix_update()
+vix_update()
