@@ -26,15 +26,17 @@ def get_funds_rate(windows=150)->pd.DataFrame:
 
 
 def get_hsgt_acc_flow():
-    ''' 获取北向资金累计买入额 '''
     north_acc_flow = ak.stock_hsgt_north_acc_flow_in_em('北上')
     north_acc_flow.set_index('date',inplace=True)
     north_acc_flow/=1e4
-    sh_acc_flow = ak.stock_hsgt_hist_em('沪股通')
-    sz_acc_flow = ak.stock_hsgt_hist_em('深股通')
-    # TODO: index 格式需要调整
+    sh_acc_flow = ak.stock_hsgt_hist_em('沪股通').set_index('日期')
+    sz_acc_flow = ak.stock_hsgt_hist_em('深股通').set_index('日期')
+    # TODO: 2020-10-13
     north_pad_flow = sh_acc_flow['历史累计净买额'].add(sz_acc_flow['历史累计净买额'],fill_value=0)
-    # north_acc_flow['acc_pay'] = 
+    north_pad_flow.index = [d.strftime('%Y-%m-%d') for d in north_pad_flow.index]
+    north_pad_flow.index.name = 'date'
+    north_acc_flow['acc_pay'] = north_pad_flow
+    north_acc_flow.fillna(method='ffill',inplace=True)
     return north_acc_flow
 
 print(get_hsgt_acc_flow())
