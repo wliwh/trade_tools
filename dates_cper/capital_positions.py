@@ -26,6 +26,7 @@ def get_funds_rate(windows=150)->pd.DataFrame:
 
 
 def get_hsgt_acc_flow():
+    ''' 北向累计净流入、累计净买入资金量 '''
     north_acc_flow = ak.stock_hsgt_north_acc_flow_in_em('北上')
     north_acc_flow.set_index('date',inplace=True)
     north_acc_flow/=1e4
@@ -39,4 +40,3 @@ def get_hsgt_acc_flow():
     north_acc_flow.fillna(method='ffill',inplace=True)
     return north_acc_flow
 
-print(get_hsgt_acc_flow())
