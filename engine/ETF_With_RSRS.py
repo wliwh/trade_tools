@@ -82,3 +82,30 @@ def get_trade_signal(code=G_base_code, N=G_N, M=G_M, K=G_K):
     base_date.loc[(base_date['index_slope'] < 0) & (base_date['rsrs_slope'] > 0) & (
         base_date['rsrs_score'] < G_score_fall_thr), 'buy?'] = 'sell'
     return base_date
+
+
+def get_bias_slope(end_date='20230306'):
+    # 股票代码列表
+    stock_codes = ['510300', '510050', '159949', '159928']
+    momentum_days = 20
+    bias_n = 90
+    ans = []
+    
+    for code in stock_codes:
+        # 获取股票收盘价数据
+        quote_history = ef.stock.get_quote_history(code, beg='20220101', end=end_date, klt=101, fqt=1)
+        quote_history = quote_history[['日期', '收盘']]
+        quote_history.columns = ['date', 'close']
+        
+        # 计算乖离率
+        bias_l = (quote_history.close / quote_history.close.rolling(bias_n).mean())[-momentum_days:]
+        
+        # 计算乖离动量拟合
+        slope = np.polyfit(np.arange(momentum_days), bias_l / bias_l.iloc[0], 1)[0].real * 10000
+        
+        # 计算涨跌幅度
+        change_rate = 100 * (quote_history.close.iloc[-1] - quote_history.close.iloc[-2]) / quote_history.close.iloc[-2]
+        
+        ans.append((code, slope, change_rate))
+    
+    return ans
