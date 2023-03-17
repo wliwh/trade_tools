@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import akshare as ak
 import os,sys
+import talib
 
 sys.path.append('..')
 os.chdir(os.path.dirname(__file__))
@@ -20,7 +21,7 @@ def get_funds_postions()->pd.DataFrame:
     return funds_pos
 
 def get_funds_rate(windows=150)->pd.DataFrame:
-    ''' 公募基金仓位高低分位 '''
+    ''' 公募基金仓位高低分位 (长期-150周) '''
     funds_pos = get_funds_postions()
     return min_max_dist_pd(funds_pos,windows=windows)
 
@@ -32,11 +33,22 @@ def get_hsgt_acc_flow():
     north_acc_flow/=1e4
     sh_acc_flow = ak.stock_hsgt_hist_em('沪股通').set_index('日期')
     sz_acc_flow = ak.stock_hsgt_hist_em('深股通').set_index('日期')
-    # TODO: 2020-10-13
+    # TODO: 2020-10-13 数据空缺
     north_pad_flow = sh_acc_flow['历史累计净买额'].add(sz_acc_flow['历史累计净买额'],fill_value=0)
     north_pad_flow.index = [d.strftime('%Y-%m-%d') for d in north_pad_flow.index]
     north_pad_flow.index.name = 'date'
     north_acc_flow['acc_pay'] = north_pad_flow
     north_acc_flow.fillna(method='ffill',inplace=True)
     return north_acc_flow
+
+def get_north_flow_bias(N=20,window=120,ma_type='ma'):
+    ''' 北向流入资金偏离度及其分位数 '''
+    north_flow = get_hsgt_acc_flow()
+    north_name = north_flow.columns
+    ma_fun_dic = {'ma':talib.MA,'ema':talib.EMA}
+    ma_fun = ma_fun_dic.get(ma_type,talib.MA)
+    for i in range(north_flow.shape[1]):
+        north_flow[north_name[i]+'_bias'] = north_flow.iloc[:,i]/ma_fun(north_flow.iloc[:,i],N)*100-100
+        north_flow[north_name[i]+'_brate'] = min_max_dist_pd(north_flow,window,north_name[i]+'_bias')
+    return north_flow
 

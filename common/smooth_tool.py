@@ -6,11 +6,11 @@ import ta_cn.talib as ta  # 技术分析
 ta.init(mode=2, skipna=False, to_globals=True)
 
 # 交易日
-def get_near_trade_date()->str:
+def get_near_trade_date(end_trade=True)->str:
     ''' 获取最近的交易日 '''
     sh_trade_date_list = ak.tool_trade_date_hist_sina()
-    today_date = datetime.datetime.now().date()
-    near_trade_date = sh_trade_date_list[sh_trade_date_list<=today_date].dropna().iloc[-1,0]
+    today_time = datetime.datetime.now()
+    near_trade_date = sh_trade_date_list[sh_trade_date_list<=today_time.date()].dropna().iloc[-1 if (today_time.hour>14 and end_trade) else -2,0]
     near_trade_date = near_trade_date.strftime('%Y-%m-%d')
     return near_trade_date
 
