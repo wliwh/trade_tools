@@ -3,8 +3,6 @@ import pandas as pd
 import numpy as np
 import akshare as ak
 import efinance as ef
-import statsmodels.api as sm
-import scipy.stats as st
 import datetime
 import time
 from tqdm import tqdm
@@ -50,32 +48,42 @@ def get_funds_dict() -> dict:
     return funds_type_dict
 
 
-# Funds_Type_Dict = get_funds_dict()
-
-def _funds_realtime_info(ftype_dict:dict) ->pd.DataFrame:
-    ''' 快速更新当日etf信息, 调整表格形态 '''
+def funds_realtime_info(ftype_dict: dict) -> pd.DataFrame:
+    ''' 快速更新当日etf信息, 调整表格形态[会缺失部分etf信息] '''
     # etf_lsts 属于 funds
-    funds2type = {c:k for k,v in ftype_dict.items() for c in v}
+    funds2type = {c: k for k, v in ftype_dict.items() for c in v}
     etf_lsts = ef.stock.get_realtime_quotes(['ETF'])
-    etf_lsts.rename(columns={'最新交易日':'日期','今开':'开盘','最新价':'收盘'},inplace=True)
-    etf_lsts['换手率'].replace('-',0,inplace=True)
-    etf_lsts = etf_lsts[etf_lsts['开盘']!='-']
-    etf_lsts.astype({'开盘':'float64', '收盘':'float64','最高':'float64','最低':'float64','成交量':'int64','成交额':'float64','涨跌幅':'float64','涨跌额':'float64','换手率':'float64'})
+    etf_lsts.rename(
+        columns={'最新交易日': '日期', '今开': '开盘', '最新价': '收盘'}, inplace=True)
+    etf_lsts['换手率'].replace('-', 0, inplace=True)
+    etf_lsts = etf_lsts[etf_lsts['开盘'] != '-']
+    etf_lsts.astype({'开盘': 'float64', '收盘': 'float64', '最高': 'float64', '最低': 'float64',
+                    '成交量': 'int64', '成交额': 'float64', '涨跌幅': 'float64', '涨跌额': 'float64', '换手率': 'float64'})
     etf_lsts['振幅'] = (etf_lsts['最高']-etf_lsts['最低'])/etf_lsts['最高']
-    etf_lsts = etf_lsts[['股票名称', '股票代码', '日期', '开盘', '收盘', '最高', '最低', '成交量', '成交额', '振幅', '涨跌幅','涨跌额', '换手率']]
+    etf_lsts = etf_lsts[['股票名称', '股票代码', '日期', '开盘', '收盘',
+                         '最高', '最低', '成交量', '成交额', '振幅', '涨跌幅', '涨跌额', '换手率']]
     etf_lsts['类型'] = [funds2type[k] for k in etf_lsts['股票代码']]
     return etf_lsts
 
-def _funds_divide_dict(etf_pd:pd.DataFrame,ftype_dict:dict) ->dict:
-    ''' 快速更新etf中缺失的股票代码. 按类型分组 '''
+
+def funds_divide_dict(etf_pd: pd.DataFrame, ftype_dict: dict) -> dict:
+    ''' 找出快速更新etf中缺失的代码. 按类型分组 '''
     etf_names_set = set(etf_pd['股票代码'])
     etf_explict_dict = dict()
     for k in ftype_dict.keys():
         etf_explict_dict[k] = list(set(ftype_dict[k])-etf_names_set)
     return etf_explict_dict
 
-def _funds_quote_table(ftype_dict: dict) ->pd.DataFrame:
-    pass
+
+def funds_quote_table(ftype_dict: dict) -> pd.DataFrame:
+    ''' 快速更新缺失etf的最后一日信息 '''
+    explict_pd_lst = list()
+    for tp, lst in ftype_dict.items():
+        dfm = pd.DataFrame([e.iloc[-1] for e in ef.stock.get_quote_history(lst).values() if not e.empty])
+        dfm['类型'] = tp
+        explict_pd_lst.append(dfm)
+    return pd.concat(explict_pd_lst,axis=0)
+
 
 def funds_trade_table(ftype_dict: dict) -> pd.DataFrame:
     ''' 合并所有场内基金的日频交易信息 '''
@@ -95,28 +103,31 @@ def funds_trade_table(ftype_dict: dict) -> pd.DataFrame:
                 bar.update(1)
     return pd.concat(trade_lst, axis=0)
 
+
 def update_funds_trade_table(force_update='n') -> pd.DataFrame:
     ''' 更新场内基金每日交易信息 '''
     # TODO: 逻辑细节，存在当日的，小更新，大更新
     ftype_dict = get_funds_dict()
     csv_path = 'funds_amt.csv'
-    if not os.path.exists(csv_path) or force_update.lower()=='all':
+    if not os.path.exists(csv_path) or force_update.lower() == 'all':
         # 不存在 csv 文件或要求强制更新
-        if os.path.exists(csv_path): os.remove(csv_path)
+        if os.path.exists(csv_path):
+            os.remove(csv_path)
         funds_trade = funds_trade_table(ftype_dict)
         funds_trade.to_csv(csv_path)
         return funds_trade
-    elif force_update.lower()=='n':
+    elif force_update.lower() == 'n':
         # 存在当日的csv文件，直接读取
         return pd.read_csv(csv_path)
     else:
         # 仅存在一个旧的csv文件，和新数据合并
         old_trade_pd = pd.read_csv(csv_path)
         os.remove(csv_path)
-        realtime_pd = _funds_realtime_info(ftype_dict)
-        explict_name = _funds_divide_dict(realtime_pd,ftype_dict)
-        explict_pd = funds_trade_table(explict_name)
-        new_trade_pd = pd.concat([old_trade_pd,realtime_pd,explict_pd],axis=0)
+        realtime_pd = funds_realtime_info(ftype_dict)
+        explict_name = funds_divide_dict(realtime_pd, ftype_dict)
+        explict_pd = funds_quote_table(explict_name)
+        new_trade_pd = pd.concat(
+            [old_trade_pd, realtime_pd, explict_pd], axis=0)
         new_trade_pd.drop_duplicates(inplace=True)
         new_trade_pd.to_csv(csv_path)
         return new_trade_pd
@@ -125,9 +136,7 @@ def update_funds_trade_table(force_update='n') -> pd.DataFrame:
 # Funds_Trade = funds_trade_csv()
 
 
-def funds_amt_rate_table(rate: bool, 
-                         f_trade: pd.DataFrame,# = Funds_Trade,
-                         f_type_dict: dict) -> pd.DataFrame:
+def funds_amt_rate_table(rate: bool, f_trade: pd.DataFrame, f_type_dict: dict) -> pd.DataFrame:
     ''' 场内基金按照类别计算的每日成交额 '''
     funds_type_amt = [f_trade[f_trade['类型'] == k].groupby(
         '日期').agg({'成交额': 'sum'}) for k in f_type_dict.keys()]

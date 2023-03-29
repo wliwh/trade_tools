@@ -20,10 +20,9 @@ def get_funds_postions()->pd.DataFrame:
                               index=gp_pos['date'])
     return funds_pos
 
-def get_funds_rate(windows=150)->pd.DataFrame:
+def get_funds_rate(funds_pos:pd.DataFrame, windows=150)->pd.DataFrame:
     ''' 公募基金仓位高低分位 (长期-150周) '''
-    funds_pos = get_funds_postions()
-    return min_max_dist_pd(funds_pos,windows=windows)
+    return min_max_dist_pd(funds_pos, windows=windows)
 
 
 def get_hsgt_acc_flow():
@@ -37,13 +36,13 @@ def get_hsgt_acc_flow():
     north_pad_flow = sh_acc_flow['历史累计净买额'].add(sz_acc_flow['历史累计净买额'],fill_value=0)
     north_pad_flow.index = [d.strftime('%Y-%m-%d') for d in north_pad_flow.index]
     north_pad_flow.index.name = 'date'
-    north_acc_flow['acc_pay'] = north_pad_flow
+    north_acc_flow.columns = ['inflow']
+    north_acc_flow['purchase'] = north_pad_flow
     north_acc_flow.fillna(method='ffill',inplace=True)
     return north_acc_flow
 
-def get_north_flow_bias(N=20,window=120,ma_type='ma'):
+def get_north_flow_bias(north_flow:pd.DataFrame, N=20,window=120,ma_type='ma'):
     ''' 北向流入资金偏离度及其分位数 '''
-    north_flow = get_hsgt_acc_flow()
     north_name = north_flow.columns
     ma_fun_dic = {'ma':talib.MA,'ema':talib.EMA}
     ma_fun = ma_fun_dic.get(ma_type,talib.MA)
@@ -51,4 +50,3 @@ def get_north_flow_bias(N=20,window=120,ma_type='ma'):
         north_flow[north_name[i]+'_bias'] = north_flow.iloc[:,i]/ma_fun(north_flow.iloc[:,i],N)*100-100
         north_flow[north_name[i]+'_brate'] = min_max_dist_pd(north_flow,window,north_name[i]+'_bias')
     return north_flow
-
