@@ -84,6 +84,65 @@ def get_trade_signal(code=G_base_code, N=G_N, M=G_M, K=G_K):
     return base_date
 
 
+def get_ols(x, y):
+    slope, intercept = np.polyfit(x, y, 1)
+    residuals = y - (slope * x + intercept)
+    r2 = 1 - (residuals.var() / np.var(y, ddof=1))
+    return intercept, slope, r2
+
+
+def get_zscore(slope_series):
+    mean = slope_series.mean()
+    std = slope_series.std()
+    return (slope_series.iloc[-1] - mean) / std
+
+
+def get_zscore_slope(z_scores):
+    x = np.arange(len(z_scores))
+    slope, _ = np.polyfit(x, z_scores, 1)
+    return slope
+
+
+def get_trade_signal(code=G_base_code, N=G_N, M=G_M, K=G_K):
+    ''' 基于RSRS方法获取关于指数[code]的开平仓信号 '''
+    base_date = pd.DataFrame(ef.stock.get_quote_history(code, beg='20180101', klt=101, fqt=2))
+    base_date = base_date[['日期', '收盘', '最低', '最高']].rename(columns={'日期': 'date', '收盘': 'close', '最低': 'low', '最高': 'high'})
+    base_date.set_index('date', inplace=True)
+    intercept = np.full(N - 1, np.nan)
+    slope = intercept.copy()
+    r2 = intercept.copy()
+    zscore = np.full(M - 1, np.nan)
+    zscore_slope = np.full(M + K + N - 3, np.nan)
+    idx_slope = np.full(K - 1, np.nan)
+    for k in base_date.rolling(N):
+        if len(k) >= N:
+            a1, a2, a3 = get_ols(k['low'], k['high'])
+            intercept = np.append(intercept, a1)
+            slope = np.append(slope, a2)
+            r2 = np.append(r2, a3)
+            if len(intercept) >= M:
+                zscore = np.append(zscore, get_zscore(slope[-M:]))
+    base_date['intercept'] = intercept
+    base_date['slope'] = slope
+    base_date['r2'] = r2
+    base_date['zscore'] = zscore
+    base_date['rsrs_score'] = base_date['zscore'] * base_date['r2']
+    for k in base_date.rolling(K):
+        if all(~k['rsrs_score'].isna()):
+            zscore_slope = np.append(zscore_slope, get_zscore_slope(k['rsrs_score']))
+    for k in base_date.rolling(K):
+        if len(k) >= K:
+            idx_slope = np.append(idx_slope, get_zscore_slope(k['close']))
+    base_date['rsrs_slope'] = zscore_slope
+    base_date['index_slope'] = idx_slope
+    base_date['buy?'] = 'sell'
+    base_date.loc[(base_date['rsrs_score'] > G_score_thr), 'buy?'] = 'buy'
+    base_date.loc[(base_date['index_slope'] > G_idex_slope_raise_thr) & (base_date['rsrs_slope'] > 0), 'buy?'] = 'buy'
+    base_date.loc[(base_date['rsrs_slope'] < 0) & (base_date['rsrs_score'] > 0), 'buy?'] = 'sell'
+    base_date.loc[(base_date['index_slope'] < 0) & (base_date['rsrs_slope'] > 0) & (base_date['rsrs_score'] < G_score_fall_thr), 'buy?'] = 'sell'
+    return base_date
+
+
 def get_bias_slope(end_date='20230306'):
     # 股票代码列表
     stock_codes = ['510300', '510050', '159949', '159928']
