@@ -1,11 +1,16 @@
+import datetime
 import pandas as pd
 import numpy as np
 import akshare as ak
 import os,sys
 import talib
+import configparser
+import time
+import requests
 
 sys.path.append('..')
 os.chdir(os.path.dirname(__file__))
+from common.trade_date import get_next_weekday
 from common.smooth_tool import min_max_dist_pd
 
 
@@ -24,9 +29,8 @@ def get_funds_rate(funds_pos:pd.DataFrame, windows=150)->pd.DataFrame:
     ''' 公募基金仓位高低分位 (长期-150周) '''
     return min_max_dist_pd(funds_pos, windows=windows)
 
-
 def get_hsgt_acc_flow():
-    ''' 北向累计净流入、累计净买入资金量 '''
+    ''' 北向累计净流入、累计净买入资金量: 东财数据 '''
     north_acc_flow = ak.stock_hsgt_north_acc_flow_in_em('北上')
     north_acc_flow.set_index('date',inplace=True)
     north_acc_flow/=1e4
@@ -50,3 +54,27 @@ def get_north_flow_bias(north_flow:pd.DataFrame, N=20,window=120,ma_type='ma'):
         north_flow[north_name[i]+'_bias'] = north_flow.iloc[:,i]/ma_fun(north_flow.iloc[:,i],N)*100-100
         north_flow[north_name[i]+'_brate'] = min_max_dist_pd(north_flow,window,north_name[i]+'_bias')
     return north_flow
+
+
+def market_margin_se(market:int=1) -> pd.DataFrame:
+    """
+    金十数据, 上海（深圳）融资融券报告, 数据区间从20100331-至今
+    https://datacenter.jin10.com/reportType/dc_market_margin_sse(sz)
+    :return: pandas.DataFrame
+    """
+    t = time.time()
+    params = {"_": t}
+    res = requests.get(
+        f"https://cdn.jin10.com/data_center/reports/fs_{market}.json", params=params
+    )
+    json_data = res.json()
+    temp_df = pd.DataFrame(json_data["values"]).T
+    temp_df.columns = ["融资买入额", "融资余额", "融券卖出量", "融券余量", "融券余额", "融资融券余额"]
+    temp_df.sort_index(inplace=True)
+    temp_df.index = pd.to_datetime(temp_df.index)
+    temp_df = temp_df.astype("float")
+    return temp_df
+
+# print(market_margin_se(2))
+
+ak.stock_individual_fund_flow

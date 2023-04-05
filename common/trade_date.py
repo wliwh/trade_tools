@@ -4,6 +4,14 @@ import datetime
 
 Trade_List = ak.tool_trade_date_hist_sina()
 
+def get_near_trade_date(new_hour=16)->str:
+    ''' 获取最近的交易日, new_hour 为判断新交易日的分割小时 '''
+    sh_trade_date_list = ak.tool_trade_date_hist_sina()
+    today_time = datetime.datetime.now()
+    near_trade_date = sh_trade_date_list[sh_trade_date_list<=today_time.date()].dropna().iloc[-1 if (today_time.hour>=new_hour) else -2,0]
+    near_trade_date = near_trade_date.strftime('%Y-%m-%d')
+    return near_trade_date
+
 def get_trade_day(cut_hour=16):
     ntime = datetime.datetime.now()
     n_idx = (Trade_List.trade_date<=ntime.date()).argmin()
