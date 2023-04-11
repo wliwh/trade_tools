@@ -80,7 +80,6 @@ def market_margin_se(market:int=1) -> pd.DataFrame:
 # ak.stock_individual_fund_flow
 
 def _sse_daily_summary(date:str):
-    amount_names = ['TRADE_AMT','TX_AMOUNT_FULL']
     url = "http://query.sse.com.cn/commonQuery.do"
     headers = {
         "Referer": "http://www.sse.com.cn/",
@@ -93,7 +92,6 @@ def _sse_daily_summary(date:str):
             "stockType": "90",
             "_": "1616744620492",
         }
-
     elif int(date) <= 20220224:
         params = {
             "sqlId": "COMMON_SSE_SJ_GPSJ_CJGK_MRGK_C",
@@ -111,12 +109,14 @@ def _sse_daily_summary(date:str):
     r = requests.get(url, params=params, headers=headers)
     data_json = r.json()['result']
     if not data_json: return None
-    amt_values = list()
+    amt_values = dict(KC=None)
     map_dicts = {1:'A',2:'B',3:'KC',48:'KC'}
     if data_json[0].get('PRODUCT_TYPE', None) is not None:
         tp_name = 'PRODUCT_TYPE'; amt_name = 'TX_AMOUNT_FULL'
     else:
         tp_name = 'PRODUCT_CODE'; amt_name = 'TRADE_AMT'
     for k in data_json:
-        amt_values.append((float(k[amt_name]),map_dicts.get(int(k[tp_name]),None)))
+        tpn = map_dicts.get(int(k[tp_name]),None)
+        if tpn:
+            amt_values[tpn] = float(k[amt_name])
     return amt_values
