@@ -7,8 +7,7 @@ import configparser
 sys.path.append('..')
 os.chdir(os.path.dirname(__file__))
 
-from common.trade_date import get_trade_day,  get_delta_trade_day
-
+from common.trade_date import get_trade_day, get_delta_trade_day
 
 def parse_symbol_str(symbol: str, minute: bool = False):
     ''' symbol 输出 '''
@@ -121,8 +120,8 @@ def append_qvix_minute_file(cfg_file=''):
         config.set('Qvix_Minute', 'next_update', next_day)
         qvix_pds = qvix_minute_pds(now_date)
         qvix_pds.to_csv(fpth, mode='a', header=False)
-        config.write(open(fpth,'w'))
+        config.write(open(cfg_file,'w'))
 
 
-if __name__=='__main__':
-    append_qvix_minute_file()
+# if __name__=='__main__':
+#     append_qvix_minute_file()
