@@ -123,5 +123,5 @@ def append_qvix_minute_file(cfg_file=''):
         config.write(open(cfg_file,'w'))
 
 
-# if __name__=='__main__':
-#     append_qvix_minute_file()
+if __name__=='__main__':
+    append_qvix_minute_file()

@@ -2,8 +2,7 @@ import pandas as pd
 import numpy as np
 import akshare as ak
 import datetime
-import ta_cn.talib as ta  # 技术分析
-ta.init(mode=2, skipna=False, to_globals=True)
+import talib as ta
 
 # 一些平滑工具
 
@@ -87,6 +86,66 @@ def LLT_MA(price: pd.Series, alpha: float) -> pd.Series:
             llt_ser.iloc[i] = v
 
     return llt_ser
+
+def HMA(price: pd.Series, window: int) -> pd.Series:
+    """HMA均线
+
+    Args:
+        price (pd.Series): 价格数据. index-date values
+        window (int): 计算窗口
+
+    Raises:
+        ValueError: 必须为pd.Series
+
+    Returns:
+        pd.Series: index-date values
+    """
+    if not isinstance(price, pd.Series):
+
+        raise ValueError('price必须为pd.Series')
+
+    return ta.WMA(2 * ta.WMA(price, int(window * 0.5)) - ta.WMA(price, window),int(np.sqrt(window)))
+
+def FRAMA(se, periods, clip=True):
+    ''' 计算FRAMA均线 '''
+    T = int(periods/2)
+    df = se.copy()
+
+    # 1.用窗口 W1 内的最高价和最低价计算 N1 = (最高价 – 最低价) / T
+    N1 = (df.rolling(T).max()-df.rolling(T).min())/T
+
+    # 2.用窗口 W2 内的最高价和最低价计算 N2 = (最高价 – 最低价) / T
+    n2_df = df.shift(T)
+    N2 = (n2_df.rolling(T).max()-n2_df.rolling(T).min())/T
+
+    # 3.用窗口 T 内的最高价和最低价计算 N3 = (最高价 – 最低价) / (2T)
+    N3 = (df.rolling(periods).max() -
+          df.rolling(periods).min())/periods
+
+    # 4.计算分形维数 D = [log(N1+N2) – log(N3)] / log(2)
+    D = (np.log10(N1+N2)-np.log10(N3))/np.log10(2)
+
+    # 5.计算指数移动平均的参数 alpha = exp(-4.6(D-1))
+    alpha = np.exp(-4.6*(D-1))
+
+    # 设置上线
+    if clip:
+        alpha = np.clip(alpha, 0.01, 0.2)
+
+    FRAMA = []
+    idx = min(np.argwhere(~np.isnan(alpha)))-1
+    for row, data in enumerate(alpha):
+        if row == (idx):
+            FRAMA.append(df.iloc[row])
+        elif row > (idx):
+            FRAMA.append(data*df.iloc[row] +
+                         (1-data)*FRAMA[-1])
+        else:
+            FRAMA.append(np.nan)
+
+    FRAMA_se = pd.Series(FRAMA, index=df.index)
+
+    return FRAMA_se
 
 # 根据某个时间窗口内信号的分布进行打分的工具
 

@@ -151,21 +151,21 @@ def margin_amount_sh(date: str):
 def margin_amount_sz(date: str):
     ''' 深圳融资融券及成交情况 '''
     old_d = get_delta_trade_day(date, -1).strftime('%Y%m%d')
-    date = date.replace('-', '')
+    date_ = date.replace('-', '')
     # 两融情况
     mrg_macro = ak.macro_china_market_margin_sz()
     mrg_macro.rename(lambda x:x.strftime('%Y%m%d'),axis=0,inplace=True)
-    mrg_pd = ak.stock_margin_szse(date)*1e8
+    mrg_pd = ak.stock_margin_szse(date_)*1e8
     mrg_opd = ak.stock_margin_szse(old_d)*1e8
     # 此处混合使用两方数据
-    mrg_n_fs = mrg_macro.loc[date, '融资余额']
-    mrg_n_p = mrg_macro.loc[date, '融资买入额']
+    mrg_n_fs = mrg_macro.loc[date_, '融资余额']
+    mrg_n_p = mrg_macro.loc[date_, '融资买入额']
     mrg_o_fs = mrg_macro.loc[old_d, '融资余额']
     mrg_n_qyl = round(mrg_pd.loc[0, '融券余量'],1)
     mrg_n_qol = round(mrg_pd.loc[0, '融券卖出量'],1)
     mrg_o_qyl = round(mrg_opd.loc[0, '融券余量'],1)
-    mrg_n_qyle = mrg_macro.loc[date, '融券余额']
-    mrg_n_zqye = mrg_macro.loc[date, '融资融券余额']
+    mrg_n_qyle = mrg_macro.loc[date_, '融券余额']
+    mrg_n_zqye = mrg_macro.loc[date_, '融资融券余额']
     mrg_n_jp = mrg_n_fs - mrg_o_fs      # 净买入
     mrg_n_q = mrg_n_p-mrg_n_jp          # 偿还
     mrg_n_jqol = mrg_n_qyl - mrg_o_qyl  # 净卖出
@@ -174,7 +174,7 @@ def margin_amount_sz(date: str):
     mrg_arr = np.array([mrg_n_fs, mrg_n_p, mrg_n_q, mrg_n_jp, mrg_n_qyle,
                        mrg_n_qyl, mrg_n_qol, mrg_n_qchl, mrg_n_jqol, mrg_n_zqye, mrg_n_zmqe])
     # 成交情况
-    amt_pd = ak.stock_szse_summary(date)
+    amt_pd = ak.stock_szse_summary(date_)
     amt_arr = amt_pd.loc[amt_pd['证券类别'].apply(
         lambda x: x in ('主板A股', '主板B股', '中小板', '创业板', '创业板A股')), '成交金额'].values
     amt_arr = np.insert(amt_arr, 2, np.nan) if amt_arr.size == 3 else amt_arr
@@ -185,3 +185,42 @@ def margin_amount_sz(date: str):
                             '两融差额', 'A股成交额', 'B股成交额', '中小板成交额',
                             '创业板成交额'), index=[date])
     return con_pd
+
+def append_margin_file(market='sh', cfg_file=''):
+    if not cfg_file:
+        cfg_file = '../trade.ini'
+    if market.lower() not in ('sh', 'sz'):
+        return
+    cfg_sec = 'Margin_{}'.format(market.upper())
+    mrg_pd_fdic = margin_amount_sh if market.lower()=='sh' else margin_amount_sz
+    config = configparser.ConfigParser()
+    config.read(cfg_file, encoding='utf-8')
+    fpth = os.path.join('../dates_save', config.get(cfg_sec, 'fpath'))
+    up_date = config.get(cfg_sec, 'update_date')
+    next_date = config.get(cfg_sec, 'next_update')
+    if market.lower()=='sh':
+        up_time = pd.to_datetime(next_date)+pd.offsets.Hour(31)
+        # 第二个自然日七时
+    else:
+        # 第二个交易日九时
+        up_time = get_delta_trade_day(next_date)+pd.offsets.Hour(9)
+    now_time = datetime.datetime.now()
+    new_date = get_delta_trade_day(next_date).strftime('%Y-%m-%d')
+    print(up_date,next_date,up_time,new_date)
+    if not os.path.exists(fpth):
+        config.set(cfg_sec, 'update_date', next_date)
+        config.set(cfg_sec, 'next_update', new_date)
+        config.write(open(fpth,'w'))
+        qvix_pds = mrg_pd_fdic(next_date)
+        qvix_pds.to_csv(fpth, mode='w')
+    elif now_time < up_time:
+        pass
+    elif now_time>=up_time:
+        # 这里用配置文件中的日期更新数据
+        config.set(cfg_sec, 'update_date', next_date)
+        config.set(cfg_sec, 'next_update', new_date)
+        qvix_pds = mrg_pd_fdic(next_date)
+        qvix_pds.to_csv(fpth, mode='a', header=False)
+        config.write(open(cfg_file,'w'))
+
+append_margin_file('sh')
