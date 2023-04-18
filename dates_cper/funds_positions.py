@@ -199,14 +199,13 @@ def append_margin_file(market='sh', cfg_file=''):
     up_date = config.get(cfg_sec, 'update_date')
     next_date = config.get(cfg_sec, 'next_update')
     if market.lower()=='sh':
-        up_time = pd.to_datetime(next_date)+pd.offsets.Hour(31)
         # 第二个自然日七时
+        up_time = pd.to_datetime(next_date)+pd.offsets.Hour(31)
     else:
         # 第二个交易日九时
         up_time = get_delta_trade_day(next_date)+pd.offsets.Hour(9)
     now_time = datetime.datetime.now()
     new_date = get_delta_trade_day(next_date).strftime('%Y-%m-%d')
-    print(up_date,next_date,up_time,new_date)
     if not os.path.exists(fpth):
         config.set(cfg_sec, 'update_date', next_date)
         config.set(cfg_sec, 'next_update', new_date)
@@ -223,4 +222,6 @@ def append_margin_file(market='sh', cfg_file=''):
         qvix_pds.to_csv(fpth, mode='a', header=False)
         config.write(open(cfg_file,'w'))
 
-append_margin_file('sh')
+if __name__=='__main__':
+    append_margin_file('sh')
+    append_margin_file('sz')

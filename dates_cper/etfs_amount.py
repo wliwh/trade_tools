@@ -10,9 +10,8 @@ import sys
 import os
 sys.path.append('..')
 os.chdir(os.path.dirname(__file__))
-from common.smooth_tool import get_near_trade_date
+from common.trade_date import get_near_trade_date, get_trade_day
 
-Near_Trade_Date = get_near_trade_date()
 
 
 def get_funds_dict() -> dict:

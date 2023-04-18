@@ -27,7 +27,17 @@ def high_low_from_legu(symbol: str = "all") -> pd.DataFrame:
     temp_df.sort_values(['date'], inplace=True, ignore_index=True)
     return temp_df
 
-# print(high_low_from_legu())
+def get_today_high_low_legu(date:str):
+    hl_lst = list()
+    sym_lst = ('all', 'sz50', 'hs300', 'zz500', 'cyb', 'cy50', 'kc50')
+    for symbol in sym_lst:
+        rs = high_low_from_legu(symbol).set_index('date')
+        hl_lst.append(rs.loc[pd.to_datetime(date).date(),'high20':])
+    hl_pd = pd.DataFrame(hl_lst).astype('int')
+    hl_pd.insert(0,'symbol',sym_lst)
+    return hl_pd
+
+# print(get_today_high_low_legu('2023-04-18'))
 
 def save_high_low_legu(fpath:str):
     ''' 保存legu网的新高新低数据 '''
