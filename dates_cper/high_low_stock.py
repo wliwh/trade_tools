@@ -1,12 +1,16 @@
+import configparser
 import os
+import sys
 import pandas as pd
 import numpy as np
 import akshare as ak
 import efinance as ef
 import datetime
 import requests
-
+sys.path.append('..')
 os.chdir(os.path.dirname(__file__))
+
+from common.trade_date import get_trade_day, get_delta_trade_day
 
 def high_low_from_legu(symbol: str = "all") -> pd.DataFrame:
     """
@@ -37,24 +41,33 @@ def get_today_high_low_legu(date:str):
     hl_pd.insert(0,'symbol',sym_lst)
     return hl_pd
 
-# print(get_today_high_low_legu('2023-04-18'))
 
-def save_high_low_legu(fpath:str):
-    ''' 保存legu网的新高新低数据 '''
-    high_low_legu_keywords = ('all', 'sz50', 
-                              'hs300', 'zz500', 'cyb', 'cy50', 'kc50')
-    hl_pds = list()
-    for k in high_low_legu_keywords:
-        p1 = high_low_from_legu(k)
-        p1.insert(1, 'symbol', k)
-        hl_pds.append(p1)
-    hl_pds = pd.concat(hl_pds,axis=0)
-    if not os.path.exists(fpath):
-        return hl_pds
-    else:
-        # TODO: get_date
-        date='2023-02-28'
-        return hl_pds[hl_pds['date']>date]
+def append_high_low_legu_file(cfg_file=''):
+    if not cfg_file:
+        cfg_file = '../trade.ini'
+    cfg_sec = 'High_Low_Legu'
+    config = configparser.ConfigParser()
+    config.read(cfg_file, encoding='utf-8')
+    fpth = os.path.join('../dates_save', config.get(cfg_sec, 'fpath'))
+    up_date = config.get(cfg_sec, 'update_date')
+    next_date = config.get(cfg_sec, 'next_update')
+    now_date = get_trade_day(17).strftime('%Y-%m-%d')
+    next_day = get_delta_trade_day(now_date).strftime('%Y-%m-%d')
+    if not os.path.exists(fpth):
+        config.set(cfg_sec, 'update_date', now_date)
+        config.set(cfg_sec, 'next_update', next_day)
+        config.write(open(fpth,'w'))
+        qvix_pds = get_today_high_low_legu(now_date)
+        qvix_pds.to_csv(fpth, mode='w')
+    elif up_date == now_date:
+        pass
+    elif next_date <= now_date:
+        config.set(cfg_sec, 'update_date', now_date)
+        config.set(cfg_sec, 'next_update', next_day)
+        qvix_pds = get_today_high_low_legu(now_date)
+        qvix_pds.to_csv(fpth, mode='a', header=False)
+        config.write(open(cfg_file,'w'))
+
 
 def _get_constituent_codes(cons_pd:pd.DataFrame, code: str, date: str):
     ''' 获取指数的成分股代码, 返回成分股调样的日期列表和对应表格 '''
@@ -143,3 +156,7 @@ def _high_low_index(code='000016',start='20221001',N=60):
     code_pd.columns = code_hist.keys()
     return code_pd
     # (code_pd.iloc[-1]>=code_pd.max(axis=0)).sum()
+
+
+if __name__ == '__main__':
+    append_high_low_legu_file()
