@@ -1,4 +1,5 @@
 # 引入常用库
+import configparser
 import pandas as pd
 import numpy as np
 import akshare as ak
@@ -10,7 +11,7 @@ import sys
 import os
 sys.path.append('..')
 os.chdir(os.path.dirname(__file__))
-from common.trade_date import get_near_trade_date, get_trade_day
+from common.trade_date import get_trade_day, get_delta_trade_day, get_next_weekday
 
 
 
@@ -103,32 +104,44 @@ def funds_trade_table(ftype_dict: dict) -> pd.DataFrame:
     return pd.concat(trade_lst, axis=0)
 
 
-def update_funds_trade_table(force_update='n') -> pd.DataFrame:
+def append_funds_trade_file(cfg_file='') -> pd.DataFrame:
     ''' 更新场内基金每日交易信息 '''
     # TODO: 逻辑细节，存在当日的，小更新，大更新
     ftype_dict = get_funds_dict()
-    csv_path = 'funds_amt.csv'
-    if not os.path.exists(csv_path) or force_update.lower() == 'all':
+    if not cfg_file:
+        cfg_file = '../trade.ini'
+    cfg_sec, cfg_wsec = 'Etf_Amount', 'Etf_Amount_All'
+    config = configparser.ConfigParser()
+    config.read(cfg_file, encoding='utf-8')
+    fpth = os.path.join('../dates_save', config.get(cfg_sec, 'fpath'))
+    up_date = config.get(cfg_sec, 'update_date')
+    next_date = config.get(cfg_sec, 'next_update')
+    up_week = config.get(cfg_wsec,'update_date')
+    next_week = config.get(cfg_wsec,'next_update')
+    now_date = get_trade_day(17).strftime('%Y-%m-%d')
+    next_day = get_delta_trade_day(now_date).strftime('%Y-%m-%d')
+    # get_next_weekday(next_week,6) 
+    if not os.path.exists(fpth) or force_update.lower() == 'all':
         # 不存在 csv 文件或要求强制更新
-        if os.path.exists(csv_path):
-            os.remove(csv_path)
+        if os.path.exists(fpth):
+            os.remove(fpth)
         funds_trade = funds_trade_table(ftype_dict)
-        funds_trade.to_csv(csv_path)
+        funds_trade.to_csv(fpth)
         return funds_trade
     elif force_update.lower() == 'n':
         # 存在当日的csv文件，直接读取
-        return pd.read_csv(csv_path)
+        return pd.read_csv(fpth)
     else:
         # 仅存在一个旧的csv文件，和新数据合并
-        old_trade_pd = pd.read_csv(csv_path)
-        os.remove(csv_path)
+        old_trade_pd = pd.read_csv(fpth)
+        os.remove(fpth)
         realtime_pd = funds_realtime_info(ftype_dict)
         explict_name = funds_divide_dict(realtime_pd, ftype_dict)
         explict_pd = funds_quote_table(explict_name)
         new_trade_pd = pd.concat(
             [old_trade_pd, realtime_pd, explict_pd], axis=0)
         new_trade_pd.drop_duplicates(inplace=True)
-        new_trade_pd.to_csv(csv_path)
+        new_trade_pd.to_csv(fpth)
         return new_trade_pd
 
 
