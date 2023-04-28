@@ -6,6 +6,7 @@ from base64 import b64encode
 import datetime
 import requests
 import json
+import pandas as pd
 
 
 class ErrorCode(int, Enum):
@@ -253,7 +254,7 @@ def format_data_new(data: Dict):
 
 
 def baidu_search_index(word, start_date, end_date, cookie, type="all"):
-    # 百度搜索数据
+    ''' 百度搜索数据 '''
     try:
         keywords_list = [[word]]
         encrypt_json = get_encrypt_json(
@@ -286,7 +287,7 @@ def baidu_search_index(word, start_date, end_date, cookie, type="all"):
 
 
 def baidu_info_index(word, start_date, end_date, cookie):
-    # 百度资讯指数
+    ''' 百度资讯指数 '''
     try:
         keywords_list = [[word]]
         encrypt_json = get_encrypt_json(
@@ -319,7 +320,7 @@ def baidu_info_index(word, start_date, end_date, cookie):
 
 
 def baidu_media_index(word, start_date, end_date, cookie):
-    # 百度媒体指数
+    ''' 百度媒体指数 '''
     try:
         keywords_list = [[word]]
         encrypt_json = get_encrypt_json(

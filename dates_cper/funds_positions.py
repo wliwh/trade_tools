@@ -39,7 +39,7 @@ def get_hsgt_acc_flow():
     north_acc_flow /= 1e4
     sh_acc_flow = ak.stock_hsgt_hist_em('沪股通').set_index('日期')
     sz_acc_flow = ak.stock_hsgt_hist_em('深股通').set_index('日期')
-    # TODO: 2020-10-13 数据空缺
+    # 2020-10-13 数据空缺
     north_pad_flow = sh_acc_flow['历史累计净买额'].add(
         sz_acc_flow['历史累计净买额'], fill_value=0)
     north_pad_flow.index = [d.strftime('%Y-%m-%d')

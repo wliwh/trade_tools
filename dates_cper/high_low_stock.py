@@ -137,7 +137,7 @@ def high_low_index_hist(cons_pd:pd.DataFrame,code:str,beg:str,Ns:tuple[int]):
     return high_low_sats
 
 def _high_low_index(code='000016',start='20221001',N=60):
-    # TODO: 废弃
+    ## 废弃
     const = ak.index_stock_cons_csindex(symbol=code)
     const_codes = const['成分券代码'].to_list()
     start_day = datetime.datetime.strptime(start,'%Y%m%d')

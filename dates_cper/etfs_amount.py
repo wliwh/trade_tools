@@ -4,7 +4,6 @@ import pandas as pd
 import numpy as np
 import akshare as ak
 import efinance as ef
-import datetime
 import time
 from tqdm import tqdm
 import sys
@@ -98,7 +97,7 @@ def funds_trade_table(ftype_dict: dict) -> pd.DataFrame:
                     pd1['类型'] = tp
                     trade_lst.append(pd1)
                 except KeyError as e:
-                    # TODO: IFNO记录无法查到的基金
+                    # TODO: IFNO 记录无法查到的基金
                     print('>>>', tp, code)
                 bar.update(1)
     return pd.concat(trade_lst, axis=0)
@@ -106,7 +105,6 @@ def funds_trade_table(ftype_dict: dict) -> pd.DataFrame:
 
 def append_funds_trade_file(cfg_file='') -> pd.DataFrame:
     ''' 更新场内基金每日交易信息 '''
-    # TODO: 逻辑细节，存在当日的，小更新，大更新
     ftype_dict = get_funds_dict()
     if not cfg_file:
         cfg_file = '../trade.ini'
@@ -120,19 +118,15 @@ def append_funds_trade_file(cfg_file='') -> pd.DataFrame:
     next_week = config.get(cfg_wsec,'next_update')
     now_date = get_trade_day(17).strftime('%Y-%m-%d')
     next_day = get_delta_trade_day(now_date).strftime('%Y-%m-%d')
-    # get_next_weekday(next_week,6) 
-    if not os.path.exists(fpth) or force_update.lower() == 'all':
-        # 不存在 csv 文件或要求强制更新
-        if os.path.exists(fpth):
-            os.remove(fpth)
+    # get_next_weekday(next_week,6)
+    if not os.path.exists(fpth):
         funds_trade = funds_trade_table(ftype_dict)
-        funds_trade.to_csv(fpth)
-        return funds_trade
-    elif force_update.lower() == 'n':
-        # 存在当日的csv文件，直接读取
-        return pd.read_csv(fpth)
-    else:
-        # 仅存在一个旧的csv文件，和新数据合并
+        funds_trade.to_csv(fpth,mode='w')
+        config.set(cfg_sec, 'update_date', now_date)
+        config.set(cfg_sec, 'next_update', next_day)
+        config.write(open(cfg_file,'w'))
+    elif next_date<=now_date:
+        # 交易日更新
         old_trade_pd = pd.read_csv(fpth)
         os.remove(fpth)
         realtime_pd = funds_realtime_info(ftype_dict)
@@ -141,11 +135,21 @@ def append_funds_trade_file(cfg_file='') -> pd.DataFrame:
         new_trade_pd = pd.concat(
             [old_trade_pd, realtime_pd, explict_pd], axis=0)
         new_trade_pd.drop_duplicates(inplace=True)
-        new_trade_pd.to_csv(fpth)
-        return new_trade_pd
+        new_trade_pd.to_csv(fpth, mode='w')
+        config.set(cfg_sec, 'update_date', now_date)
+        config.set(cfg_sec, 'next_update', next_day)
+        config.write(open(cfg_file,'w'))
+    elif next_week<=now_date:
+        # 周级别更新
+        os.remove(fpth)
+        funds_trade = funds_trade_table(ftype_dict)
+        funds_trade.to_csv(fpth, mode='w')
+        config.set(cfg_sec, 'update_date', now_date)
+        config.set(cfg_sec, 'next_update', get_next_weekday(now_date,6).strftime('%Y-%m-%d'))
+        config.write(open(cfg_file,'w'))
+    elif (up_date==now_date) or (next_week>now_date):
+        pass
 
-
-# Funds_Trade = funds_trade_csv()
 
 
 def funds_amt_rate_table(rate: bool, f_trade: pd.DataFrame, f_type_dict: dict) -> pd.DataFrame:
