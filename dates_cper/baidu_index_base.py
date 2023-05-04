@@ -7,6 +7,7 @@ import datetime
 import requests
 import json
 import pandas as pd
+import os
 
 
 class ErrorCode(int, Enum):
@@ -350,3 +351,41 @@ def baidu_media_index(word, start_date, end_date, cookie):
         return data_df
     except Exception as e:
         return None
+
+os.chdir(os.path.dirname(__file__))
+
+def change_search_names_line(l,start_mark):
+    l = l.strip()
+    ret = list()
+    if start_mark is None:
+        if ',' in l:
+            name,date = l.split(',')
+        else:
+            name,date = l,'2011-01-01'
+        name = name[1:] if name[0] in ('*','+','^') else name
+    elif start_mark in ('*','+','^'):
+        l = l[1:]
+        name, date = l.strip() if ',' in l else (l, '2011-01-01')
+    return (name.strip(), date.strip())
+
+def get_bd_search_table(start_mark=None):
+    with open('../dates_save/search_names', 'r', encoding='utf8') as f:
+        name_lst = f.readlines()
+    name_lst = [change_search_names_line(s,start_mark) for s in name_lst]
+    return name_lst
+
+def bd_search_tonow(cookie):
+    now_date = datetime.date.today().strftime('%Y-%m-%d')
+    nml = get_bd_search_table()
+    tbs = list()
+    for nm,sd in nml:
+        QS1 = pd.date_range(start=sd,end=now_date,freq='QS-JAN')
+        QS2 = pd.date_range(start=sd,end=now_date,freq='Q-MAR')
+        QS2.append(pd.DatetimeIndex([now_date]))
+        for d1,d2 in zip(QS1,QS2):
+            dt1, dt2 = d1.strftime('%Y-%m-%d'), d2.strftime('%Y-%m-%d')
+            tbs.append(baidu_search_index(nm,dt1,dt2,cookie))
+    search_pd = pd.concat(tbs,axis=0)
+    return search_pd
+    
+# bd_search_tonow()
