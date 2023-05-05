@@ -1,4 +1,5 @@
 from enum import Enum
+import time
 from typing import List, Dict, Tuple
 from urllib.parse import urlencode, quote
 from Crypto.Cipher import AES
@@ -374,18 +375,19 @@ def get_bd_search_table(start_mark=None):
     name_lst = [change_search_names_line(s,start_mark) for s in name_lst]
     return name_lst
 
-def bd_search_tonow(cookie):
-    now_date = datetime.date.today().strftime('%Y-%m-%d')
+def bd_search_tonow(cookie,sdate='2023-05-03'):
+    now_date = sdate
     nml = get_bd_search_table()
     tbs = list()
     for nm,sd in nml:
         QS1 = pd.date_range(start=sd,end=now_date,freq='QS-JAN')
         QS2 = pd.date_range(start=sd,end=now_date,freq='Q-MAR')
-        QS2.append(pd.DatetimeIndex([now_date]))
+        QS2 = QS2.append(pd.DatetimeIndex([now_date]))
         for d1,d2 in zip(QS1,QS2):
+            time.sleep(0.2)
             dt1, dt2 = d1.strftime('%Y-%m-%d'), d2.strftime('%Y-%m-%d')
+            print(nm,dt1,dt2,'...')
             tbs.append(baidu_search_index(nm,dt1,dt2,cookie))
     search_pd = pd.concat(tbs,axis=0)
     return search_pd
-    
-# bd_search_tonow()
+
