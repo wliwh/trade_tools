@@ -81,7 +81,8 @@ def funds_quote_table(ftype_dict: dict) -> pd.DataFrame:
         dfm = pd.DataFrame([e.iloc[-1] for e in ef.stock.get_quote_history(lst).values() if not e.empty])
         dfm['类型'] = tp
         explict_pd_lst.append(dfm)
-    return pd.concat(explict_pd_lst,axis=0)
+    explict_pd =  pd.concat(explict_pd_lst,axis=0)
+    return explict_pd
 
 
 def funds_trade_table(ftype_dict: dict) -> pd.DataFrame:
@@ -127,11 +128,12 @@ def append_funds_trade_file(cfg_file='') -> pd.DataFrame:
         config.write(open(cfg_file,'w'))
     elif next_date<=now_date:
         # 交易日更新
-        old_trade_pd = pd.read_csv(fpth)
+        old_trade_pd = pd.read_csv(fpth,index_col=0)
         os.remove(fpth)
         realtime_pd = funds_realtime_info(ftype_dict)
         explict_name = funds_divide_dict(realtime_pd, ftype_dict)
         explict_pd = funds_quote_table(explict_name)
+        explict_pd = explict_pd[explict_pd['日期']==now_date]
         new_trade_pd = pd.concat(
             [old_trade_pd, realtime_pd, explict_pd], axis=0)
         new_trade_pd.drop_duplicates(inplace=True)
@@ -151,7 +153,6 @@ def append_funds_trade_file(cfg_file='') -> pd.DataFrame:
         pass
 
 
-
 def funds_amt_rate_table(rate: bool, f_trade: pd.DataFrame, f_type_dict: dict) -> pd.DataFrame:
     ''' 场内基金按照类别计算的每日成交额 '''
     funds_type_amt = [f_trade[f_trade['类型'] == k].groupby(
@@ -164,3 +165,7 @@ def funds_amt_rate_table(rate: bool, f_trade: pd.DataFrame, f_type_dict: dict) -
     _funds_sum = funds_type_per.pop('sum')
     funds_type_per = funds_type_per.div(_funds_sum, axis=0)
     return funds_type_per if rate else funds_type_amt
+
+
+if __name__=='__main__':
+    append_funds_trade_file()
