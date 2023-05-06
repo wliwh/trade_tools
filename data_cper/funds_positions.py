@@ -187,6 +187,7 @@ def margin_amount_sz(date: str):
     return con_pd
 
 def append_margin_file(market='sh', cfg_file=''):
+    ''' 添加两市融资数据 '''
     if not cfg_file:
         cfg_file = '../trade.ini'
     if market.lower() not in ('sh', 'sz'):

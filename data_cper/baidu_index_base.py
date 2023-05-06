@@ -10,6 +10,7 @@ import json
 import pandas as pd
 import os
 
+os.chdir(os.path.dirname(__file__))
 
 class ErrorCode(int, Enum):
     UNKNOWN = 10002
@@ -285,8 +286,44 @@ def baidu_search_index(word, start_date, end_date, cookie, type="all"):
         del data_df["date"]
         return data_df
     except Exception as e:
+        print(e)
         return None
+    
+def get_time_lst(tml:str)->List:
+    st, ed = tml.split('|')
+    sth, edh = int(st.split()[1][:2]), int(ed.split()[1][:2])
+    stl = ['{} {:02d}:00:00'.format(st[:10],i) for i in range(sth,24)]
+    edl = ['{} {:02d}:00:00'.format(ed[:10],i) for i in range(edh+1)]
+    return stl+edl
 
+def baidu_search_hour_index(word, start_date, end_date, cookie, kind="all"):
+    try:
+        if isinstance(word,str):
+            keywords_list = [[word]]
+        elif isinstance(word,(List,Tuple)):
+            keywords_list = [[x] for x in word]
+        encrypt_json = get_encrypt_json(
+            start_date=start_date,
+            end_date=end_date,
+            keywords=keywords_list,
+            type='live',
+            area=0,
+            cookies=cookie
+        )
+
+        encrypt_datas = encrypt_json['data']['result']
+        uniqid = encrypt_json['data']['uniqid']
+        result = []
+        key = get_key(uniqid, cookie)
+        for encrypt_data in encrypt_datas:
+            encrypt_all = decrypt_func(key, encrypt_data['index'][0]['_'+kind])
+            time_lst = get_time_lst(encrypt_data['index'][0]['period'])
+            cname = encrypt_data['key'][0]['name']
+            result.append(pd.DataFrame({cname:encrypt_all},index=time_lst))
+        return pd.concat(result, axis=1)
+    except Exception as e:
+        return None
+    
 
 def baidu_info_index(word, start_date, end_date, cookie):
     ''' 百度资讯指数 '''
@@ -353,8 +390,6 @@ def baidu_media_index(word, start_date, end_date, cookie):
     except Exception as e:
         return None
 
-os.chdir(os.path.dirname(__file__))
-
 def change_search_names_line(l,start_mark):
     l = l.strip()
     ret = list()
@@ -365,17 +400,19 @@ def change_search_names_line(l,start_mark):
             name,date = l,'2011-01-01'
         name = name[1:] if name[0] in ('*','+','^') else name
     elif start_mark in ('*','+','^'):
-        l = l[1:]
-        name, date = l.strip() if ',' in l else (l, '2011-01-01')
+        if ',' in l and l[0] not in ('*','+','^'):
+            return
+        l = l[1:] if l[0] in ('*','+','^') else l
+        name, date = l.split(',') if ',' in l else (l, '2011-01-01')
     return (name.strip(), date.strip())
 
 def get_bd_search_table(start_mark=None):
     with open('../dates_save/search_names', 'r', encoding='utf8') as f:
         name_lst = f.readlines()
     name_lst = [change_search_names_line(s,start_mark) for s in name_lst]
-    return name_lst
+    return [n for n in name_lst if n is not None]
 
-def bd_search_tonow(cookie,sdate='2023-05-03'):
+def _bd_search_tonow(cookie,sdate='2023-05-03'):
     now_date = sdate
     nml = get_bd_search_table()
     tbs = list()
@@ -391,3 +428,6 @@ def bd_search_tonow(cookie,sdate='2023-05-03'):
     search_pd = pd.concat(tbs,axis=0)
     return search_pd
 
+
+def bd_search_nearday(words, sd, ed, cookie):
+    pass

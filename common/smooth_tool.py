@@ -106,6 +106,7 @@ def HMA(price: pd.Series, window: int) -> pd.Series:
 
     return ta.WMA(2 * ta.WMA(price, int(window * 0.5)) - ta.WMA(price, window),int(np.sqrt(window)))
 
+
 def FRAMA(se, periods, clip=True):
     ''' 计算FRAMA均线 '''
     T = int(periods/2)
