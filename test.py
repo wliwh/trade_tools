@@ -8,7 +8,9 @@ def update_files(retry:int=3):
             append_qvix_minute_file()
             break
         except Exception as e:
-            pass
+            print(e)
+    # ;; QVIX 数据
+    # ;; 北上资金
     # 延迟的两融数据
     for r in range(retry):
         try:
@@ -21,6 +23,14 @@ def update_files(retry:int=3):
     for r in range(retry):
         try:
             append_high_low_legu_file()
+            break
+        except Exception as e:
+            pass
+    # 当日ETF成交数据
+    for r in range(retry):
+        print('update etf amount.')
+        try:
+            append_funds_trade_file()
             break
         except Exception as e:
             pass

@@ -1,3 +1,4 @@
 funds_amt*.csv
 .vscode/
 */.cooks
+*/__pycache__/

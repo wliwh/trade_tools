@@ -112,7 +112,7 @@ def append_funds_trade_file(cfg_file='') -> pd.DataFrame:
     cfg_sec, cfg_wsec = 'Etf_Amount', 'Etf_Amount_All'
     config = configparser.ConfigParser()
     config.read(cfg_file, encoding='utf-8')
-    fpth = os.path.join('../dates_save', config.get(cfg_sec, 'fpath'))
+    fpth = os.path.join('../data_save', config.get(cfg_sec, 'fpath'))
     up_date = config.get(cfg_sec, 'update_date')
     next_date = config.get(cfg_sec, 'next_update')
     up_week = config.get(cfg_wsec,'update_date')
@@ -146,8 +146,8 @@ def append_funds_trade_file(cfg_file='') -> pd.DataFrame:
         os.remove(fpth)
         funds_trade = funds_trade_table(ftype_dict)
         funds_trade.to_csv(fpth, mode='w')
-        config.set(cfg_sec, 'update_date', now_date)
-        config.set(cfg_sec, 'next_update', get_next_weekday(now_date,6).strftime('%Y-%m-%d'))
+        config.set(cfg_wsec, 'update_date', now_date)
+        config.set(cfg_wsec, 'next_update', get_next_weekday(now_date,6).strftime('%Y-%m-%d'))
         config.write(open(cfg_file,'w'))
     elif (up_date==now_date) or (next_week>now_date):
         pass

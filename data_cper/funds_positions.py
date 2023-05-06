@@ -196,7 +196,7 @@ def append_margin_file(market='sh', cfg_file=''):
     mrg_pd_fdic = margin_amount_sh if market.lower()=='sh' else margin_amount_sz
     config = configparser.ConfigParser()
     config.read(cfg_file, encoding='utf-8')
-    fpth = os.path.join('../dates_save', config.get(cfg_sec, 'fpath'))
+    fpth = os.path.join('../data_save', config.get(cfg_sec, 'fpath'))
     up_date = config.get(cfg_sec, 'update_date')
     next_date = config.get(cfg_sec, 'next_update')
     if market.lower()=='sh':
