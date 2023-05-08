@@ -21,26 +21,37 @@ def update_files(retry:int=3):
     # 延迟的两融数据
     for r in range(retry):
         try:
-            append_margin_file('sh')
-            append_margin_file('sz')
+            res = append_margin_file('sh')
+            ks = 'ready' if res==0 else 'to '+res
+            logging.info("Update margin-sh {}.".format(ks))
+            res = append_margin_file('sz')
+            ks = 'ready' if res==0 else 'to '+res
+            logging.info("Update margin-sz {}.".format(ks))
             break
         except Exception as e:
-            pass
+            logging.warning("Try update margin {} times. ({})".format(r+1,e))
+        if r==retry-1: logging.error("Can't update margin data.")
     # 交易日新高新低-乐股数据
     for r in range(retry):
         try:
-            append_high_low_legu_file()
+            res = append_high_low_legu_file()
+            ks = 'ready' if res==0 else 'to '+res
+            logging.info("Update high-log-legu {}".format(ks))
             break
         except Exception as e:
-            pass
+            logging.warning("Try update high-low-legu {} times. ({})".format(r+1,e))
+        if r==retry-1: logging.error("Can't update high-low-legu.")
     # 当日ETF成交数据
     for r in range(retry):
         print('update etf amount.')
         try:
-            append_funds_trade_file()
+            tm_rg, res = append_funds_trade_file()
+            ks = 'ready' if res==0 else 'to '+res
+            logging.info("Update {} etf amount {}".format(tm_rg,ks))
             break
         except Exception as e:
-            pass
+            logging.warning("Try update etf amount {} times. ({})".format(r+1,e))
+        if r==retry-1: logging.error("Can't update etf amount.")
 
-
-update_files()
+if __name__=='__main__':
+    update_files()

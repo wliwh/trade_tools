@@ -59,15 +59,17 @@ def append_high_low_legu_file(cfg_file=''):
         config.write(open(fpth,'w'))
         qvix_pds = get_today_high_low_legu(now_date)
         qvix_pds.to_csv(fpth, mode='w')
+        return now_date
     elif up_date == now_date:
-        pass
+        return 0
     elif next_date <= now_date:
         config.set(cfg_sec, 'update_date', now_date)
         config.set(cfg_sec, 'next_update', next_day)
         qvix_pds = get_today_high_low_legu(now_date)
         qvix_pds.to_csv(fpth, mode='a', header=False)
         config.write(open(cfg_file,'w'))
-
+        return now_date
+    return 0
 
 def _get_constituent_codes(cons_pd:pd.DataFrame, code: str, date: str):
     ''' 获取指数的成分股代码, 返回成分股调样的日期列表和对应表格 '''

@@ -213,8 +213,9 @@ def append_margin_file(market='sh', cfg_file=''):
         config.write(open(fpth,'w'))
         qvix_pds = mrg_pd_fdic(next_date)
         qvix_pds.to_csv(fpth, mode='w')
+        return next_date
     elif now_time < up_time:
-        pass
+        return 0
     elif now_time>=up_time:
         # 这里用配置文件中的日期更新数据
         config.set(cfg_sec, 'update_date', next_date)
@@ -222,6 +223,8 @@ def append_margin_file(market='sh', cfg_file=''):
         qvix_pds = mrg_pd_fdic(next_date)
         qvix_pds.to_csv(fpth, mode='a', header=False)
         config.write(open(cfg_file,'w'))
+        return next_date
+    return 0
 
 if __name__=='__main__':
     append_margin_file('sh')

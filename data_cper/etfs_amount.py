@@ -126,6 +126,7 @@ def append_funds_trade_file(cfg_file='') -> pd.DataFrame:
         config.set(cfg_sec, 'update_date', now_date)
         config.set(cfg_sec, 'next_update', next_day)
         config.write(open(cfg_file,'w'))
+        return 'week', now_date
     elif next_date<=now_date:
         # 交易日更新
         old_trade_pd = pd.read_csv(fpth,index_col=0)
@@ -141,6 +142,7 @@ def append_funds_trade_file(cfg_file='') -> pd.DataFrame:
         config.set(cfg_sec, 'update_date', now_date)
         config.set(cfg_sec, 'next_update', next_day)
         config.write(open(cfg_file,'w'))
+        return 'day', now_date
     elif next_week<=now_date:
         # 周级别更新
         os.remove(fpth)
@@ -149,8 +151,10 @@ def append_funds_trade_file(cfg_file='') -> pd.DataFrame:
         config.set(cfg_wsec, 'update_date', now_date)
         config.set(cfg_wsec, 'next_update', get_next_weekday(now_date,6).strftime('%Y-%m-%d'))
         config.write(open(cfg_file,'w'))
+        return 'week', now_date
     elif (up_date==now_date) or (next_week>now_date):
-        pass
+        return 0
+    return 0
 
 
 def funds_amt_rate_table(rate: bool, f_trade: pd.DataFrame, f_type_dict: dict) -> pd.DataFrame:
