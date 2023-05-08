@@ -1,14 +1,21 @@
-from common import trade_date
+import logging
 from data_cper import *
+
+logging.basicConfig(
+    format='%(asctime)s [%(filename)s] - %(levelname)s: %(message)s',
+    level=logging.DEBUG)
 
 def update_files(retry:int=3):
     # 交易日 QVIX 分钟级数据
     for r in range(retry):
         try:
-            append_qvix_minute_file()
+            res = append_qvix_minute_file()
+            ks = 'ready' if res==0 else 'to '+res
+            logging.info("Update qvix minute {}.".format(ks))
             break
         except Exception as e:
-            print(e)
+            logging.warning("Try update qvix minute {} times. ({})".format(r+1,e))
+        if r==retry-1: logging.error("Can't update qvix minute.")
     # ;; QVIX 数据
     # ;; 北上资金
     # 延迟的两融数据

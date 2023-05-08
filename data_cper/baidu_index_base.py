@@ -1,3 +1,4 @@
+import configparser
 from enum import Enum
 import time
 from typing import List, Dict, Tuple
@@ -9,8 +10,8 @@ import requests
 import json
 import pandas as pd
 import os
-
 os.chdir(os.path.dirname(__file__))
+
 
 class ErrorCode(int, Enum):
     UNKNOWN = 10002
@@ -27,9 +28,6 @@ class ErrorCode(int, Enum):
     LOGIN_FAIL = 20011
     INDEX_LOGIN_FAIL = 20012
 
-    # 天眼查
-    TYC_COMPANY_COUNT_FAIL = 20020
-
 
 CODE_MSG_MAP = {
     ErrorCode.NO_LOGIN: 'cookies失效，请重新获取cookies',
@@ -42,8 +40,7 @@ CODE_MSG_MAP = {
     ErrorCode.CHECK_KEYWORD_LIMITED: "最多传入15个关键词",
     ErrorCode.GET_QR_FAIL: "获取二维码失败",
     ErrorCode.LOGIN_FAIL: "百度登录失败",
-    ErrorCode.INDEX_LOGIN_FAIL: "百度指数登录失败",
-    ErrorCode.TYC_COMPANY_COUNT_FAIL: "获取天眼查公司数量失败"
+    ErrorCode.INDEX_LOGIN_FAIL: "百度指数登录失败"
 }
 
 
@@ -259,7 +256,10 @@ def format_data_new(data: Dict):
 def baidu_search_index(word, start_date, end_date, cookie, type="all"):
     ''' 百度搜索数据 '''
     try:
-        keywords_list = [[word]]
+        if isinstance(word,str):
+            keywords_list = [[word]]
+        elif isinstance(word,(List,Tuple)):
+            keywords_list = [[x] for x in word]
         encrypt_json = get_encrypt_json(
             start_date=start_date,
             end_date=end_date,
@@ -296,15 +296,15 @@ def get_time_lst(tml:str)->List:
     edl = ['{} {:02d}:00:00'.format(ed[:10],i) for i in range(edh+1)]
     return stl+edl
 
-def baidu_search_hour_index(word, start_date, end_date, cookie, kind="all"):
+def baidu_search_hour_index(word, cookie, kind="all"):
     try:
         if isinstance(word,str):
             keywords_list = [[word]]
         elif isinstance(word,(List,Tuple)):
             keywords_list = [[x] for x in word]
         encrypt_json = get_encrypt_json(
-            start_date=start_date,
-            end_date=end_date,
+            start_date='000',
+            end_date='000',
             keywords=keywords_list,
             type='live',
             area=0,
@@ -392,7 +392,6 @@ def baidu_media_index(word, start_date, end_date, cookie):
 
 def change_search_names_line(l,start_mark):
     l = l.strip()
-    ret = list()
     if start_mark is None:
         if ',' in l:
             name,date = l.split(',')
@@ -407,14 +406,15 @@ def change_search_names_line(l,start_mark):
     return (name.strip(), date.strip())
 
 def get_bd_search_table(start_mark=None):
-    with open('../dates_save/search_names', 'r', encoding='utf8') as f:
+    ''' 生成待检索词列表 '''
+    with open('../data_save/search_names', 'r', encoding='utf8') as f:
         name_lst = f.readlines()
     name_lst = [change_search_names_line(s,start_mark) for s in name_lst]
     return [n for n in name_lst if n is not None]
 
-def _bd_search_tonow(cookie,sdate='2023-05-03'):
+def _bd_search_tonow(cookie,sdate='2023-05-07',bsup='*'):
     now_date = sdate
-    nml = get_bd_search_table()
+    nml = get_bd_search_table(bsup)
     tbs = list()
     for nm,sd in nml:
         QS1 = pd.date_range(start=sd,end=now_date,freq='QS-JAN')
@@ -430,4 +430,52 @@ def _bd_search_tonow(cookie,sdate='2023-05-03'):
 
 
 def bd_search_nearday(words, sd, ed, cookie):
-    pass
+    ''' 获取最近一段时间内关键词的检索量 '''
+    bnear_tb = []
+    btime = len(words)//5
+    for i in range(btime):
+        ed_i = None if i==btime-1 else i*5+5
+        bnear_tb.append(baidu_search_index(words[slice(i*5,ed_i)], sd, ed, cookie))
+    search_pd = pd.concat(bnear_tb, axis=0)
+    recent_date = search_pd.index.max().strftime('%Y-%m-%d')
+    return recent_date, search_pd
+
+def bd_search_nearhour(words, cookie):
+    ''' 获取小时级别的关键词检索量 '''
+    bnear_tb = []
+    btime = len(words)//5
+    for i in range(btime):
+        ed_i = None if i==btime-1 else i*5+5
+        bnear_tb.append(baidu_search_hour_index(words[slice(i*5,ed_i)], cookie))
+    search_pd = pd.concat(bnear_tb, axis=1)
+    recent_time = search_pd.index.max()
+    recent_day, recent_hour = recent_time.split()[0], recent_time.split(':')[0][-2:]
+    return recent_day, recent_hour, search_pd
+
+
+def append_bsearch_day_file(cfg_file=''):
+    ''' 更新每日的关键词检索量
+        不更新添加的检索词
+    '''
+    bsearch_words = [n[0] for n in get_bd_search_table()]
+    if not cfg_file:
+        cfg_file = '../trade.ini'
+    cfg_sec = 'BSearch_Day'
+    config = configparser.ConfigParser()
+    config.read(cfg_file, encoding='utf-8')
+    fpth = os.path.join('../data_save', config.get(cfg_sec, 'fpath'))
+    cookpth = os.path.join('../data_save', '.cooks')
+    with open(cookpth,'r') as ckf:
+        cookie = ckf.read()
+    up_date = config.get(cfg_sec, 'update_date')
+    next_date = (pd.to_datetime(up_date) + pd.offsets.Day(1)).strftime('%Y-%m-%d')
+    now_date = datetime.date.today().strftime('%Y-%m-%d')
+    next_day = (pd.to_datetime(now_date) + pd.offsets.Day(1)).strftime('%Y-%m-%d')
+    if now_date > next_date:
+        bdt, bwd_tb = bd_search_nearday(bsearch_words, next_date, now_date, cookie.strip())
+        bwd_tb.to_csv(fpth,mode='a',header=False)
+        config.set(cfg_sec, 'update_date', bdt)
+        config.set(cfg_sec, 'next_update', next_day)
+        config.write(open(cfg_file,'w'))
+    else:
+        pass

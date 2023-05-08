@@ -108,20 +108,25 @@ def append_qvix_minute_file(cfg_file=''):
     now_date = get_trade_day(16).strftime('%Y-%m-%d')
     next_day = get_delta_trade_day(now_date).strftime('%Y-%m-%d')
     if not os.path.exists(fpth):
+        print('qvix no.')
         config.set('Qvix_Minute', 'update_date', now_date)
         config.set('Qvix_Minute', 'next_update', next_day)
         config.write(open(fpth,'w'))
         qvix_pds = qvix_minute_pds(now_date)
         qvix_pds.to_csv(fpth, mode='w')
+        return now_date
     elif up_date == now_date:
-        pass
+        print('qvix pass.')
+        return 0
     elif next_date <= now_date:
+        print('qvix update.')
         config.set('Qvix_Minute', 'update_date', now_date)
         config.set('Qvix_Minute', 'next_update', next_day)
         qvix_pds = qvix_minute_pds(now_date)
         qvix_pds.to_csv(fpth, mode='a', header=False)
         config.write(open(cfg_file,'w'))
-
+        return now_date
+    return 0
 
 if __name__=='__main__':
     append_qvix_minute_file()
