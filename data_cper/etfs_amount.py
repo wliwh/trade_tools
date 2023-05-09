@@ -153,8 +153,8 @@ def append_funds_trade_file(cfg_file='') -> pd.DataFrame:
         config.write(open(cfg_file,'w'))
         return 'week', now_date
     elif (up_date==now_date) or (next_week>now_date):
-        return 0
-    return 0
+        return 0, 0
+    return 0, 0
 
 
 def funds_amt_rate_table(rate: bool, f_trade: pd.DataFrame, f_type_dict: dict) -> pd.DataFrame:
@@ -171,5 +171,5 @@ def funds_amt_rate_table(rate: bool, f_trade: pd.DataFrame, f_type_dict: dict) -
     return funds_type_per if rate else funds_type_amt
 
 
-if __name__=='__main__':
-    append_funds_trade_file()
+# if __name__=='__main__':
+#     append_funds_trade_file()

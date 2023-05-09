@@ -443,8 +443,9 @@ def bd_search_nearday(words, sd, ed, cookie):
 def bd_search_nearhour(words, cookie):
     ''' 获取小时级别的关键词检索量 '''
     bnear_tb = []
-    btime = len(words)//5
+    btime = (len(words)+4)//5
     for i in range(btime):
+        time.sleep(0.6)
         ed_i = None if i==btime-1 else i*5+5
         bnear_tb.append(baidu_search_hour_index(words[slice(i*5,ed_i)], cookie))
     search_pd = pd.concat(bnear_tb, axis=1)

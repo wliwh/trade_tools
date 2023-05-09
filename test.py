@@ -3,7 +3,7 @@ from data_cper import *
 
 logging.basicConfig(
     format='%(asctime)s [%(filename)s] - %(levelname)s: %(message)s',
-    level=logging.DEBUG)
+    level=logging.INFO)
 
 def update_files(retry:int=3):
     # 交易日 QVIX 分钟级数据
@@ -47,7 +47,8 @@ def update_files(retry:int=3):
         try:
             tm_rg, res = append_funds_trade_file()
             ks = 'ready' if res==0 else 'to '+res
-            logging.info("Update {} etf amount {}".format(tm_rg,ks))
+            tm_rg = '' if tm_rg==0 else ' '+tm_rg
+            logging.info("Update{} etf amount {}.".format(tm_rg,ks))
             break
         except Exception as e:
             logging.warning("Try update etf amount {} times. ({})".format(r+1,e))
