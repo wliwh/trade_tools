@@ -481,6 +481,35 @@ def append_bsearch_day_file(cfg_file=''):
     else:
         pass
 
+def append_bsearch_hour_file(cfg_file=''):
+    ''' 更新检索词的小时频数据 '''
+    bsearch_words = [n[0] for n in get_bd_search_table()]
+    if not cfg_file:
+        cfg_file = '../trade.ini'
+    cfg_sec = 'BSearch_Hour'
+    config = configparser.ConfigParser()
+    config.read(cfg_file, encoding='utf-8')
+    fpth = os.path.join('../data_save', config.get(cfg_sec, 'fpath'))
+    cookpth = os.path.join('../data_save', '.cooks')
+    with open(cookpth,'r') as ckf:
+        cookie = ckf.read()
+    up_date = config.get(cfg_sec, 'update_date')
+    up_hour = config.get(cfg_sec, 'update_time')
+    next_tm = (pd.to_datetime(up_date) + pd.offsets.Hour(int(up_hour)+10)).strftime('%Y-%m-%d %H')
+    now_tm = datetime.datetime.today().strftime('%Y-%m-%d %H')
+    next_day = (pd.to_datetime(now_tm) + pd.offsets.Hour(10)).strftime('%Y-%m-%d')
+    print(up_date, up_hour, next_tm, now_tm)
+    if now_tm > next_tm:
+        bdt, btm, bwd_tb = bd_search_nearhour(bsearch_words, cookie.strip())
+        bwd_tb = bwd_tb[bwd_tb.index>up_date+' '+up_hour]
+        config.set(cfg_sec, 'update_date', bdt)
+        config.set(cfg_sec, 'update_time', btm)
+        config.set(cfg_sec, 'next_update', next_day)
+        bwd_tb.to_csv(fpth, mode='a', header=False)
+        config.write(open(cfg_file,'w'))
+    else:
+        pass
 
 if __name__=='__main__':
     append_bsearch_day_file()
+    append_bsearch_hour_file()
