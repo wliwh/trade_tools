@@ -432,7 +432,7 @@ def _bd_search_tonow(cookie,sdate='2023-05-07',bsup='*'):
 def bd_search_nearday(words, sd, ed, cookie):
     ''' 获取最近一段时间内关键词的检索量 '''
     bnear_tb = []
-    btime = len(words)//5
+    btime = (len(words)+4)//5
     for i in range(btime):
         ed_i = None if i==btime-1 else i*5+5
         bnear_tb.append(baidu_search_index(words[slice(i*5,ed_i)], sd, ed, cookie))
@@ -480,3 +480,7 @@ def append_bsearch_day_file(cfg_file=''):
         config.write(open(cfg_file,'w'))
     else:
         pass
+
+
+if __name__=='__main__':
+    append_bsearch_day_file()
