@@ -107,5 +107,5 @@ def get_stock_df(idx_l=idx_lst[0],bword='a股'):
              title='SH.'+idx_l,volume=True, figratio=(6,3),
              ylabel_lower='Volume')
 
-get_stock_df(bword='股市')
+# get_stock_df(bword='股市')
 # plt.grid(True)

@@ -322,6 +322,7 @@ def baidu_search_hour_index(word, cookie, kind="all"):
             result.append(pd.DataFrame({cname:encrypt_all},index=time_lst))
         return pd.concat(result, axis=1)
     except Exception as e:
+        print(e)
         return None
     
 
@@ -498,7 +499,7 @@ def append_bsearch_hour_file(cfg_file=''):
     next_tm = (pd.to_datetime(up_date) + pd.offsets.Hour(int(up_hour)+10)).strftime('%Y-%m-%d %H')
     now_tm = datetime.datetime.today().strftime('%Y-%m-%d %H')
     next_day = (pd.to_datetime(now_tm) + pd.offsets.Hour(10)).strftime('%Y-%m-%d')
-    print(up_date, up_hour, next_tm, now_tm)
+    # print(up_date, up_hour, next_tm, now_tm)
     if now_tm > next_tm:
         bdt, btm, bwd_tb = bd_search_nearhour(bsearch_words, cookie.strip())
         bwd_tb = bwd_tb[bwd_tb.index>up_date+' '+up_hour]

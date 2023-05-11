@@ -5,6 +5,9 @@ logging.basicConfig(
     format='%(asctime)s [%(filename)s] - %(levelname)s: %(message)s',
     level=logging.INFO)
 
+def basic_append_fun(fn,retry,**kwds):
+    pass
+
 def update_files(retry:int=3):
     # 交易日 QVIX 分钟级数据
     for r in range(retry):
