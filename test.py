@@ -46,7 +46,6 @@ def update_files(retry:int=3):
         if r==retry-1: logging.error("Can't update high-low-legu.")
     # 当日ETF成交数据
     for r in range(retry):
-        print('update etf amount.')
         try:
             tm_rg, res = append_funds_trade_file()
             ks = 'ready' if res==0 else 'to '+res
