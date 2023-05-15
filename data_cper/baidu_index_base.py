@@ -499,18 +499,18 @@ def append_bsearch_hour_file(cfg_file=''):
     next_tm = (pd.to_datetime(up_date) + pd.offsets.Hour(int(up_hour)+10)).strftime('%Y-%m-%d %H')
     now_tm = datetime.datetime.today().strftime('%Y-%m-%d %H')
     next_day = (pd.to_datetime(now_tm) + pd.offsets.Hour(10)).strftime('%Y-%m-%d')
-    print(up_date+up_hour, next_tm, now_tm)
-    # if now_tm > next_tm:
-    #     bdt, btm, bwd_tb = bd_search_nearhour(bsearch_words, cookie.strip())
-    #     bwd_tb = bwd_tb[bwd_tb.index>up_date+' '+up_hour]
-    #     config.set(cfg_sec, 'update_date', bdt)
-    #     config.set(cfg_sec, 'update_time', btm)
-    #     config.set(cfg_sec, 'next_update', next_day)
-    #     bwd_tb.to_csv(fpth, mode='a', header=False)
-    #     config.write(open(cfg_file,'w'))
-    # else:
-    #     pass
+    # print(up_date+up_hour, next_tm, now_tm)
+    if now_tm > next_tm:
+        bdt, btm, bwd_tb = bd_search_nearhour(bsearch_words, cookie.strip())
+        bwd_tb = bwd_tb[bwd_tb.index>up_date+' '+up_hour]
+        config.set(cfg_sec, 'update_date', bdt)
+        config.set(cfg_sec, 'update_time', btm)
+        config.set(cfg_sec, 'next_update', next_day)
+        bwd_tb.to_csv(fpth, mode='a', header=False)
+        config.write(open(cfg_file,'w'))
+    else:
+        pass
 
 if __name__=='__main__':
-    # append_bsearch_day_file()
+    append_bsearch_day_file()
     append_bsearch_hour_file()
