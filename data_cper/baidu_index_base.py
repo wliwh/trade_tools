@@ -502,7 +502,7 @@ def append_bsearch_hour_file(cfg_file=''):
     # print(up_date+up_hour, next_tm, now_tm)
     if now_tm > next_tm:
         bdt, btm, bwd_tb = bd_search_nearhour(bsearch_words, cookie.strip())
-        bwd_tb = bwd_tb[bwd_tb.index>up_date+' '+up_hour]
+        bwd_tb = bwd_tb[bwd_tb.index>up_date+' '+up_hour+':00:00']
         config.set(cfg_sec, 'update_date', bdt)
         config.set(cfg_sec, 'update_time', btm)
         config.set(cfg_sec, 'next_update', next_day)
