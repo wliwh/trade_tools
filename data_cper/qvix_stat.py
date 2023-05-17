@@ -119,7 +119,6 @@ def append_qvix_minute_file(cfg_file=''):
         print('qvix pass.')
         return 0
     elif next_date <= now_date:
-        print('qvix update.')
         config.set('Qvix_Minute', 'update_date', now_date)
         config.set('Qvix_Minute', 'next_update', next_day)
         qvix_pds = qvix_minute_pds(now_date)

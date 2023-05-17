@@ -12,7 +12,8 @@ sys.path.append('..')
 os.chdir(os.path.dirname(__file__))
 from common.trade_date import get_trade_day, get_delta_trade_day, get_next_weekday
 
-
+Funds_Type_Dic = dict(gp='股票',zq='债券',kzz='可转债',
+                      hb='货币',qdii='跨境',sp='商品')
 
 def get_funds_dict() -> dict:
     ''' 获取场内交易基金代码, 按类型分类：
@@ -81,7 +82,7 @@ def funds_quote_table(ftype_dict: dict) -> pd.DataFrame:
         dfm = pd.DataFrame([e.iloc[-1] for e in ef.stock.get_quote_history(lst).values() if not e.empty])
         dfm['类型'] = tp
         explict_pd_lst.append(dfm)
-    explict_pd =  pd.concat(explict_pd_lst,axis=0)
+    explict_pd =  pd.concat(explict_pd_lst, axis=0)
     return explict_pd
 
 
@@ -169,6 +170,26 @@ def funds_amt_rate_table(rate: bool, f_trade: pd.DataFrame, f_type_dict: dict) -
     _funds_sum = funds_type_per.pop('sum')
     funds_type_per = funds_type_per.div(_funds_sum, axis=0)
     return funds_type_per if rate else funds_type_amt
+
+def funds_amt_pct(winds:tuple, f_trade: pd.DataFrame):
+    ''' 场内基金按类别计的交易量分位数 '''
+    ftype_dict = {s:0 for s in set(f_trade['类型'])}
+    famt_per = funds_amt_rate_table(True, f_trade, ftype_dict)
+    famt_per.sort_index(inplace=True)
+    famt_per = famt_per.tail(2000)*100
+    wind_l = list(sorted(winds,reverse=True))
+    famt_hls = pd.DataFrame(np.zeros((len(famt_per),len(winds)*len(ftype_dict))),index=famt_per.index,columns=['%s_%d' % (n,w) for w in wind_l for n in ftype_dict.keys()])
+    ftp1,*_, ftp2 = ftype_dict.keys()
+    famt_hls.loc[:,:] = np.nan
+    for w in wind_l:
+        for i in range(w,len(famt_per)+1):
+            famt_hls.iloc[i][ftp1+'_'+str(w):ftp2+'_'+str(w)] = (famt_per.iloc[i-w:i]<=famt_per.iloc[i-1]).sum()/w
+    return famt_hls
+
+def funds_amt_pprint(winds:tuple, famt_per:pd.DataFrame, famt_q:pd.DataFrame):
+    ftype_lst = famt_per.columns.to_list()
+    wind_l = list(sorted(winds,reverse=True))
+    basic_info = '''场内基金每日交易量比值的分位数. 短期-中期-长期\n* 当日比值(分位数)'''
 
 
 # if __name__=='__main__':
