@@ -4,10 +4,14 @@ import re
 import os
 import sys
 import configparser
+import matplotlib.pyplot as plt
+import mplfinance as mpf
 sys.path.append('..')
 os.chdir(os.path.dirname(__file__))
 
 from common.trade_date import get_trade_day, get_delta_trade_day
+from common.mpf_set import Mpf_Style
+from common.smooth_tool import LLT_MA, HMA, super_smoother, min_max_dist_pd
 
 def parse_symbol_str(symbol: str, minute: bool = False):
     ''' symbol 输出 '''
@@ -98,6 +102,7 @@ def qvix_minute_pds(pref_date=''):
 
 
 def append_qvix_minute_file(cfg_file=''):
+    ''' 更新qvix分钟级别数据 '''
     if not cfg_file:
         cfg_file = '../trade.ini'
     config = configparser.ConfigParser()
@@ -127,5 +132,36 @@ def append_qvix_minute_file(cfg_file=''):
         return now_date
     return 0
 
+def make_qvix_macd_smooth(symbol='50ETF',smooth='LLT'):
+    ''' qvix日频MACD指标与平滑处理 '''
+    otb = option_qvix(symbol)
+    otb.set_index('date',inplace=True)
+    otb.index = pd.to_datetime(otb.index)
+    wma1 = otb.close.ewm(span=11,adjust=False).mean()
+    wma2 = otb.close.ewm(span=22,adjust=False).mean()
+    otb['MACD'] = wma1 - wma2
+    otb['Diff'] = otb.MACD.ewm(span=8,adjust=False).mean()
+    otb['Hist'] = otb.MACD - otb.Diff
+    if smooth.upper()=='HMA':
+        otb['Smooth'] = HMA(0.5*otb['open']+0.5*otb['close'],11)
+    elif smooth.lower()=='smooth':
+        otb['Smooth'] = super_smoother(0.5*otb['open']+0.5*otb['close'],11)
+    else:
+        otb['Smooth'] = LLT_MA(0.5*otb['open']+0.5*otb['close'],1/6)
+    otb['Dsmooth'] = 0.5*otb['open']+0.5*otb['close'] - otb['Smooth']
+    otb_near = otb.tail(120)
+    xadd_plots = [
+        mpf.make_addplot(otb_near.Smooth,color='slateblue',ylabel=smooth),
+        mpf.make_addplot(otb_near.Hist,type='bar', width=0.7, panel=1, color='dimgray',secondary_y=False),
+        mpf.make_addplot(otb_near.MACD,panel=1,color='navy',secondary_y=True),
+        mpf.make_addplot(otb_near.Diff,panel=1,color='gold',secondary_y=True),
+        mpf.make_addplot(otb_near.Dsmooth,type='bar',panel=2,width=0.7, color='teal',secondary_y=False)
+        ]
+    mpf.plot(otb_near,type='candle',ylabel='value',
+             style=Mpf_Style, addplot=xadd_plots,
+             title=symbol+' QVIX', figratio=(6,3))
+
 if __name__=='__main__':
-    append_qvix_minute_file()
+    # append_qvix_minute_file()
+    # make_qvix_macd_smooth()
+    pass

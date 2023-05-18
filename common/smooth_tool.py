@@ -195,6 +195,9 @@ def min_max_dist_pd(pds:pd.DataFrame, windows=120, id_name=None, fn=None):
         mm_dist_pd.iloc[i] = val*100
     return mm_dist_pd if id_name is None else mm_dist_pd[id_name]
 
+def min_max_dist_series(ser:pd.Series, winds:tuple, fn=None):
+    pass
+
 def min_max_allrange_pd(pds:pd.DataFrame, id_name=None, fn=None):
     ''' 最大最小分布：全范围
         有未来函数

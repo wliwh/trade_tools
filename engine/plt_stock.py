@@ -84,28 +84,29 @@ def mark_dic(cl_n):
             'marker': p1, 'color': pcl, 'alpha':alp}
 
 def get_stock_df(idx_l=idx_lst[0],bword='a股'):
-    slim_date = ('2020-01','2021-04')
+    slim_date = ('2022-11','2023-05')
     df = ak.index_zh_a_hist(idx_l,start_date='20170201',end_date='20230501')
     df.set_index('日期',inplace=True)
     df.index.name = 'date'
     bsearch = pd.read_csv('../data_save/bsearch_day.csv',index_col=0)
-    bsearch = bsearch[bsearch['keyword']==bword][['index']]
-    # bsearch = log_min_max_dist_pd(bsearch,60,'index')
+    bsearch = bsearch[bsearch['keyword']==bword][['count']]
     df = pd.concat([df,bsearch],axis=1,join='inner')
+    df['Volume'] = df['count']
+    df['Qsearch'] = log_min_max_dist_pd(bsearch,60,'count')
     df.rename({'开盘':'Open','收盘':'Close',
-            '最高':'High','最低':'Low', '成交额':'Volume'},
+            '最高':'High','最低':'Low'},
             axis=1,inplace=True)
-    df['Volume'] /= 1e8
+    # df['Volume'] /= 1e8
     df.index = pd.to_datetime(df.index)
     bsP = mark_up_down(df)
     add_plot = [mpf.make_addplot(bsP.loc[slim_date[0]:slim_date[1],cl],
                     scatter=True, type='scatter',**mark_dic(cl)) for cl in bsP.columns]
-    add_plot.append(mpf.make_addplot(df.loc[slim_date[0]:slim_date[1],'index'],panel='lower',color='b', secondary_y='auto'))
+    add_plot.append(mpf.make_addplot(df.loc[slim_date[0]:slim_date[1],'Qsearch'],panel='lower',color='b', secondary_y='auto'))
     add_plot = [a for a in add_plot if not a['data'].isna().all()]
     mpf.plot(df.loc[slim_date[0]:slim_date[1]],type='candle',
              style=stl, addplot=add_plot, ylabel='price',
              title='SH.'+idx_l,volume=True, figratio=(6,3),
              ylabel_lower='Volume')
 
-# get_stock_df(bword='股市')
+get_stock_df(bword='a股')
 # plt.grid(True)

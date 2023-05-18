@@ -6,44 +6,32 @@ logging.basicConfig(
     level=logging.INFO)
 
 def basic_append_fun(fn,retry,**kwds):
-    pass
+    args, wsec = kwds.get('args',[]), kwds['words']
+    args = args if isinstance(args,(list,tuple)) else [args]
+    for r in range(retry):
+        try:
+            res = fn(*args)
+            ks = 'ready' if res==0 else 'to '+res
+            logging.info("Update {} {}.".format(wsec, ks))
+            break
+        except Exception as e:
+            logging.warning("Try update {} {} times. ({})".format(wsec,r+1,e))
+        if r==retry-1:
+            logging.error("Can't update {}.".format(wsec))
 
 def update_files(retry:int=3):
     # 交易日 QVIX 分钟级数据
-    for r in range(retry):
-        try:
-            res = append_qvix_minute_file()
-            ks = 'ready' if res==0 else 'to '+res
-            logging.info("Update qvix minute {}.".format(ks))
-            break
-        except Exception as e:
-            logging.warning("Try update qvix minute {} times. ({})".format(r+1,e))
-        if r==retry-1: logging.error("Can't update qvix minute.")
+    basic_append_fun(append_qvix_minute_file,retry,words='qvix minute')
     # ;; QVIX 数据
+    # bdsearch 检索词数据
+    basic_append_fun(append_bsearch_day_file,retry,words='bdsearch day')
+    basic_append_fun(append_bsearch_hour_file,retry,words='bdsearch hour')
     # ;; 北上资金
     # 延迟的两融数据
-    for r in range(retry):
-        try:
-            res = append_margin_file('sh')
-            ks = 'ready' if res==0 else 'to '+res
-            logging.info("Update margin-sh {}.".format(ks))
-            res = append_margin_file('sz')
-            ks = 'ready' if res==0 else 'to '+res
-            logging.info("Update margin-sz {}.".format(ks))
-            break
-        except Exception as e:
-            logging.warning("Try update margin {} times. ({})".format(r+1,e))
-        if r==retry-1: logging.error("Can't update margin data.")
+    basic_append_fun(append_margin_file,retry,args='sh',words='margin-sh')
+    basic_append_fun(append_margin_file,retry,args='sz',words='margin-sz')
     # 交易日新高新低-乐股数据
-    for r in range(retry):
-        try:
-            res = append_high_low_legu_file()
-            ks = 'ready' if res==0 else 'to '+res
-            logging.info("Update high-log-legu {}".format(ks))
-            break
-        except Exception as e:
-            logging.warning("Try update high-low-legu {} times. ({})".format(r+1,e))
-        if r==retry-1: logging.error("Can't update high-low-legu.")
+    basic_append_fun(append_high_low_legu_file,retry,words='high-low-legu')
     # 当日ETF成交数据
     for r in range(retry):
         try:
