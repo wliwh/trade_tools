@@ -195,8 +195,18 @@ def min_max_dist_pd(pds:pd.DataFrame, windows=120, id_name=None, fn=None):
         mm_dist_pd.iloc[i] = val*100
     return mm_dist_pd if id_name is None else mm_dist_pd[id_name]
 
-def min_max_dist_series(ser:pd.Series, winds:tuple, fn=None):
-    pass
+def min_max_dist_series(ser:pd.Series, winds:int=120, fn=None):
+    ''' pd.Series 的最大最小分布 '''
+    mm_dist_ser = ser.copy()
+    mm_dist_ser.iloc[:winds]=np.nan
+    if fn is None: fn = lambda x:x
+    for i,bt in enumerate(ser.rolling(winds)):
+        if len(bt) < winds:
+            continue
+        lmin, lmax = fn(bt.min()), fn(bt.max())
+        val = (fn(bt.iloc[-1])-lmin)/(lmax-lmin)
+        mm_dist_ser.iloc[i] = val*100
+    return mm_dist_ser
 
 def min_max_allrange_pd(pds:pd.DataFrame, id_name=None, fn=None):
     ''' 最大最小分布：全范围
@@ -213,3 +223,7 @@ def min_max_allrange_pd(pds:pd.DataFrame, id_name=None, fn=None):
 def log_min_max_dist_pd(pds:pd.DataFrame, windows=120, id_name=None):
     ''' log 最大最小分布：滚动窗口 '''
     return min_max_dist_pd(pds, windows, id_name, np.log)
+
+def log_min_max_dist_ser(ser:pd.Series, windows:int=120):
+    ''' pd.Series 的 log 最大最小分布 '''
+    return min_max_dist_series(ser,windows,np.log)

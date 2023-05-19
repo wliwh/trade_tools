@@ -16,3 +16,9 @@ Mpf_Style = mpf.make_mpf_style(
     marketcolors=Mpf_Mark_Color,
     rc={'font.family': 'SimHei', 'axes.unicode_minus': 'False'}
     )
+
+def mark_color_float(nums, color_pos:dict)->str:
+    for conj, marks in color_pos.items():
+        if conj(nums):
+            return '**<font color="{}">{}</font>**'.format(marks,nums)
+    return str(nums)

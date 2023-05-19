@@ -479,8 +479,9 @@ def append_bsearch_day_file(cfg_file=''):
         config.set(cfg_sec, 'update_date', bdt)
         config.set(cfg_sec, 'next_update', next_day)
         config.write(open(cfg_file,'w'))
+        return bdt
     else:
-        pass
+        return 0
 
 def append_bsearch_hour_file(cfg_file=''):
     ''' 更新检索词的小时频数据 '''
@@ -508,8 +509,9 @@ def append_bsearch_hour_file(cfg_file=''):
         config.set(cfg_sec, 'next_update', next_day)
         bwd_tb.to_csv(fpth, mode='a', header=False)
         config.write(open(cfg_file,'w'))
+        return bdt + ' ' + btm
     else:
-        pass
+        return 0
 
 if __name__=='__main__':
     append_bsearch_day_file()

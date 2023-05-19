@@ -11,9 +11,13 @@ import os
 sys.path.append('..')
 os.chdir(os.path.dirname(__file__))
 from common.trade_date import get_trade_day, get_delta_trade_day, get_next_weekday
+from common.mpf_set import mark_color_float
 
 Funds_Type_Dic = dict(gp='股票',zq='债券',kzz='可转债',
                       hb='货币',qdii='跨境',sp='商品')
+def M80_20(n):
+    return mark_color_float(n,
+        {lambda x:x>=80:"red",lambda x:x<=20:"green"})
 
 def get_funds_dict() -> dict:
     ''' 获取场内交易基金代码, 按类型分类：
@@ -171,14 +175,17 @@ def funds_amt_rate_table(rate: bool, f_trade: pd.DataFrame, f_type_dict: dict) -
     funds_type_per = funds_type_per.div(_funds_sum, axis=0)
     return funds_type_per if rate else funds_type_amt
 
-def funds_amt_pct(winds:tuple, f_trade: pd.DataFrame):
-    ''' 场内基金按类别计的交易量分位数 '''
-    ftype_dict = {s:0 for s in set(f_trade['类型'])}
-    famt_per = funds_amt_rate_table(True, f_trade, ftype_dict)
+def funds_amt_pct(winds:list, ftype_dict:dict, famt_per:pd.DataFrame)->pd.DataFrame:
+    ''' 场内基金按类别计的成交额分位数
+        读取每日 etf_amount 详细数据 '''
     famt_per.sort_index(inplace=True)
     famt_per = famt_per.tail(2000)*100
     wind_l = list(sorted(winds,reverse=True))
-    famt_hls = pd.DataFrame(np.zeros((len(famt_per),len(winds)*len(ftype_dict))),index=famt_per.index,columns=['%s_%d' % (n,w) for w in wind_l for n in ftype_dict.keys()])
+    famt_hls = pd.DataFrame(
+        np.zeros((len(famt_per),len(winds)*len(ftype_dict))),
+        index=famt_per.index,
+        columns=['%s_%d' % (n,w) 
+                 for w in wind_l for n in ftype_dict.keys()])
     ftp1,*_, ftp2 = ftype_dict.keys()
     famt_hls.loc[:,:] = np.nan
     for w in wind_l:
@@ -186,11 +193,41 @@ def funds_amt_pct(winds:tuple, f_trade: pd.DataFrame):
             famt_hls.iloc[i][ftp1+'_'+str(w):ftp2+'_'+str(w)] = (famt_per.iloc[i-w:i]<=famt_per.iloc[i-1]).sum()/w
     return famt_hls
 
-def funds_amt_pprint(winds:tuple, famt_per:pd.DataFrame, famt_q:pd.DataFrame):
+def funds_amt_words_lst(winds:tuple, famt_per:dict, famt_q:dict)->str:
+    ''' 输出成交额比值和相应的分位数 '''
     ftype_lst = famt_per.columns.to_list()
-    wind_l = list(sorted(winds,reverse=True))
-    basic_info = '''场内基金每日交易量比值的分位数. 短期-中期-长期\n* 当日比值(分位数)'''
+    wind_l = list(sorted(winds,reverse=False))
+    famt_lst = list()
+    basic_lines = '1. {}({}): {:.2f}\t{}, {}, {}'
+    for ft_nm in ftype_lst:
+        b_qs = [M80_20(famt_q[ft_nm+'_'+str(w)]) for w in wind_l]
+        b_l = basic_lines.format(
+            Funds_Type_Dic[ft_nm],
+            ft_nm,
+            famt_per[ft_nm],
+            *b_qs)
+        famt_lst.append(b_l)
+    return '\n'.join(famt_lst)
+
+def docs_funds_amt(cfg_file='') -> pd.DataFrame:
+    ''' 填写场内基金信息 '''
+    if not cfg_file:
+        cfg_file = '../trade.ini'
+    cfg_sec = 'Etf_Amount'
+    config = configparser.ConfigParser()
+    config.read(cfg_file, encoding='utf-8')
+    fpth = os.path.join('../data_save', config.get(cfg_sec, 'fpath'))
+    up_date = config.get(cfg_sec, 'update_date')
+    all_periods = config.get(cfg_sec, 'etf_amount_periods')
+    all_prds = [int(a.strip()) for a in all_periods.split(',')]
+    etf_table = pd.read_csv(fpth,index_col=0)
+    famt_dic = {s:0 for s in set(etf_table['类型'])}
+    etf_per = funds_amt_rate_table(True,etf_table,famt_dic)
+    etf_qut = funds_amt_pct(all_prds,famt_dic,etf_per)
+    etf_words_lst = funds_amt_words_lst(all_prds,dict(etf_per.loc[up_date]),dict(etf_qut.loc[up_date]))
 
 
-# if __name__=='__main__':
-#     append_funds_trade_file()
+
+if __name__=='__main__':
+    # append_funds_trade_file()
+    pass
