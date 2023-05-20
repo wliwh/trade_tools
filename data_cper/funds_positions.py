@@ -8,11 +8,14 @@ import talib
 import configparser
 import time
 import requests
+import matplotlib.pyplot as plt
+import mplfinance as mpf
 
 sys.path.append('..')
 os.chdir(os.path.dirname(__file__))
-from common.smooth_tool import min_max_dist_pd
+from common.smooth_tool import min_max_dist_series, min_max_dist_pd
 from common.trade_date import get_next_weekday, get_trade_day, get_delta_trade_day
+from common.mpf_set import Mpf_Style, M80_20
 
 
 def get_funds_postions() -> pd.DataFrame:
@@ -51,17 +54,67 @@ def get_hsgt_acc_flow():
     return north_acc_flow
 
 
-def get_north_flow_bias(north_flow: pd.DataFrame, N=20, window=120, ma_type='ma'):
+def get_north_flow_bias(north_flow: pd.DataFrame, N=20, windows=(60,120), ma_type='ema'):
     ''' 北向流入资金偏离度及其分位数 '''
     north_name = north_flow.columns
     ma_fun_dic = {'ma': talib.MA, 'ema': talib.EMA}
     ma_fun = ma_fun_dic.get(ma_type, talib.MA)
     for i in range(north_flow.shape[1]):
+        north_flow[north_name[i]+'_mean'] = ma_fun(north_flow.iloc[:, i],N)
         north_flow[north_name[i]+'_bias'] = north_flow.iloc[:, i] / \
             ma_fun(north_flow.iloc[:, i], N)*100-100
-        north_flow[north_name[i]+'_brate'] = min_max_dist_pd(
-            north_flow, window, north_name[i]+'_bias')
+        for w in windows:
+            north_flow[north_name[i]+'_Q'+str(w)] = min_max_dist_series(north_flow[north_name[i]+'_bias'], w)
     return north_flow
+
+def make_north_flow_tline(sym:str,winds,nfl_dt:dict):
+    ''' 输出北向流入偏离度-分位数的一行 '''
+    basic_line = '{}:\t{:.2f}\t{},{},{}'
+    nfl_q = [M80_20(nfl_dt[sym+'_Q'+str(w)]) for w in winds]
+    return basic_line.format(sym,nfl_dt[sym+'_bias'],*nfl_q)
+
+def make_north_flow_plt(idx_name:str,sym:str,fpth:str,nfl:pd.DataFrame,winds):
+    index_cl = ak.stock_zh_index_daily_em(idx_name).tail(220)
+    index_cl.set_index('date',inplace=True)
+    index_cl.index = pd.to_datetime(index_cl.index)
+    nfl_near = nfl.tail(220)
+    c_0,c_1,c_2 = min(winds), winds[(len(winds)-1)//2],max(winds)
+    if c_0>=45: c_1 = c_0
+    xadd_plots = [
+        mpf.make_addplot(nfl_near[sym],panel=1,color='deepskyblue',ylabel=sym,secondary_y=False),
+        mpf.make_addplot(nfl_near[sym+'_mean'],panel=1,linestyle='--',color='deepskyblue',ylabel=sym),
+        mpf.make_addplot(nfl_near[sym+'_Q'+str(c_1)],panel=2,linestyle='--',color='salmon',ylabel='Q{},{}'.format(c_1,c_2)),
+        mpf.make_addplot(nfl_near[sym+'_Q'+str(c_2)],panel=2,color='darkorange')
+    ]
+    mpf.plot(index_cl,type='candle',ylabel=idx_name,
+             style=Mpf_Style,addplot=xadd_plots,
+             datetime_format='%m-%d',xrotation=15,
+             savefig={'fname':fpth,'dpi':400,'bbox_inches':'tight'},
+             figratio=(6,6),figscale=1.5)
+    
+
+def doc_north_flow(cfg_file=''):
+    ''' 填写 北向买入 信息 '''
+    if not cfg_file:
+        cfg_file = '../trade.ini'
+    cfg_sec = 'North_Flow'
+    config = configparser.ConfigParser()
+    config.read(cfg_file, encoding='utf-8')
+    nfl_index = config.get(cfg_sec, 'north_flow_index')
+    # up_date = config.get(cfg_sec, 'update_date')
+    nfl_sym = config.get(cfg_sec, 'north_flow_sym')
+    all_periods = config.get(cfg_sec, 'north_flow_periods')
+    all_prds = [int(a.strip()) for a in all_periods.split(',')]
+    all_prds = list(sorted(all_prds))
+    img_pth = os.path.join('../data_save', config.get('Basic_Info','doc_img_pth'),'north_flow_bias_per.png')
+    nfl_pd = get_north_flow_bias(get_hsgt_acc_flow(),N=20,windows=all_prds,ma_type='ema')
+    nfl_tlst = make_north_flow_tline(nfl_sym,all_prds,dict(nfl_pd.iloc[-1]))
+    make_north_flow_plt(nfl_index,nfl_sym,img_pth,nfl_pd,all_prds)
+    nfl_info_dic = dict(north_flow_periods=all_periods,
+                        north_flow_tlst=nfl_tlst,
+                        north_flow_ppth=img_pth)
+    print(nfl_info_dic)
+    return nfl_info_dic
 
 
 def _market_margin_hist(market: int = 1) -> pd.DataFrame:
@@ -227,5 +280,7 @@ def append_margin_file(market='sh', cfg_file=''):
     return 0
 
 if __name__=='__main__':
-    append_margin_file('sh')
-    append_margin_file('sz')
+    # append_margin_file('sh')
+    # append_margin_file('sz')
+    doc_north_flow()
+    pass

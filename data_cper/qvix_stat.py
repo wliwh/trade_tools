@@ -6,12 +6,13 @@ import sys
 import configparser
 import matplotlib.pyplot as plt
 import mplfinance as mpf
+import talib
 sys.path.append('..')
 os.chdir(os.path.dirname(__file__))
 
 from common.trade_date import get_trade_day, get_delta_trade_day
-from common.mpf_set import Mpf_Style
-from common.smooth_tool import LLT_MA, HMA, super_smoother, min_max_dist_pd
+from common.mpf_set import Mpf_Style,M80_20
+from common.smooth_tool import LLT_MA, HMA, super_smoother, min_max_dist_series
 
 def parse_symbol_str(symbol: str, minute: bool = False):
     ''' symbol 输出 '''
@@ -132,36 +133,87 @@ def append_qvix_minute_file(cfg_file=''):
         return now_date
     return 0
 
-def make_qvix_macd_smooth(symbol='50ETF',smooth='LLT'):
-    ''' qvix日频MACD指标与平滑处理 '''
+def make_qvix_macd_smooth(symbol='300ETF',smooth='LLT',main_w=120,winds=(20,60,120)):
+    ''' qvix日频平滑处理,MACD,ATR 等指标 '''
     otb = option_qvix(symbol)
     otb.set_index('date',inplace=True)
     otb.index = pd.to_datetime(otb.index)
+    # 1. macd
     wma1 = otb.close.ewm(span=11,adjust=False).mean()
     wma2 = otb.close.ewm(span=22,adjust=False).mean()
     otb['MACD'] = wma1 - wma2
     otb['Diff'] = otb.MACD.ewm(span=8,adjust=False).mean()
     otb['Hist'] = otb.MACD - otb.Diff
+    # 2. smooth
     if smooth.upper()=='HMA':
         otb['Smooth'] = HMA(0.5*otb['open']+0.5*otb['close'],11)
     elif smooth.lower()=='smooth':
         otb['Smooth'] = super_smoother(0.5*otb['open']+0.5*otb['close'],11)
     else:
         otb['Smooth'] = LLT_MA(0.5*otb['open']+0.5*otb['close'],1/6)
-    otb['Dsmooth'] = 0.5*otb['open']+0.5*otb['close'] - otb['Smooth']
-    otb_near = otb.tail(120)
+    otb['Dsmooth'] = 0 - otb['Smooth'] +  otb['close']
+    # 0.5*otb['open']+0.5*otb['close']
+    otb['Qsmooth'] = min_max_dist_series(otb.Dsmooth,main_w)
+    for w in winds: otb['Q_'+str(w)] = min_max_dist_series(otb.Dsmooth,w)
+    # 3. ATR
+    otb['ATR'] = talib.ATR(otb.high,otb.low,otb.close,11)
+    return otb
+
+def make_qvix_day_tline(sym,winds,otb_dic:dict):
+    ''' 生成某个指数sym相应的QVIX指标及其分位数 '''
+    basic_lines = '1. {}:\t{:.2f}\t{}, {}, {}'
+    b_qs = [M80_20(otb_dic['Q_'+str(w)]) for w in winds]
+    b_l = basic_lines.format(sym,otb_dic['close'],*b_qs)
+    return b_l
+
+def make_qvix_day_plt(otb:pd.DataFrame,fig_pth:str,sym='300ETF',smooth='LLT',smooth_wind=120):
+    ''' qvix 绘图 '''
+    otb_near = otb.tail(150)
     xadd_plots = [
         mpf.make_addplot(otb_near.Smooth,color='slateblue',ylabel=smooth),
-        mpf.make_addplot(otb_near.Hist,type='bar', width=0.7, panel=1, color='dimgray',secondary_y=False),
-        mpf.make_addplot(otb_near.MACD,panel=1,color='navy',secondary_y=True),
-        mpf.make_addplot(otb_near.Diff,panel=1,color='gold',secondary_y=True),
-        mpf.make_addplot(otb_near.Dsmooth,type='bar',panel=2,width=0.7, color='teal',secondary_y=False)
+        mpf.make_addplot(otb_near.Dsmooth,type='bar',panel=1,width=0.7, color='teal',secondary_y=False,ylabel='DSmooth({})'.format(smooth_wind)),
+        mpf.make_addplot(otb_near.Qsmooth,panel=1,color='sienna',secondary_y=True),
+        mpf.make_addplot(otb_near.Hist,type='bar', width=0.7, panel=2, color='dimgray',secondary_y=False,ylabel='MACD'),
+        mpf.make_addplot(otb_near.MACD,panel=2,color='navy',secondary_y=True),
+        mpf.make_addplot(otb_near.Diff,panel=2,color='gold',secondary_y=True),
+        mpf.make_addplot(otb_near.ATR,panel=3,color='peru',ylabel='ATR')
         ]
     mpf.plot(otb_near,type='candle',ylabel='value',
              style=Mpf_Style, addplot=xadd_plots,
-             title=symbol+' QVIX', figratio=(6,3))
+             datetime_format='%m-%d',xrotation=15,
+             savefig={'fname':fig_pth,'dpi':400,'bbox_inches':'tight'},
+             figratio=(6,6),figscale=1.5) # title='\n'+sym+' QVIX'
+    
+def doc_qvix_day(cfg_file=''):
+    ''' 填写 QVIX 信息 '''
+    if not cfg_file:
+        cfg_file = '../trade.ini'
+    cfg_sec = 'Qvix_Day'
+    config = configparser.ConfigParser()
+    config.read(cfg_file, encoding='utf-8')
+    qvix_indexs = config.get(cfg_sec, 'qvix_day_indexs').split(',')
+    # up_date = config.get(cfg_sec, 'update_date')
+    main_period = int(config.get(cfg_sec, 'qvix_day_main_period'))
+    all_periods = config.get(cfg_sec, 'qvix_day_periods')
+    all_prds = [int(a.strip()) for a in all_periods.split(',')]
+
+    qvix_sta_lines = list()
+    qvix_doc_dict = dict(qvix_day_periods=all_periods)
+    for sym in qvix_indexs:
+        img_pth = os.path.join('../data_save', config.get('Basic_Info','doc_img_pth'),'qvix_day_{}_per.png'.format(sym))
+        q_pd = make_qvix_macd_smooth(sym,main_w=main_period,winds=all_prds)
+        q_tl = make_qvix_day_tline(sym,all_prds,dict(q_pd.iloc[-1]))
+        qvix_sta_lines.append(q_tl)
+        make_qvix_day_plt(q_pd,img_pth,sym,smooth_wind=main_period)
+        qvix_doc_dict.update({
+            'qvix_day_{}_tlst'.format(sym):q_tl[1:],
+            'qvix_day_{}_ppth'.format(sym):img_pth
+        })
+    qvix_doc_dict['qvix_day_tlst'] = '\n'.join(qvix_sta_lines)
+    print(qvix_doc_dict)
 
 if __name__=='__main__':
     # append_qvix_minute_file()
-    # make_qvix_macd_smooth()
+    # make_qvix_day_plt(make_qvix_macd_smooth(),'../data_save/300.png')
+    doc_qvix_day()
     pass

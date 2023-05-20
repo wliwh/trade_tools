@@ -7,10 +7,18 @@ import akshare as ak
 import efinance as ef
 import datetime
 import requests
+import matplotlib.pyplot as plt
+import mplfinance as mpf
 sys.path.append('..')
 os.chdir(os.path.dirname(__file__))
 
 from common.trade_date import get_trade_day, get_delta_trade_day
+from common.smooth_tool import min_max_dist_pd, log_min_max_dist_pd
+from common.mpf_set import M80_20,Mpf_Style
+
+High_Low_Legu_Indexs = {
+    'all':'sh000001','sz50':'sh000016', 'hs300':'sh000300', 
+    'zz500':'sh000905','cyb':'sz399006', 'cy50':'sz399673', 'kc50':'sh000688'}
 
 def high_low_from_legu(symbol: str = "all") -> pd.DataFrame:
     """
@@ -21,7 +29,7 @@ def high_low_from_legu(symbol: str = "all") -> pd.DataFrame:
     :return: 创新高、新低的股票数量
     :rtype: pandas.DataFrame
     """
-    if symbol in ('all', 'sz50', 'hs300', 'zz500', 'cyb', 'cy50', 'kc50'):
+    if symbol in High_Low_Legu_Indexs:
         url = f"https://www.legulegu.com/stockdata/member-ship/get-high-low-statistics/{symbol}"
     r = requests.get(url)
     data_json = r.json()
@@ -33,7 +41,7 @@ def high_low_from_legu(symbol: str = "all") -> pd.DataFrame:
 
 def get_today_high_low_legu(date:str):
     hl_lst = list()
-    sym_lst = ('all', 'sz50', 'hs300', 'zz500', 'cyb', 'cy50', 'kc50')
+    sym_lst = High_Low_Legu_Indexs.keys()
     for symbol in sym_lst:
         rs = high_low_from_legu(symbol).set_index('date')
         hl_lst.append(rs.loc[pd.to_datetime(date).date(),'high20':])
@@ -160,5 +168,72 @@ def _high_low_index(code='000016',start='20221001',N=60):
     # (code_pd.iloc[-1]>=code_pd.max(axis=0)).sum()
 
 
+def make_high_low_legu_qua(hl_lg:pd.DataFrame,winds=(60,120)):
+    ''' 某一指数新高新低数量及分位数 '''
+    hl_lst = [hl_lg]
+    for w in winds:
+        hl_qua = min_max_dist_pd(hl_lg,windows=w)
+        hl_qua.rename(columns=lambda x:x+'_'+str(w),inplace=True)
+        hl_lst.append(hl_qua)
+    return pd.concat(hl_lst,axis=1)
+
+def _rerange_hl_columns(hl_name:str):
+    if hl_name.startswith('high'):
+        return (0,int(hl_name[4:]))
+    else:
+        return (1,int(hl_name[3:]))
+    
+def _hl_columns_nums(hl_clm) ->list:
+    ''' high_low_legu 表格行名中的周期数 '''
+    return [h[4:] if h.startswith('high') else '' for h in hl_clm]
+
+def make_high_low_legu_tline(sym:str, winds, hl_cls:list, hl_dic:dict)->str:
+    ''' hl_cls 按最高最低排序 '''
+    hl_clm_l = len(hl_cls)
+    bsr = '{}({} {})'
+    blst = ['1. {}:\t'.format(sym)]
+    for i in range(hl_clm_l):
+        bsrQut = [M80_20(hl_dic[hl_cls[i]+'_'+str(w)]) for w in winds]
+        bsrH = bsr.format(hl_dic[hl_cls[i]],*bsrQut)
+        if i==hl_clm_l//2: blst.append('\n\t\t')
+        blst.append(bsrH)
+    return ''.join(blst)
+
+def make_high_low_legu_plt(sym:str, hl_lg:pd.DataFrame, ylabs):
+    ''' high_low_legu 绘图 '''
+    index_cl = ak.stock_zh_index_daily_em(High_Low_Legu_Indexs[sym]).tail(150)
+    index_cl.set_index('date',inplace=True)
+    index_cl.index = pd.to_datetime(index_cl.index)
+    hl_near = hl_lg.tail(150)
+    xadd_plt = [
+        mpf.make_addplot(hl_near[w],panel=i//2+1,ylabel=ylabs[i],color='navy' if i%2 else 'sienna') for i,w in enumerate(hl_near.columns)
+    ]
+    mpf.plot(index_cl,type='candle',ylabel=sym,
+             style=Mpf_Style, addplot=xadd_plt,
+             datetime_format='%m-%d',xrotation=15,
+            #  savefig={'fname':fig_pth,'dpi':400,'bbox_inches':'tight'},
+             figratio=(6,6),figscale=1.5)
+    
+def doc_high_low_legu(cfg_file=''):
+    ''' 填写 新高新低-乐股 信息 '''
+    if not cfg_file:
+        cfg_file = '../trade.ini'
+    cfg_sec = 'High_Low_Legu'
+    config = configparser.ConfigParser()
+    config.read(cfg_file, encoding='utf-8')
+    up_date = config.get(cfg_sec, 'update_date')
+    # main_period = int(config.get(cfg_sec, 'high_low_legu_main_period'))
+    all_periods = config.get(cfg_sec, 'high_low_legu_periods')
+    all_prds = [int(a.strip()) for a in all_periods.split(',')]
+
+
 if __name__ == '__main__':
-    append_high_low_legu_file()
+    # append_high_low_legu_file()
+    pp1 = pd.read_csv('../data_save/high_low_legu.csv',index_col=0)
+    pp1 = pp1[pp1.symbol=='all']
+    del pp1['symbol']
+    pp1.sort_index(axis=0,inplace=True)
+    pp1.index = pd.to_datetime(pp1.index)
+    # pp2 = make_high_low_legu_qua('all',pp1)
+    # print(sorted(pp1.columns,key=_rerange_hl_columns))
+    make_high_low_legu_plt('all',pp1,_hl_columns_nums(pp1.columns))

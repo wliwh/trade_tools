@@ -1,5 +1,6 @@
 # 引入常用库
 import configparser
+from matplotlib import pyplot as plt
 import pandas as pd
 import numpy as np
 import akshare as ak
@@ -11,13 +12,10 @@ import os
 sys.path.append('..')
 os.chdir(os.path.dirname(__file__))
 from common.trade_date import get_trade_day, get_delta_trade_day, get_next_weekday
-from common.mpf_set import mark_color_float
+from common.mpf_set import M80_20
 
-Funds_Type_Dic = dict(gp='股票',zq='债券',kzz='可转债',
-                      hb='货币',qdii='跨境',sp='商品')
-def M80_20(n):
-    return mark_color_float(n,
-        {lambda x:x>=80:"red",lambda x:x<=20:"green"})
+Funds_Type_Dic = dict(gp='股票',zq='债券',qdii='跨境',
+                      sp='商品',hb='货币',kzz='可转债')
 
 def get_funds_dict() -> dict:
     ''' 获取场内交易基金代码, 按类型分类：
@@ -170,6 +168,7 @@ def funds_amt_rate_table(rate: bool, f_trade: pd.DataFrame, f_type_dict: dict) -
     funds_type_amt.columns = f_type_dict.keys()
     funds_type_amt['sum'] = funds_type_amt.sum(axis=1)
     funds_type_amt /= 1e8
+    funds_type_amt.index.name = 'date'
     funds_type_per = funds_type_amt.copy()
     _funds_sum = funds_type_per.pop('sum')
     funds_type_per = funds_type_per.div(_funds_sum, axis=0)
@@ -190,15 +189,14 @@ def funds_amt_pct(winds:list, ftype_dict:dict, famt_per:pd.DataFrame)->pd.DataFr
     famt_hls.loc[:,:] = np.nan
     for w in wind_l:
         for i in range(w,len(famt_per)+1):
-            famt_hls.iloc[i][ftp1+'_'+str(w):ftp2+'_'+str(w)] = (famt_per.iloc[i-w:i]<=famt_per.iloc[i-1]).sum()/w
+            famt_hls.iloc[i-1][ftp1+'_'+str(w):ftp2+'_'+str(w)] = (famt_per.iloc[i-w:i]<=famt_per.iloc[i-1]).sum()/w
     return famt_hls
 
-def funds_amt_words_lst(winds:tuple, famt_per:dict, famt_q:dict)->str:
+def funds_amt_words_lst(winds:tuple, ftype_lst, famt_per:dict, famt_q:dict)->str:
     ''' 输出成交额比值和相应的分位数 '''
-    ftype_lst = famt_per.columns.to_list()
     wind_l = list(sorted(winds,reverse=False))
     famt_lst = list()
-    basic_lines = '1. {}({}): {:.2f}\t{}, {}, {}'
+    basic_lines = '1. {}({}):\t{:.2f}\t{}, {}, {}'
     for ft_nm in ftype_lst:
         b_qs = [M80_20(famt_q[ft_nm+'_'+str(w)]) for w in wind_l]
         b_l = basic_lines.format(
@@ -209,7 +207,7 @@ def funds_amt_words_lst(winds:tuple, famt_per:dict, famt_q:dict)->str:
         famt_lst.append(b_l)
     return '\n'.join(famt_lst)
 
-def docs_funds_amt(cfg_file='') -> pd.DataFrame:
+def docs_funds_amt(cfg_file=''):
     ''' 填写场内基金信息 '''
     if not cfg_file:
         cfg_file = '../trade.ini'
@@ -217,17 +215,28 @@ def docs_funds_amt(cfg_file='') -> pd.DataFrame:
     config = configparser.ConfigParser()
     config.read(cfg_file, encoding='utf-8')
     fpth = os.path.join('../data_save', config.get(cfg_sec, 'fpath'))
+    img_pth = os.path.join('../data_save', config.get('Basic_Info','doc_img_pth'),'etf_amount_per.png')
     up_date = config.get(cfg_sec, 'update_date')
     all_periods = config.get(cfg_sec, 'etf_amount_periods')
     all_prds = [int(a.strip()) for a in all_periods.split(',')]
     etf_table = pd.read_csv(fpth,index_col=0)
     famt_dic = {s:0 for s in set(etf_table['类型'])}
+
     etf_per = funds_amt_rate_table(True,etf_table,famt_dic)
     etf_qut = funds_amt_pct(all_prds,famt_dic,etf_per)
-    etf_words_lst = funds_amt_words_lst(all_prds,dict(etf_per.loc[up_date]),dict(etf_qut.loc[up_date]))
-
+    etf_words_lst = funds_amt_words_lst(all_prds,Funds_Type_Dic.keys(),dict(etf_per.loc[up_date]*100.0),dict(etf_qut.loc[up_date]*100.0))
+    etf_amt_pics = etf_per.tail(210).plot(x_compat=True)
+    etf_amt_ppth = plt.savefig(img_pth,dpi=400,bbox_inches='tight')
+    etf_amt_text_dic = dict(
+        etf_amount_periods=all_periods,
+        etf_amount_tlst=etf_words_lst,
+        etf_amount_plt_pth=img_pth
+    )
+    print(etf_amt_text_dic)
+    return etf_amt_text_dic
 
 
 if __name__=='__main__':
     # append_funds_trade_file()
+    docs_funds_amt()
     pass
