@@ -143,6 +143,10 @@ def make_qvix_macd_smooth(symbol='300ETF',smooth='LLT',main_w=120,winds=(20,60,1
     otb['MACD'] = wma1 - wma2
     otb['Diff'] = otb.MACD.ewm(span=8,adjust=False).mean()
     otb['Hist'] = otb.MACD - otb.Diff
+    otb['HistH'] = otb['Hist']
+    otb['HistL'] = otb['Hist']
+    otb.loc[otb.HistH<0,'HistH'] = np.nan
+    otb.loc[otb.HistL>0,'HistL'] = np.nan
     # 2. smooth
     if smooth.upper()=='HMA':
         otb['Smooth'] = HMA(0.5*otb['open']+0.5*otb['close'],11)
@@ -156,6 +160,7 @@ def make_qvix_macd_smooth(symbol='300ETF',smooth='LLT',main_w=120,winds=(20,60,1
     for w in winds: otb['Q_'+str(w)] = min_max_dist_series(otb.Dsmooth,w)
     # 3. ATR
     otb['ATR'] = talib.ATR(otb.high,otb.low,otb.close,11)
+    # otb['ATRdf'] = otb.ATR.diff()
     return otb
 
 def make_qvix_day_tline(sym,winds,otb_dic:dict):
@@ -172,7 +177,8 @@ def make_qvix_day_plt(otb:pd.DataFrame,fig_pth:str,sym='300ETF',smooth='LLT',smo
         mpf.make_addplot(otb_near.Smooth,color='slateblue',ylabel=smooth),
         mpf.make_addplot(otb_near.Dsmooth,type='bar',panel=1,width=0.7, color='teal',secondary_y=False,ylabel='DSmooth({})'.format(smooth_wind)),
         mpf.make_addplot(otb_near.Qsmooth,panel=1,color='sienna',secondary_y=True),
-        mpf.make_addplot(otb_near.Hist,type='bar', width=0.7, panel=2, color='dimgray',secondary_y=False,ylabel='MACD'),
+        mpf.make_addplot(otb_near.HistH,type='bar', width=0.7, panel=2, color='red',secondary_y=False,ylabel='MACD'),
+        mpf.make_addplot(otb_near.HistL,type='bar', width=0.7, panel=2, color='green',secondary_y=False,ylabel='MACD'),
         mpf.make_addplot(otb_near.MACD,panel=2,color='navy',secondary_y=True),
         mpf.make_addplot(otb_near.Diff,panel=2,color='gold',secondary_y=True),
         mpf.make_addplot(otb_near.ATR,panel=3,color='peru',ylabel='ATR')

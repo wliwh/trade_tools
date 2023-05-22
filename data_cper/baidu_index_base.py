@@ -514,5 +514,5 @@ def append_bsearch_hour_file(cfg_file=''):
         return 0
 
 if __name__=='__main__':
-    append_bsearch_day_file()
+    # append_bsearch_day_file()
     append_bsearch_hour_file()

@@ -1,5 +1,6 @@
 # 引入常用库
 import configparser
+import datetime
 from matplotlib import pyplot as plt
 import pandas as pd
 import numpy as np
@@ -118,9 +119,10 @@ def append_funds_trade_file(cfg_file='') -> pd.DataFrame:
     fpth = os.path.join('../data_save', config.get(cfg_sec, 'fpath'))
     up_date = config.get(cfg_sec, 'update_date')
     next_date = config.get(cfg_sec, 'next_update')
-    up_week = config.get(cfg_wsec,'update_date')
+    # up_week = config.get(cfg_wsec,'update_date')s
     next_week = config.get(cfg_wsec,'next_update')
     now_date = get_trade_day(17).strftime('%Y-%m-%d')
+    today_date = datetime.date.today().strftime('%Y-%m-%d')
     next_day = get_delta_trade_day(now_date).strftime('%Y-%m-%d')
     # get_next_weekday(next_week,6)
     if not os.path.exists(fpth):
@@ -146,7 +148,7 @@ def append_funds_trade_file(cfg_file='') -> pd.DataFrame:
         config.set(cfg_sec, 'next_update', next_day)
         config.write(open(cfg_file,'w'))
         return 'day', now_date
-    elif next_week<=now_date:
+    elif next_week<=today_date:
         # 周级别更新
         os.remove(fpth)
         funds_trade = funds_trade_table(ftype_dict)
