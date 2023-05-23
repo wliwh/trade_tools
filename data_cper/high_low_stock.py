@@ -185,7 +185,7 @@ def _rerange_hl_columns(hl_name:str):
     
 def _hl_columns_nums(hl_clm) ->list:
     ''' high_low_legu 表格行名中的周期数 '''
-    return [h[4:] if h.startswith('high') else '' for h in hl_clm]
+    return [h[4:]+'HL' if h.startswith('high') else '' for h in hl_clm]
 
 def make_high_low_legu_tline(sym:str, winds, hl_cls:list, hl_dic:dict)->str:
     ''' hl_cls 按最高最低排序 '''
@@ -194,24 +194,25 @@ def make_high_low_legu_tline(sym:str, winds, hl_cls:list, hl_dic:dict)->str:
     blst = ['1. {}:\t'.format(sym)]
     for i in range(hl_clm_l):
         bsrQut = [M80_20(hl_dic[hl_cls[i]+'_'+str(w)]) for w in winds]
-        bsrH = bsr.format(hl_dic[hl_cls[i]],*bsrQut)
+        bsrH = bsr.format(int(hl_dic[hl_cls[i]]),*bsrQut)
         if i==hl_clm_l//2: blst.append('\n\t\t')
         blst.append(bsrH)
     return ''.join(blst)
 
-def make_high_low_legu_plt(sym:str, hl_lg:pd.DataFrame, ylabs):
+def make_high_low_legu_plt(sym:str,fig_pth:str, hl_lg:pd.DataFrame, ylabs):
     ''' high_low_legu 绘图 '''
     index_cl = ak.stock_zh_index_daily_em(High_Low_Legu_Indexs[sym]).tail(150)
     index_cl.set_index('date',inplace=True)
     index_cl.index = pd.to_datetime(index_cl.index)
     hl_near = hl_lg.tail(150)
+    cor_lst = ('lightcoral','skyblue','tomato','dodgerblue','maroon','navy')
     xadd_plt = [
-        mpf.make_addplot(hl_near[w],panel=i//2+1,ylabel=ylabs[i],color='navy' if i%2 else 'sienna') for i,w in enumerate(hl_near.columns)
+        mpf.make_addplot(hl_near[w],panel=i//2+1,ylabel=ylabs[i],color=cor_lst[i]) for i,w in enumerate(hl_near.columns)
     ]
     mpf.plot(index_cl,type='candle',ylabel=sym,
              style=Mpf_Style, addplot=xadd_plt,
              datetime_format='%m-%d',xrotation=15,
-            #  savefig={'fname':fig_pth,'dpi':400,'bbox_inches':'tight'},
+             savefig={'fname':fig_pth,'dpi':400,'bbox_inches':'tight'},
              figratio=(6,6),figscale=1.5)
     
 def doc_high_low_legu(cfg_file=''):
@@ -226,14 +227,36 @@ def doc_high_low_legu(cfg_file=''):
     all_periods = config.get(cfg_sec, 'high_low_legu_periods')
     all_prds = [int(a.strip()) for a in all_periods.split(',')]
 
+    hl_legu_lines = list()
+    hl_legu_doc_dict = dict(high_low_legu_periods=all_periods)
+    fpth = os.path.join('../data_save', config.get(cfg_sec, 'fpath'))
+    hl_legu_main_pd = pd.read_csv(fpth,index_col=0)
+    for sym in High_Low_Legu_Indexs.keys():
+        img_pth = os.path.join('../data_save', config.get('Basic_Info','doc_img_pth'),'hl_legu_{}.png'.format(sym))
+        hl_new = hl_legu_main_pd[hl_legu_main_pd.symbol==sym]
+        del hl_new['symbol']
+        hl_new.sort_index(axis=0,inplace=True)
+        hl_new.index = pd.to_datetime(hl_new.index)
+        hl_qua = make_high_low_legu_qua(hl_new, all_prds)
+        hl_tl = make_high_low_legu_tline(sym,all_prds,sorted(hl_new.columns,key=_rerange_hl_columns),dict(hl_qua.loc[up_date]))
+        hl_legu_lines.append(hl_tl)
+        make_high_low_legu_plt(sym,img_pth, hl_new,_hl_columns_nums(hl_new.columns))
+        hl_legu_doc_dict.update({
+            'high_low_legu_{}_tlst'.format(sym):hl_tl[1:],
+            'high_low_legu_{}_ppth'.format(sym):img_pth
+        })
+    hl_legu_doc_dict['high_low_legu_tlst'] = '\n'.join(hl_legu_lines)
+    # print(hl_legu_doc_dict)
+    return hl_legu_doc_dict
 
 if __name__ == '__main__':
     # append_high_low_legu_file()
-    pp1 = pd.read_csv('../data_save/high_low_legu.csv',index_col=0)
-    pp1 = pp1[pp1.symbol=='all']
-    del pp1['symbol']
-    pp1.sort_index(axis=0,inplace=True)
-    pp1.index = pd.to_datetime(pp1.index)
+    # pp1 = pd.read_csv('../data_save/high_low_legu.csv',index_col=0)
+    # pp1 = pp1[pp1.symbol=='all']
+    # del pp1['symbol']
+    # pp1.sort_index(axis=0,inplace=True)
+    # pp1.index = pd.to_datetime(pp1.index)
     # pp2 = make_high_low_legu_qua('all',pp1)
     # print(sorted(pp1.columns,key=_rerange_hl_columns))
-    make_high_low_legu_plt('all',pp1,_hl_columns_nums(pp1.columns))
+    # make_high_low_legu_plt('all','',pp1,_hl_columns_nums(pp1.columns))
+    doc_high_low_legu()

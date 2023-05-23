@@ -13,6 +13,7 @@ os.chdir(os.path.dirname(__file__))
 from common.trade_date import get_trade_day, get_delta_trade_day
 from common.mpf_set import Mpf_Style,M80_20
 from common.smooth_tool import LLT_MA, HMA, super_smoother, min_max_dist_series
+from .md_temp import Qvix_Day_Texts
 
 def parse_symbol_str(symbol: str, minute: bool = False):
     ''' symbol 输出 '''
@@ -160,7 +161,7 @@ def make_qvix_macd_smooth(symbol='300ETF',smooth='LLT',main_w=120,winds=(20,60,1
     for w in winds: otb['Q_'+str(w)] = min_max_dist_series(otb.Dsmooth,w)
     # 3. ATR
     otb['ATR'] = talib.ATR(otb.high,otb.low,otb.close,11)
-    # otb['ATRdf'] = otb.ATR.diff()
+    otb['ATRdf'] = otb.ATR.diff()
     return otb
 
 def make_qvix_day_tline(sym,winds,otb_dic:dict):
@@ -175,13 +176,14 @@ def make_qvix_day_plt(otb:pd.DataFrame,fig_pth:str,sym='300ETF',smooth='LLT',smo
     otb_near = otb.tail(150)
     xadd_plots = [
         mpf.make_addplot(otb_near.Smooth,color='slateblue',ylabel=smooth),
-        mpf.make_addplot(otb_near.Dsmooth,type='bar',panel=1,width=0.7, color='teal',secondary_y=False,ylabel='DSmooth({})'.format(smooth_wind)),
-        mpf.make_addplot(otb_near.Qsmooth,panel=1,color='sienna',secondary_y=True),
-        mpf.make_addplot(otb_near.HistH,type='bar', width=0.7, panel=2, color='red',secondary_y=False,ylabel='MACD'),
-        mpf.make_addplot(otb_near.HistL,type='bar', width=0.7, panel=2, color='green',secondary_y=False,ylabel='MACD'),
-        mpf.make_addplot(otb_near.MACD,panel=2,color='navy',secondary_y=True),
-        mpf.make_addplot(otb_near.Diff,panel=2,color='gold',secondary_y=True),
-        mpf.make_addplot(otb_near.ATR,panel=3,color='peru',ylabel='ATR')
+        mpf.make_addplot(otb_near.Dsmooth,type='bar',panel=1,width=0.7, color='lightgray',secondary_y=False,ylabel='DSmooth({})'.format(smooth_wind)),
+        mpf.make_addplot(otb_near.Qsmooth,panel=1,color='darkblue',secondary_y=True),
+        mpf.make_addplot(otb_near.HistH,type='bar', width=0.7, panel=2, color='red',alpha=0.7,secondary_y=False,ylabel='MACD'),
+        mpf.make_addplot(otb_near.HistL,type='bar', width=0.7, panel=2, color='green',alpha=0.7,secondary_y=False,ylabel='MACD'),
+        mpf.make_addplot(otb_near.MACD,panel=2,color='gold',secondary_y=True),
+        mpf.make_addplot(otb_near.Diff,panel=2,color='deepskyblue',secondary_y=True),
+        mpf.make_addplot(otb_near.ATRdf,panel=3,type='bar', width=0.7, ylabel='ATR', color='lightgray',secondary_y=False),
+        mpf.make_addplot(otb_near.ATR,panel=3,color='peru',secondary_y=True)
         ]
     mpf.plot(otb_near,type='candle',ylabel='value',
              style=Mpf_Style, addplot=xadd_plots,
@@ -203,7 +205,7 @@ def doc_qvix_day(cfg_file=''):
     all_prds = [int(a.strip()) for a in all_periods.split(',')]
 
     qvix_sta_lines = list()
-    qvix_doc_dict = dict(qvix_day_periods=all_periods)
+    qvix_doc_dict = {'qvix_day_periods':all_periods}
     for sym in qvix_indexs:
         img_pth = os.path.join('../data_save', config.get('Basic_Info','doc_img_pth'),'qvix_day_{}_per.png'.format(sym))
         q_pd = make_qvix_macd_smooth(sym,main_w=main_period,winds=all_prds)
@@ -215,10 +217,11 @@ def doc_qvix_day(cfg_file=''):
             'qvix_day_{}_ppth'.format(sym):img_pth
         })
     qvix_doc_dict['qvix_day_tlst'] = '\n'.join(qvix_sta_lines)
-    print(qvix_doc_dict)
+    # print(qvix_doc_dict)
+    return Qvix_Day_Texts.format(**qvix_doc_dict)
 
 if __name__=='__main__':
     # append_qvix_minute_file()
     # make_qvix_day_plt(make_qvix_macd_smooth(),'../data_save/300.png')
-    doc_qvix_day()
+    print(doc_qvix_day())
     pass

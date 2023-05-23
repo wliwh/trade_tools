@@ -1,13 +1,13 @@
 
 Plain_Headers = '''
-## 境内市场日报 {now_date}
+## 股指日报 {now_date}
 
 ### 总括
 
 '''
 
 Qvix_Day_Texts = '''
-#### 恐慌指数波动
+#### 恐慌指数
 
 * 选用**沪深300ETF**期权波动率指数作为整个市场恐慌指数的表征
 * 其后另附*上证50ETF、中证500ETF*等的期权波动率指数
@@ -51,7 +51,7 @@ North_Flow_Texts = '''
 '''
 
 Margin_Purchase_Texts = '''
-#### 融资买入分位
+#### 融资买入水位
 
 * 融资买入量与总成交量的比值
 * 计算分位数所用的周期长度 ({margin_rate_periods})
