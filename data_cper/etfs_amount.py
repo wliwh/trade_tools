@@ -14,6 +14,7 @@ sys.path.append('..')
 os.chdir(os.path.dirname(__file__))
 from common.trade_date import get_trade_day, get_delta_trade_day, get_next_weekday
 from common.mpf_set import M80_20
+from md_temp import ETF_Amount_Texts
 
 Funds_Type_Dic = dict(gp='股票',zq='债券',qdii='跨境',
                       sp='商品',hb='货币',kzz='可转债')
@@ -234,11 +235,11 @@ def docs_funds_amt(cfg_file=''):
         etf_amount_tlst=etf_words_lst,
         etf_amount_plt_pth=img_pth
     )
-    print(etf_amt_text_dic)
+    # print(etf_amt_text_dic)
     return etf_amt_text_dic
 
 
 if __name__=='__main__':
     # append_funds_trade_file()
-    docs_funds_amt()
+    print(ETF_Amount_Texts.format(**docs_funds_amt()))
     pass

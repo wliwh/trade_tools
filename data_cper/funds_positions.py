@@ -16,6 +16,7 @@ os.chdir(os.path.dirname(__file__))
 from common.smooth_tool import min_max_dist_series, min_max_dist_pd
 from common.trade_date import get_next_weekday, get_trade_day, get_delta_trade_day
 from common.mpf_set import Mpf_Style, M80_20
+from .md_temp import North_Flow_Texts
 
 
 def get_funds_postions() -> pd.DataFrame:
@@ -114,7 +115,7 @@ def doc_north_flow(cfg_file=''):
                         north_flow_tlst=nfl_tlst,
                         north_flow_ppth=img_pth)
     # print(nfl_info_dic)
-    return nfl_info_dic
+    return North_Flow_Texts.format(**nfl_info_dic)
 
 
 def _market_margin_hist(market: int = 1) -> pd.DataFrame:

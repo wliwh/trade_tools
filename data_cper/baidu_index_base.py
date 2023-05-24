@@ -517,5 +517,6 @@ def bsearch_hour_day_csv(trade_day=True):
     pass
 
 if __name__=='__main__':
-    # append_bsearch_day_file()
+    append_bsearch_day_file()
     append_bsearch_hour_file()
+    pass
