@@ -18,7 +18,7 @@ from common.mpf_set import M80_20,Mpf_Style
 from .md_temp import High_Low_Texts
 
 High_Low_Legu_Indexs = {
-    'all':'sh000001','sz50':'sh000016', 'hs300':'sh000300', 
+    'all':'sh000985','sz50':'sh000016', 'hs300':'sh000300', 
     'zz500':'sh000905','cyb':'sz399006', 'cy50':'sz399673', 'kc50':'sh000688'}
 
 def high_low_from_legu(symbol: str = "all") -> pd.DataFrame:
@@ -191,7 +191,7 @@ def _hl_columns_nums(hl_clm) ->list:
 def make_high_low_legu_tline(sym:str, winds, hl_cls:list, hl_dic:dict)->str:
     ''' hl_cls 按最高最低排序 '''
     hl_clm_l = len(hl_cls)
-    bsr = '{}({} {})\t'
+    bsr = '{}-({} {})\t'
     blst = ['1. {}:\t'.format(sym)]
     for i in range(hl_clm_l):
         bsrQut = [M80_20(hl_dic[hl_cls[i]+'_'+str(w)]) for w in winds]

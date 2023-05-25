@@ -280,8 +280,12 @@ def append_margin_file(market='sh', cfg_file=''):
         return next_date
     return 0
 
+def make_margin_concat_pd(ntype:str='all'):
+    ''' 合并处理两融表格 '''
+    pass
+
 if __name__=='__main__':
     # append_margin_file('sh')
     # append_margin_file('sz')
-    doc_north_flow()
+    # doc_north_flow()
     pass

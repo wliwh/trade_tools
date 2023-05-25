@@ -10,8 +10,11 @@ import requests
 import json
 import pandas as pd
 import os
+import sys
+sys.path.append('..')
 os.chdir(os.path.dirname(__file__))
 
+from common.smooth_tool import min_max_dist_series
 
 class ErrorCode(int, Enum):
     UNKNOWN = 10002
@@ -513,10 +516,25 @@ def append_bsearch_hour_file(cfg_file=''):
     else:
         return 0
     
-def bsearch_hour_day_csv(trade_day=True):
+def make_bsearch_day_qu(winds, bser:pd.Series):
+    ''' 对某个关键词的历史分位 '''
+    qut_l = [bser]
+    for w in winds:
+        bper = min_max_dist_series(bser,w)
+        bper.name = 'Per_'+str(w)
+        qut_l.append(bper)
+    return pd.concat(qut_l,axis=1)
+
+def make_bearch_day_tline(sym:str, winds, bqut:dict):
+    bper = '1. {}:\t{:.1f}'.format(sym,bqut[sym])
+    bsr = ' '.join([bqut['Per_'+str(w)] for w in winds])
+    return bper+'('+bsr+')'
+
+def make_bsearch_day_plt(sym:str,fpth:str,bqut:pd.DataFrame,winds):
     pass
+
 
 if __name__=='__main__':
     append_bsearch_day_file()
-    append_bsearch_hour_file()
+    # append_bsearch_hour_file()
     pass
