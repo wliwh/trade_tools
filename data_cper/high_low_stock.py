@@ -50,6 +50,7 @@ def get_today_high_low_legu(date:str):
     hl_pd.insert(0,'symbol',sym_lst)
     return hl_pd
 
+# print(get_today_high_low_legu('2023-05-25'))
 
 def append_high_low_legu_file(cfg_file=''):
     if not cfg_file:

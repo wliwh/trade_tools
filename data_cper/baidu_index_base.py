@@ -5,6 +5,8 @@ from typing import List, Dict, Tuple
 from urllib.parse import urlencode, quote
 from Crypto.Cipher import AES
 from base64 import b64encode
+import efinance as ef
+import mplfinance as mpf
 import datetime
 import requests
 import json
@@ -14,7 +16,30 @@ import sys
 sys.path.append('..')
 os.chdir(os.path.dirname(__file__))
 
-from common.smooth_tool import min_max_dist_series
+from common.smooth_tool import log_min_max_dist_pd
+from common.mpf_set import Mpf_Style, M80_20
+from .md_temp import Bsearch_Pred_Texts
+
+
+Keyword_Index_Dic = {'股市':'ZZQZ','股票':'ZZQZ','a股':'SZZS',
+    '上证':'SZZS','上证指数':'SZZS',
+    '基金':'BK0536','牛市':'SZZS','熊市':'SZZS',
+    '港股':'HSI','恒生指数':'HSI','恒生科技指数':'HSTECH',
+    '美股行情':'IXIC','道琼斯指数':'DQS','纳斯达克指数':'IXIC','中概股':'PGJ',
+    '上证50':'SZ50','中证500':'ZZ500', '创业板指':'399006','科创50':'KC50'}
+
+Index_Plt_Dic = {'SZZS':['股市','股票','a股','上证','上证指数'],
+                 'ZZQZ':['股市','股票','a股','上证','上证指数'],
+                 'HSI':['港股','恒生指数'],
+                 'HSTECH':['恒生科技指数'],
+                 'IXIC':['美股行情','道琼斯指数','纳斯达克指数'],
+                 'DQS':['美股行情','道琼斯指数','纳斯达克指数'],
+                 'PGJ':['中概股'],
+                 'SZ50':['股市', '上证50'],
+                 'ZZ500':['股市', '上证50'],
+                 '399006':['股市', '创业板指'],
+                 'KC50':['股市', '科创50']}
+
 
 class ErrorCode(int, Enum):
     UNKNOWN = 10002
@@ -516,22 +541,31 @@ def append_bsearch_hour_file(cfg_file=''):
     else:
         return 0
     
-def make_bsearch_day_qu(winds, bser:pd.Series):
-    ''' 对某个关键词的历史分位 '''
-    qut_l = [bser]
+def make_bsearch_day_qu(winds, bdf:pd.DataFrame):
+    ''' 对某几个关键词的历史分位 '''
+    qut_l = [bdf]
     for w in winds:
-        bper = min_max_dist_series(bser,w)
+        bper = log_min_max_dist_pd(bdf,w)
         bper.name = 'Per_'+str(w)
         qut_l.append(bper)
     return pd.concat(qut_l,axis=1)
 
 def make_bearch_day_tline(sym:str, winds, bqut:dict):
     bper = '1. {}:\t{:.1f}'.format(sym,bqut[sym])
-    bsr = ' '.join([bqut['Per_'+str(w)] for w in winds])
+    bsr = ' '.join([M80_20(bqut['Per_'+str(w)]) for w in winds])
     return bper+'('+bsr+')'
 
-def make_bsearch_day_plt(sym:str,fpth:str,bqut:pd.DataFrame,winds):
-    pass
+def make_bsearch_day_plt(sym:str,fpth:str,bpd:pd.DataFrame,bqut:pd.DataFrame,wind:int):
+    index_cl = ef.stock.get_quote_history(Keyword_Index_Dic[sym],beg='20220101').tail(120)
+    index_cl.rename(columns={'日期':'date','开盘':'open','收盘':'close', 
+        '最高':'high', '最低':'low', '成交量':'volume', '成交额':'amount'})
+    index_cl.set_index('date',inplace=True)
+    index_cl.index = pd.to_datetime(index_cl.index)
+    bqut_n = bqut.tail(120)
+    bpd_n = bpd.tail(120)
+    xadd_plots = [
+        mpf.make_addplot(bpd_n[sym],type='bar',panel=1,width=0.7, color='lightgray',secondary_y=False,ylabel=sym)
+    ]
 
 
 if __name__=='__main__':
