@@ -1,13 +1,13 @@
 
 Plain_Headers = '''
-## 股指日报 {now_date}
+## 股指日报 ({now_date})
 
 ### 总括
 
 '''
 
 Qvix_Day_Texts = '''
-#### 恐慌指数
+#### 恐慌指数 {qvix_day_date}
 
 * 选用**沪深300ETF**期权波动率指数作为整个市场恐慌指数的表征
 * 其后另附*上证50ETF、中证500ETF*等的期权波动率指数
@@ -21,25 +21,32 @@ Qvix_Day_Texts = '''
 '''
 
 Bsearch_Pred_Texts = '''
-#### 检索量波动
+#### 检索量波动 {bsearch_day_date}
 
 * 选用多个检索词刻画股市热度
+* 计算分位数所用的周期长度 ({bsearch_day_periods})
+* 输出：检索词-检索量-分位数
 * 其后附有*上证50、中证500、创业板*等检索情况
+
+{bsearch_day_main_tlst}
+
+![]({bsearch_day_main_ppth})
+
 '''
 
 High_Low_Texts = '''
-#### 新高新低分位
+#### 新高新低分位 {high_low_legu_date}
 
-* 新高新低数, 其所使用的周期长度 ({high_low_legu_periods})
+* 20-60-120日的新高新低数, 再对该数量使用周期长度 ({high_low_legu_periods}) 求取分位数
 * 输出：指数-某一周期新高数(分位数)-某一周期新低数(分位数)
 
-{high_low_legu_tlst}
+{high_low_legu_all_tlst}
 
 ![]({high_low_legu_all_ppth})
 '''
 
 North_Flow_Texts = '''
-#### 北向资金流入
+#### 北向资金流入 {north_flow_date}
 
 * 北向资金流入与其均线的偏离度
 * 计算分位数所用的周期长度 ({north_flow_periods})
@@ -51,7 +58,7 @@ North_Flow_Texts = '''
 '''
 
 Margin_Purchase_Texts = '''
-#### 融资买入水位
+#### 融资买入水位 {margin_rate_date}
 
 * 融资买入量与总成交量的比值
 * 计算分位数所用的周期长度 ({margin_rate_periods})
@@ -62,7 +69,7 @@ Margin_Purchase_Texts = '''
 '''
 
 ETF_Amount_Texts = '''
-#### ETF 成交量分位
+#### ETF 成交量分位 {etf_amount_date}
 
 * 按类别计的场内基金，它们每日成交额之比的历史分位数
 * 计算分位数用的周期长度 ({etf_amount_periods})

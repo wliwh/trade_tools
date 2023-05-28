@@ -1,9 +1,19 @@
 import logging
+import os
 from data_cper import *
+from common.trade_date import get_trade_day
 
 logging.basicConfig(
     format='%(asctime)s [%(filename)s] - %(levelname)s: %(message)s',
     level=logging.INFO)
+
+Doc_Funs_Dic = {
+    'qvix_day':doc_qvix_day,
+    'bsearch_day':doc_bsearch_info,
+    'high_low_legu':doc_high_low_legu,
+    'north_flow':doc_north_flow,
+    'etf_amount':docs_funds_amt
+}
 
 def basic_append_fun(fn,retry,**kwds):
     args, wsec = kwds.get('args',[]), kwds['words']
@@ -44,5 +54,19 @@ def update_files(retry:int=3):
             logging.warning("Try update etf amount {} times. ({})".format(r+1,e))
         if r==retry-1: logging.error("Can't update etf amount.")
 
+def doc_file(paras:list):
+    trade_date = get_trade_day(7).strftime('%Y-%m-%d')
+    basic_doc = [Plain_Headers.format(now_date=trade_date)]
+    for p in paras:
+        basic_doc.append(Doc_Funs_Dic[p]())
+    new_doc = ''.join(basic_doc)
+    fpth = os.path.join('..', 'data_save', 'index_report.md')
+    with open(fpth,'w',encoding='utf-8') as f:
+        f.write(new_doc)
+    
+
 if __name__=='__main__':
     update_files()
+    choose_paras = ['qvix_day','bsearch_day','high_low_legu','north_flow']
+    # doc_file(choose_paras)
+    pass

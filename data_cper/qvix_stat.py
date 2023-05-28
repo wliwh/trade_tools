@@ -166,14 +166,14 @@ def make_qvix_macd_smooth(symbol='300ETF',smooth='LLT',main_w=120,winds=(20,60,1
 
 def make_qvix_day_tline(sym,winds,otb_dic:dict):
     ''' 生成某个指数sym相应的QVIX指标及其分位数 '''
-    basic_lines = '1. {}:\t{:.2f}\t{}, {}, {}'
+    basic_lines = '1. {}:\t{:.2f}\t({},{},{})'
     b_qs = [M80_20(otb_dic['Q_'+str(w)]) for w in winds]
     b_l = basic_lines.format(sym,otb_dic['close'],*b_qs)
     return b_l
 
 def make_qvix_day_plt(otb:pd.DataFrame,fig_pth:str,sym='300ETF',smooth='LLT',smooth_wind=120):
     ''' qvix 绘图 '''
-    otb_near = otb.tail(150)
+    otb_near = otb.tail(120)
     xadd_plots = [
         mpf.make_addplot(otb_near.Smooth,color='slateblue',ylabel=smooth),
         mpf.make_addplot(otb_near.Dsmooth,type='bar',panel=1,width=0.7, color='lightgray',secondary_y=False,ylabel='DSmooth({})'.format(smooth_wind)),
@@ -216,6 +216,7 @@ def doc_qvix_day(cfg_file=''):
             'qvix_day_{}_tlst'.format(sym):q_tl[1:],
             'qvix_day_{}_ppth'.format(sym):img_pth
         })
+        qvix_doc_dict['qvix_day_date'] = q_pd.index[-1].date()
     qvix_doc_dict['qvix_day_tlst'] = '\n'.join(qvix_sta_lines)
     # print(qvix_doc_dict)
     return Qvix_Day_Texts.format(**qvix_doc_dict)

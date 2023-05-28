@@ -4,6 +4,12 @@ import datetime
 
 Trade_List = ak.tool_trade_date_hist_sina()
 
+def get_trade_list(is_str:bool=True,wind=400)->pd.Series:
+    tlst = Trade_List.copy()
+    if is_str:
+        tlst['trade_date'] = tlst['trade_date'].apply(lambda x:x.strftime('%Y-%m-%d'))
+    return tlst['trade_date'].tail(wind)
+
 def get_near_trade_date(new_hour=16)->str:
     ''' 获取最近的交易日, new_hour 为判断新交易日的分割小时 '''
     sh_trade_date_list = ak.tool_trade_date_hist_sina()

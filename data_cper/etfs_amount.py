@@ -199,7 +199,7 @@ def funds_amt_words_lst(winds:tuple, ftype_lst, famt_per:dict, famt_q:dict)->str
     ''' 输出成交额比值和相应的分位数 '''
     wind_l = list(sorted(winds,reverse=False))
     famt_lst = list()
-    basic_lines = '1. {}({}):\t{:.2f}\t{}, {}, {}'
+    basic_lines = '1. {}({}):\t{:.2f}\t({},{},{})'
     for ft_nm in ftype_lst:
         b_qs = [M80_20(famt_q[ft_nm+'_'+str(w)]) for w in wind_l]
         b_l = basic_lines.format(
@@ -231,6 +231,7 @@ def docs_funds_amt(cfg_file=''):
     etf_amt_pics = etf_per.tail(210).plot(x_compat=True)
     etf_amt_ppth = plt.savefig(img_pth,dpi=400,bbox_inches='tight')
     etf_amt_text_dic = dict(
+        etf_amount_date=up_date,
         etf_amount_periods=all_periods,
         etf_amount_tlst=etf_words_lst,
         etf_amount_plt_pth=img_pth

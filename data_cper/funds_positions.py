@@ -70,7 +70,7 @@ def get_north_flow_bias(north_flow: pd.DataFrame, N=20, windows=(60,120), ma_typ
 
 def make_north_flow_tline(sym:str,winds,nfl_dt:dict):
     ''' 输出北向流入偏离度-分位数的一行 '''
-    basic_line = '{}:\t{:.2f}\t{},{},{}'
+    basic_line = '{}:\t{:.2f}\t({},{},{})'
     nfl_q = [M80_20(nfl_dt[sym+'_Q'+str(w)]) for w in winds]
     return basic_line.format(sym,nfl_dt[sym+'_bias'],*nfl_q)
 
@@ -112,6 +112,7 @@ def doc_north_flow(cfg_file=''):
     nfl_tlst = make_north_flow_tline(nfl_sym,all_prds,dict(nfl_pd.iloc[-1]))
     make_north_flow_plt(nfl_index,nfl_sym,img_pth,nfl_pd,all_prds)
     nfl_info_dic = dict(north_flow_periods=all_periods,
+                        north_flow_date=nfl_pd.index[-1],
                         north_flow_tlst=nfl_tlst,
                         north_flow_ppth=img_pth)
     # print(nfl_info_dic)

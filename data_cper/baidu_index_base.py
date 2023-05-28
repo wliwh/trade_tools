@@ -18,6 +18,7 @@ os.chdir(os.path.dirname(__file__))
 
 from common.smooth_tool import log_min_max_dist_pd
 from common.mpf_set import Mpf_Style, M80_20
+from common.trade_date import get_trade_list
 from .md_temp import Bsearch_Pred_Texts
 
 
@@ -32,11 +33,11 @@ Index_Plt_Dic = {'SZZS':['股市','股票','a股','上证','上证指数'],
                  'ZZQZ':['股市','股票','a股','上证','上证指数'],
                  'HSI':['港股','恒生指数'],
                  'HSTECH':['恒生科技指数'],
-                 'IXIC':['美股行情','道琼斯指数','纳斯达克指数'],
-                 'DQS':['美股行情','道琼斯指数','纳斯达克指数'],
-                 'PGJ':['中概股'],
+                #  'IXIC':['美股行情','道琼斯指数','纳斯达克指数'],
+                #  'DQS':['美股行情','道琼斯指数','纳斯达克指数'],
+                #  'PGJ':['中概股'],
                  'SZ50':['股市', '上证50'],
-                 'ZZ500':['股市', '上证50'],
+                 'ZZ500':['股市', '中证500'],
                  '399006':['股市', '创业板指'],
                  'KC50':['股市', '科创50']}
 
@@ -541,34 +542,116 @@ def append_bsearch_hour_file(cfg_file=''):
     else:
         return 0
     
+def _get_bady_trade_day(fpth:str,tday_lst)->pd.DataFrame:
+    bday_sor = pd.read_csv(fpth,index_col=0)
+    bday_sor = bday_sor[bday_sor.index.map(lambda x:x in tday_lst)]
+    bday_sor.sort_index(axis=0,inplace=True)
+    return bday_sor
+    
+def _get_bwords_pd(sym:str, bday:pd.DataFrame, mday=400):
+    ''' 重排检索词表格 '''
+    sym_index = Keyword_Index_Dic[sym]
+    inner_syms = Index_Plt_Dic[sym_index]
+    qul = []
+    for s in inner_syms:
+        q = bday.loc[bday.keyword==s,'count']
+        q.name = s
+        qul.append(q)
+    qpd = pd.concat(qul, axis=1)
+    qpd.sort_index(axis=0,inplace=True)
+    return qpd.tail(mday)
+
+def _get_idx_ochl(idx_n:str,rng=None)->pd.DataFrame:
+    index_cl = ef.stock.get_quote_history(idx_n,beg='20220101')
+    index_cl.rename(columns={'日期':'date','开盘':'open','收盘':'close', 
+        '最高':'high', '最低':'low', '成交量':'volume', '成交额':'amount'},inplace=True)
+    index_cl.set_index('date',inplace=True)
+    index_cl.index = pd.to_datetime(index_cl.index)
+    if rng is not None:
+        index_cl = index_cl[index_cl.index.map(lambda x:x.strftime('%Y-%m-%d') in rng)]
+        index_cl.sort_index(axis=0,inplace=True)
+    return index_cl
+    
 def make_bsearch_day_qu(winds, bdf:pd.DataFrame):
     ''' 对某几个关键词的历史分位 '''
     qut_l = [bdf]
     for w in winds:
         bper = log_min_max_dist_pd(bdf,w)
-        bper.name = 'Per_'+str(w)
+        bper.rename(columns=lambda x:x+'_'+str(w),inplace=True)
         qut_l.append(bper)
     return pd.concat(qut_l,axis=1)
 
-def make_bearch_day_tline(sym:str, winds, bqut:dict):
-    bper = '1. {}:\t{:.1f}'.format(sym,bqut[sym])
-    bsr = ' '.join([M80_20(bqut['Per_'+str(w)]) for w in winds])
-    return bper+'('+bsr+')'
+def make_bsearch_day_tline(sym:str, winds, bqut:dict):
+    ''' 输出一组关键词的列表 '''
+    inner_syms = Index_Plt_Dic[Keyword_Index_Dic[sym]]
+    bsets = list()
+    for s in inner_syms:
+        bper = '1. {:6s}\t{:6d}'.format(s+':',int(bqut[s]))
+        bsr = ','.join([M80_20(bqut[s+'_'+str(w)]) for w in winds])
+        bsets.append(bper+' ('+bsr+')')
+    return '\n'.join(bsets) if len(bsets)>1 else bsets[0][3:]
 
-def make_bsearch_day_plt(sym:str,fpth:str,bpd:pd.DataFrame,bqut:pd.DataFrame,wind:int):
-    index_cl = ef.stock.get_quote_history(Keyword_Index_Dic[sym],beg='20220101').tail(120)
-    index_cl.rename(columns={'日期':'date','开盘':'open','收盘':'close', 
-        '最高':'high', '最低':'low', '成交量':'volume', '成交额':'amount'})
-    index_cl.set_index('date',inplace=True)
-    index_cl.index = pd.to_datetime(index_cl.index)
-    bqut_n = bqut.tail(120)
+def make_bsearch_day_plt(sym:str,fpth:str,idx_pd:pd.DataFrame,bpd:pd.DataFrame,bqut:pd.DataFrame,wind:int):
+    ''' 根据检索量绘图 '''
+    idx_n = Keyword_Index_Dic[sym]
+    index_cl = idx_pd.tail(120)
     bpd_n = bpd.tail(120)
-    xadd_plots = [
-        mpf.make_addplot(bpd_n[sym],type='bar',panel=1,width=0.7, color='lightgray',secondary_y=False,ylabel=sym)
-    ]
+    bqut_n = bqut.tail(120)
+    xadd_plots = []
+    for i,s in enumerate(Index_Plt_Dic[idx_n]):
+        xadd_plots.extend([
+            mpf.make_addplot(bpd_n[s],type='bar',panel=i+1,width=0.7, color='lightgray',secondary_y=False,ylabel='{}({})'.format(s,wind)),
+            mpf.make_addplot(bqut_n[s+'_'+str(wind)],panel=i+1, color='tomato',secondary_y=True)
+        ])
+    mpf.plot(index_cl,type='candle',ylabel=idx_n,
+             style=Mpf_Style, addplot=xadd_plots,
+             datetime_format='%m-%d',xrotation=15,
+             savefig={'fname':fpth,'dpi':400,'bbox_inches':'tight'},
+             figratio=(6,6),figscale=1.5)
 
+
+def doc_bsearch_info(cfg_file=''):
+    ''' 填写 检索量 数据 '''
+    if not cfg_file:
+        cfg_file = '../trade.ini'
+    cfg_sec = 'BSearch_Day'
+    config = configparser.ConfigParser()
+    config.read(cfg_file, encoding='utf-8')
+    up_date = config.get(cfg_sec, 'update_date')
+    main_plt_idx = config.get(cfg_sec, 'bsearch_day_main_idx')
+    main_period = int(config.get(cfg_sec, 'bsearch_day_main_periods'))
+    all_periods = config.get(cfg_sec, 'bsearch_day_periods')
+    all_prds = [int(a.strip()) for a in all_periods.split(',')]
+    assert main_period in all_prds, "分位数周期配置有误."
+
+    bday_doc_dic = dict(bsearch_day_periods=all_periods,bsearch_day_date=up_date)
+    fpth = os.path.join('../data_save', config.get(cfg_sec, 'fpath'))
+    _base_idx = [d.strftime('%Y-%m-%d') for d in _get_idx_ochl(main_plt_idx).index]
+    bday_main_pd = _get_bady_trade_day(fpth,_base_idx)
+    bday_sym_set = set()
+    for s in Keyword_Index_Dic.keys():
+        idx_name = Keyword_Index_Dic[s]
+        if not Index_Plt_Dic.get(idx_name):
+            continue
+        if idx_name in bday_sym_set:
+            continue
+        img_pth = os.path.join('../data_save', config.get('Basic_Info','doc_img_pth'),'bday_{}.png'.format(idx_name))
+        idx_cl = _get_idx_ochl(idx_name,set(bday_main_pd.index))
+        bday_pd = _get_bwords_pd(s,bday_main_pd,500)
+        bday_qut = make_bsearch_day_qu(all_prds,bday_pd)
+        bday_stas = make_bsearch_day_tline(s,all_prds,dict(bday_qut.loc[up_date]))
+        make_bsearch_day_plt(s,img_pth,idx_cl,bday_pd,bday_qut,main_period)
+        bday_doc_dic.update({
+            'bsearch_day_{}_tlst'.format(idx_name):bday_stas,
+            'bsearch_day_{}_ppth'.format(idx_name):img_pth
+        })
+        bday_sym_set.add(idx_name)
+    bday_doc_dic['bsearch_day_main_tlst'] = bday_doc_dic['bsearch_day_{}_tlst'.format(main_plt_idx)]
+    bday_doc_dic['bsearch_day_main_ppth'] = bday_doc_dic['bsearch_day_{}_ppth'.format(main_plt_idx)]
+    return Bsearch_Pred_Texts.format(**bday_doc_dic)
 
 if __name__=='__main__':
     append_bsearch_day_file()
     # append_bsearch_hour_file()
+    # doc_bsearch_info()
     pass

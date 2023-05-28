@@ -50,7 +50,6 @@ def get_today_high_low_legu(date:str):
     hl_pd.insert(0,'symbol',sym_lst)
     return hl_pd
 
-# print(get_today_high_low_legu('2023-05-25'))
 
 def append_high_low_legu_file(cfg_file=''):
     if not cfg_file:
@@ -61,7 +60,7 @@ def append_high_low_legu_file(cfg_file=''):
     fpth = os.path.join('../data_save', config.get(cfg_sec, 'fpath'))
     up_date = config.get(cfg_sec, 'update_date')
     next_date = config.get(cfg_sec, 'next_update')
-    now_date = get_trade_day(17).strftime('%Y-%m-%d')
+    now_date = get_trade_day(8).strftime('%Y-%m-%d')
     next_day = get_delta_trade_day(now_date).strftime('%Y-%m-%d')
     if not os.path.exists(fpth):
         config.set(cfg_sec, 'update_date', now_date)
@@ -70,8 +69,6 @@ def append_high_low_legu_file(cfg_file=''):
         qvix_pds = get_today_high_low_legu(now_date)
         qvix_pds.to_csv(fpth, mode='w')
         return now_date
-    elif up_date == now_date:
-        return 0
     elif next_date <= now_date:
         config.set(cfg_sec, 'update_date', now_date)
         config.set(cfg_sec, 'next_update', next_day)
@@ -79,6 +76,8 @@ def append_high_low_legu_file(cfg_file=''):
         qvix_pds.to_csv(fpth, mode='a', header=False)
         config.write(open(cfg_file,'w'))
         return now_date
+    elif up_date == now_date:
+        return 0
     return 0
 
 def _get_constituent_codes(cons_pd:pd.DataFrame, code: str, date: str):
@@ -192,12 +191,12 @@ def _hl_columns_nums(hl_clm) ->list:
 def make_high_low_legu_tline(sym:str, winds, hl_cls:list, hl_dic:dict)->str:
     ''' hl_cls 按最高最低排序 '''
     hl_clm_l = len(hl_cls)
-    bsr = '{}-({} {})\t'
-    blst = ['1. {}:\t'.format(sym)]
+    bsr = ' {} ({},{});'
+    blst = ['1. {}\n'.format(sym),'    - High:']
     for i in range(hl_clm_l):
         bsrQut = [M80_20(hl_dic[hl_cls[i]+'_'+str(w)]) for w in winds]
         bsrH = bsr.format(int(hl_dic[hl_cls[i]]),*bsrQut)
-        if i==hl_clm_l//2: blst.append('\n\t\t')
+        if i==hl_clm_l//2: blst.append('\n    - Low:')
         blst.append(bsrH)
     return ''.join(blst)
 
@@ -230,7 +229,7 @@ def doc_high_low_legu(cfg_file=''):
     all_prds = [int(a.strip()) for a in all_periods.split(',')]
 
     hl_legu_lines = list()
-    hl_legu_doc_dict = dict(high_low_legu_periods=all_periods)
+    hl_legu_doc_dict = dict(high_low_legu_periods=all_periods,high_low_legu_date=up_date)
     fpth = os.path.join('../data_save', config.get(cfg_sec, 'fpath'))
     hl_legu_main_pd = pd.read_csv(fpth,index_col=0)
     for sym in High_Low_Legu_Indexs.keys():
@@ -244,7 +243,7 @@ def doc_high_low_legu(cfg_file=''):
         hl_legu_lines.append(hl_tl)
         make_high_low_legu_plt(sym,img_pth, hl_new,_hl_columns_nums(hl_new.columns))
         hl_legu_doc_dict.update({
-            'high_low_legu_{}_tlst'.format(sym):hl_tl[1:],
+            'high_low_legu_{}_tlst'.format(sym):hl_tl,
             'high_low_legu_{}_ppth'.format(sym):img_pth
         })
     hl_legu_doc_dict['high_low_legu_tlst'] = '\n'.join(hl_legu_lines)
@@ -253,12 +252,5 @@ def doc_high_low_legu(cfg_file=''):
 
 if __name__ == '__main__':
     # append_high_low_legu_file()
-    # pp1 = pd.read_csv('../data_save/high_low_legu.csv',index_col=0)
-    # pp1 = pp1[pp1.symbol=='all']
-    # del pp1['symbol']
-    # pp1.sort_index(axis=0,inplace=True)
-    # pp1.index = pd.to_datetime(pp1.index)
-    # pp2 = make_high_low_legu_qua('all',pp1)
-    # print(sorted(pp1.columns,key=_rerange_hl_columns))
-    # make_high_low_legu_plt('all','',pp1,_hl_columns_nums(pp1.columns))
     print(doc_high_low_legu())
+    pass
