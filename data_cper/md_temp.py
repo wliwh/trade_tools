@@ -3,7 +3,6 @@ Plain_Headers = '''
 ## 股指日报 ({now_date})
 
 ### 总括
-
 '''
 
 Qvix_Day_Texts = '''
