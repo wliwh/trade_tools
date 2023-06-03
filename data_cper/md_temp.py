@@ -78,3 +78,90 @@ ETF_Amount_Texts = '''
 
 ![]({etf_amount_plt_pth})
 '''
+
+Second_Header = '''
+### 主要指数分析
+
+包括内地宽基指数、港股指数等
+'''
+
+SZ50_Texts = '''
+#### 上证50
+
+* 上证50期权波动率指数
+* 计算分位数所用的周期长度 ({qvix_day_periods})
+* 输出：指数-波动率指数-分位数
+
+{qvix_day_tlst}
+
+![]({qvix_day_50ETF_ppth})
+
+* 上证50搜索指数
+* 计算分位数所用的周期长度 ({bsearch_day_periods})
+* 输出：检索词-检索量-分位数
+
+{bsearch_day_SZ50_tlst}
+
+![]({bsearch_day_SZ50_ppth})
+
+* 20-60-120日的新高新低数, 再对该数量使用周期长度 ({high_low_legu_periods}) 求取分位数
+* 输出：指数-某一周期新高数(分位数)-某一周期新低数(分位数)
+
+{high_low_legu_sz50_tlst}
+
+![]({high_low_legu_sz50_ppth})
+'''
+
+HS300_Texts = '''
+#### 沪深300
+
+* 沪深300期权波动率指数
+* 计算分位数所用的周期长度 ({qvix_day_periods})
+* 输出：指数-波动率指数-分位数
+
+{qvix_day_tlst}
+
+![]({qvix_day_300ETF_ppth})
+
+* 沪深300搜索指数
+* 计算分位数所用的周期长度 ({bsearch_day_periods})
+* 输出：检索词-检索量-分位数
+
+{bsearch_day_SZ50_tlst}
+
+![]({bsearch_day_SZ50_ppth})
+
+* 沪深300成分股20-60-120日的新高新低数, 再对该数量使用周期长度 ({high_low_legu_periods}) 求取分位数
+* 输出：指数-某一周期新高数(分位数)-某一周期新低数(分位数)
+
+{high_low_legu_hs300_tlst}
+
+![]({high_low_legu_hs300_ppth})
+'''
+
+ZZ500_Texts = '''
+#### 中证500
+
+* 中证500期权波动率指数
+* 计算分位数所用的周期长度 ({qvix_day_periods})
+* 输出：指数-波动率指数-分位数
+
+{qvix_day_tlst}
+
+![]({qvix_day_50ETF_ppth})
+
+* 中证500搜索指数
+* 计算分位数所用的周期长度 ({bsearch_day_periods})
+* 输出：检索词-检索量-分位数
+
+{bsearch_day_ZZ500_tlst}
+
+![]({bsearch_day_ZZ500_ppth})
+
+* 20-60-120日的新高新低数, 再对该数量使用周期长度 ({high_low_legu_periods}) 求取分位数
+* 输出：指数-某一周期新高数(分位数)-某一周期新低数(分位数)
+
+{high_low_legu_zz500_tlst}
+
+![]({high_low_legu_zz500_ppth})
+'''
