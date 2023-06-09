@@ -68,5 +68,5 @@ def doc_file(paras:list):
 if __name__=='__main__':
     update_files()
     choose_paras = ['qvix_day','bsearch_day','high_low_legu','north_flow']
-    # doc_file(choose_paras)
+    doc_file(choose_paras)
     pass

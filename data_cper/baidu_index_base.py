@@ -19,7 +19,7 @@ os.chdir(os.path.dirname(__file__))
 from common.smooth_tool import log_min_max_dist_pd
 from common.mpf_set import Mpf_Style, M80_20
 from common.trade_date import get_trade_list
-from .md_temp import Bsearch_Pred_Texts
+from md_temp import Bsearch_Pred_Texts
 
 
 Keyword_Index_Dic = {'股市':'ZZQZ','股票':'ZZQZ','a股':'SZZS',
@@ -33,7 +33,7 @@ Index_Plt_Dic = {'SZZS':['股市','股票','a股','上证','上证指数'],
                  'ZZQZ':['股市','股票','a股','上证','上证指数'],
                  'HSI':['港股','恒生指数'],
                  'HSTECH':['恒生科技指数'],
-                #  'IXIC':['美股行情','道琼斯指数','纳斯达克指数'],
+                 'IXIC':['美股行情','道琼斯指数','纳斯达克指数'],
                 #  'DQS':['美股行情','道琼斯指数','纳斯达克指数'],
                 #  'PGJ':['中概股'],
                  'SZ50':['股市', '上证50'],
