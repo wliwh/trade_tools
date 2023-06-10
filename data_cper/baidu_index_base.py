@@ -19,7 +19,7 @@ os.chdir(os.path.dirname(__file__))
 from common.smooth_tool import log_min_max_dist_pd
 from common.mpf_set import Mpf_Style, M80_20
 from common.trade_date import get_trade_list
-from md_temp import Bsearch_Pred_Texts
+from .md_temp import Bsearch_Pred_Texts
 
 
 Keyword_Index_Dic = {'股市':'ZZQZ','股票':'ZZQZ','a股':'SZZS',

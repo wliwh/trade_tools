@@ -142,14 +142,6 @@ HS300_Texts = '''
 ZZ500_Texts = '''
 #### 中证500
 
-* 中证500期权波动率指数
-* 计算分位数所用的周期长度 ({qvix_day_periods})
-* 输出：指数-波动率指数-分位数
-
-{qvix_day_tlst}
-
-![]({qvix_day_50ETF_ppth})
-
 * 中证500搜索指数
 * 计算分位数所用的周期长度 ({bsearch_day_periods})
 * 输出：检索词-检索量-分位数
@@ -165,3 +157,66 @@ ZZ500_Texts = '''
 
 ![]({high_low_legu_zz500_ppth})
 '''
+
+CYB_Texts = '''
+#### 创业板指
+
+* 创业板搜索指数
+* 计算分位数所用的周期长度 ({bsearch_day_periods})
+* 输出：检索词-检索量-分位数
+
+{bsearch_day_399006_tlst}
+
+![]({bsearch_day_399006_ppth})
+
+* 20-60-120日的新高新低数, 再对该数量使用周期长度 ({high_low_legu_periods}) 求取分位数
+* 输出：指数-某一周期新高数(分位数)-某一周期新低数(分位数)
+
+{high_low_legu_cyb_tlst}
+
+![]({high_low_legu_cyb_ppth})
+'''
+
+KC_Texts = '''
+* 科创板搜索指数
+* 计算分位数所用的周期长度 ({bsearch_day_periods})
+* 输出：检索词-检索量-分位数
+
+{bsearch_day_KC50_tlst}
+
+![]({bsearch_day_KC50_ppth})
+
+* 20-60-120日的新高新低数, 再对该数量使用周期长度 ({high_low_legu_periods}) 求取分位数
+* 输出：指数-某一周期新高数(分位数)-某一周期新低数(分位数)
+
+{high_low_legu_kc50_tlst}
+
+![]({high_low_legu_kc50_ppth})
+'''
+
+HSI_Texts = '''
+* 恒生、恒生科技搜索指数
+* 计算分位数所用的周期长度 ({bsearch_day_periods})
+* 输出：检索词-检索量-分位数
+
+{bsearch_day_HSI_tlst}
+
+![]({bsearch_day_HSI_ppth})
+
+{bsearch_day_HSTECH_tlst}
+
+![]({bsearch_day_HSTECH_ppth})
+
+'''
+
+IXIC_Texts = '''
+* 美股搜索指数
+* 计算分位数所用的周期长度 ({bsearch_day_periods})
+* 输出：检索词-检索量-分位数
+
+{bsearch_day_IXIC_tlst}
+
+![]({bsearch_day_IXIC_ppth})
+
+'''
+
