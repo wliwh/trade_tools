@@ -7,13 +7,24 @@ logging.basicConfig(
     format='%(asctime)s [%(filename)s] - %(levelname)s: %(message)s',
     level=logging.INFO)
 
-Doc_Funs_Dic = {
-    'qvix_day':doc_qvix_day,
-    'bsearch_day':doc_bsearch_info,
-    'high_low_legu':doc_high_low_legu,
-    'north_flow':doc_north_flow,
-    'etf_amount':docs_funds_amt
-}
+Doc_Gen_Funs = [
+    doc_qvix_day,
+    doc_bsearch_info,
+    doc_high_low_legu,
+    doc_north_flow,
+    docs_funds_amt]
+
+Doc_Paras_List = [
+    Qvix_Day_Texts,
+    Bsearch_Pred_Texts,
+    High_Low_Texts,
+    North_Flow_Texts,
+    # ETF_Amount_Texts,
+    Second_Header,
+    SZ50_Texts, HS300_Texts, ZZ500_Texts,
+    CYB_Texts, KC_Texts,
+    HSI_Texts, IXIC_Texts
+]
 
 def basic_append_fun(fn,retry,**kwds):
     args, wsec = kwds.get('args',[]), kwds['words']
@@ -28,6 +39,7 @@ def basic_append_fun(fn,retry,**kwds):
             logging.warning("Try update {} {} times. ({})".format(wsec,r+1,e))
         if r==retry-1:
             logging.error("Can't update {}.".format(wsec))
+
 
 def update_files(retry:int=3):
     # 交易日 QVIX 分钟级数据
@@ -57,16 +69,17 @@ def update_files(retry:int=3):
 def doc_file(paras:list):
     trade_date = get_trade_day(7).strftime('%Y-%m-%d')
     basic_doc = [Plain_Headers.format(now_date=trade_date)]
-    for p in paras:
-        basic_doc.append(Doc_Funs_Dic[p]())
+    all_doc_dics = dict()
+    for d in Doc_Gen_Funs: all_doc_dics.update(d())
+    for p in paras: basic_doc.append(p.format(**all_doc_dics))
     new_doc = ''.join(basic_doc)
+    # new_doc.format(**all_doc_dics)
     fpth = os.path.join('..', 'data_save', 'index_report.md')
     with open(fpth,'w',encoding='utf-8') as f:
         f.write(new_doc)
     
 
 if __name__=='__main__':
-    update_files()
-    choose_paras = ['qvix_day','bsearch_day','high_low_legu','north_flow']
-    doc_file(choose_paras)
+    # update_files()
+    doc_file(Doc_Paras_List)
     pass

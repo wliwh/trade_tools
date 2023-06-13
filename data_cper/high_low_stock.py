@@ -15,7 +15,6 @@ os.chdir(os.path.dirname(__file__))
 from common.trade_date import get_trade_day, get_delta_trade_day
 from common.smooth_tool import min_max_dist_pd, log_min_max_dist_pd
 from common.mpf_set import M80_20,Mpf_Style
-from .md_temp import High_Low_Texts
 
 High_Low_Legu_Indexs = {
     'all':'sh000985','sz50':'sh000016', 'hs300':'sh000300', 
@@ -248,7 +247,7 @@ def doc_high_low_legu(cfg_file=''):
         })
     hl_legu_doc_dict['high_low_legu_tlst'] = '\n'.join(hl_legu_lines)
     # print(hl_legu_doc_dict)
-    return High_Low_Texts.format(**hl_legu_doc_dict)
+    return hl_legu_doc_dict
 
 if __name__ == '__main__':
     # append_high_low_legu_file()

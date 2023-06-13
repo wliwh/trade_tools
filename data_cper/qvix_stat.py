@@ -13,7 +13,7 @@ os.chdir(os.path.dirname(__file__))
 from common.trade_date import get_trade_day, get_delta_trade_day
 from common.mpf_set import Mpf_Style,M80_20
 from common.smooth_tool import LLT_MA, HMA, super_smoother, min_max_dist_series
-from .md_temp import Qvix_Day_Texts
+
 
 def parse_symbol_str(symbol: str, minute: bool = False):
     ''' symbol 输出 '''
@@ -219,7 +219,7 @@ def doc_qvix_day(cfg_file=''):
         qvix_doc_dict['qvix_day_date'] = q_pd.index[-1].date()
     qvix_doc_dict['qvix_day_tlst'] = '\n'.join(qvix_sta_lines)
     # print(qvix_doc_dict)
-    return Qvix_Day_Texts.format(**qvix_doc_dict)
+    return qvix_doc_dict
 
 if __name__=='__main__':
     # append_qvix_minute_file()

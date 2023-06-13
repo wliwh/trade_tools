@@ -8,6 +8,7 @@ from base64 import b64encode
 import efinance as ef
 import mplfinance as mpf
 import datetime
+import numpy as np
 import requests
 import json
 import pandas as pd
@@ -16,10 +17,9 @@ import sys
 sys.path.append('..')
 os.chdir(os.path.dirname(__file__))
 
-from common.smooth_tool import log_min_max_dist_pd
+from common.smooth_tool import log_min_max_dist_pd, smart_min_max_dist_pd
 from common.mpf_set import Mpf_Style, M80_20
 from common.trade_date import get_trade_list
-from .md_temp import Bsearch_Pred_Texts
 
 
 Keyword_Index_Dic = {'股市':'ZZQZ','股票':'ZZQZ','a股':'SZZS',
@@ -572,11 +572,11 @@ def _get_idx_ochl(idx_n:str,rng=None)->pd.DataFrame:
         index_cl.sort_index(axis=0,inplace=True)
     return index_cl
     
-def make_bsearch_day_qu(winds, bdf:pd.DataFrame):
+def make_bsearch_day_qu(winds, bdf:pd.DataFrame, is_norm:bool=True):
     ''' 对某几个关键词的历史分位 '''
     qut_l = [bdf]
     for w in winds:
-        bper = log_min_max_dist_pd(bdf,w)
+        bper = log_min_max_dist_pd(bdf,w) if is_norm else smart_min_max_dist_pd(bdf,w,fn=np.log)
         bper.rename(columns=lambda x:x+'_'+str(w),inplace=True)
         qut_l.append(bper)
     return pd.concat(qut_l,axis=1)
@@ -638,7 +638,10 @@ def doc_bsearch_info(cfg_file=''):
         img_pth = os.path.join('../data_save', config.get('Basic_Info','doc_img_pth'),'bday_{}.png'.format(idx_name))
         idx_cl = _get_idx_ochl(idx_name,set(bday_main_pd.index))
         bday_pd = _get_bwords_pd(s,bday_main_pd,500)
-        bday_qut = make_bsearch_day_qu(all_prds,bday_pd)
+        if idx_name in ('HSTECH','IXIC','PGJ'):
+            bday_qut = make_bsearch_day_qu(all_prds,bday_pd,False)
+        else:
+            bday_qut = make_bsearch_day_qu(all_prds,bday_pd,True)
         bday_stas = make_bsearch_day_tline(s,all_prds,dict(bday_qut.loc[up_date]))
         make_bsearch_day_plt(s,img_pth,idx_cl,bday_pd,bday_qut,main_period)
         bday_doc_dic.update({
@@ -648,7 +651,7 @@ def doc_bsearch_info(cfg_file=''):
         bday_sym_set.add(idx_name)
     bday_doc_dic['bsearch_day_main_tlst'] = bday_doc_dic['bsearch_day_{}_tlst'.format(main_plt_idx)]
     bday_doc_dic['bsearch_day_main_ppth'] = bday_doc_dic['bsearch_day_{}_ppth'.format(main_plt_idx)]
-    return Bsearch_Pred_Texts.format(**bday_doc_dic)
+    return bday_doc_dic
 
 if __name__=='__main__':
     append_bsearch_day_file()
