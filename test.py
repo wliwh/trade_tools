@@ -11,8 +11,8 @@ Doc_Gen_Funs = [
     doc_qvix_day,
     doc_bsearch_info,
     doc_high_low_legu,
-    doc_north_flow,
-    docs_funds_amt]
+    doc_north_flow ]
+    # docs_funds_amt]
 
 Doc_Paras_List = [
     Qvix_Day_Texts,
@@ -80,6 +80,6 @@ def doc_file(paras:list):
     
 
 if __name__=='__main__':
-    # update_files()
-    doc_file(Doc_Paras_List)
+    update_files()
+    # doc_file(Doc_Paras_List)
     pass
