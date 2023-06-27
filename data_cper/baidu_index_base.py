@@ -642,7 +642,7 @@ def doc_bsearch_info(cfg_file=''):
             bday_qut = make_bsearch_day_qu(all_prds,bday_pd,False)
         else:
             bday_qut = make_bsearch_day_qu(all_prds,bday_pd,True)
-        bday_stas = make_bsearch_day_tline(s,all_prds,dict(bday_qut.loc[up_date]))
+        bday_stas = make_bsearch_day_tline(s,all_prds,dict(bday_qut.iloc[-1]))
         make_bsearch_day_plt(s,img_pth,idx_cl,bday_pd,bday_qut,main_period)
         bday_doc_dic.update({
             'bsearch_day_{}_tlst'.format(idx_name):bday_stas,
