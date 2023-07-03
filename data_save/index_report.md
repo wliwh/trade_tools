@@ -1,55 +1,55 @@
 
-## 股指日报 (2023-06-28)
+## 股指日报 (2023-06-30)
 
 ### 总括
 
-#### 恐慌指数 2023-06-28
+#### 恐慌指数 2023-06-29
 
 * 选用**沪深300ETF**期权波动率指数作为整个市场恐慌指数的表征
 * 其后另附*上证50ETF、中证500ETF*等的期权波动率指数
 * 计算分位数所用的周期长度 (20,60,120)
 * 输出：指数-波动率指数-分位数
 
-1. 300ETF:	15.19	(28.9,33.7,39.9)
-1. 50ETF:	15.69	(**<font color="green">14.3</font>**,**<font color="green">17.2</font>**,24.4)
+1. 300ETF:	14.94	(**<font color="green">18.9</font>**,27.2,34.0)
+1. 50ETF:	15.84	(26.1,25.6,31.2)
 
 ![](../data_save\data_img\qvix_day_300ETF_per.png)
 
 
-#### 检索量波动 2023-06-27
+#### 检索量波动 2023-06-29
 
 * 选用多个检索词刻画股市热度
 * 计算分位数所用的周期长度 (60,120)
 * 输出：检索词-检索量-分位数
 * 其后附有*上证50、中证500、创业板*等检索情况
 
-1. 股市:   	 10979 (48.7,35.3)
-1. 股票:   	 46561 (**<font color="red">95.3</font>**,**<font color="red">95.8</font>**)
-1. a股:   	 16505 (61.8,59.1)
-1. 上证:   	  6502 (67.5,69.8)
-1. 上证指数: 	177590 (53.3,53.4)
+1. 股市:   	  9874 (39.5,28.6)
+1. 股票:   	 37000 (77.4,79.8)
+1. a股:   	 13036 (43.7,43.9)
+1. 上证:   	  5773 (55.1,59.0)
+1. 上证指数: 	166280 (35.5,40.2)
 
 ![](../data_save\data_img\bday_SZZS.png)
 
 
-#### 新高新低分位 2023-06-28
+#### 新高新低分位 2023-06-29
 
 * 20-60-120日的新高新低数, 再对该数量使用周期长度 (60,120) 求取分位数
 * 输出：指数-某一周期新高数(分位数)-某一周期新低数(分位数)
 
 1. all
-    - High: 443 (48.4,**<font color="green">13.2</font>**); 200 (36.4,**<font color="green">19.7</font>**); 108 (**<font color="green">17.9</font>**,21.6);
-    - Low: 546 (**<font color="green">14.2</font>**,**<font color="green">16.9</font>**); 202 (**<font color="green">6.1</font>**,**<font color="green">7.6</font>**); 132 (**<font color="green">7.3</font>**,**<font color="green">9.6</font>**);
+    - High: 670 (**<font color="red">86.4</font>**,20.8); 317 (68.2,33.8); 172 (37.3,39.1);
+    - Low: 270 (**<font color="green">4.8</font>**,**<font color="green">7.7</font>**); 149 (**<font color="green">3.9</font>**,**<font color="green">5.5</font>**); 121 (**<font color="green">6.4</font>**,**<font color="green">8.7</font>**);
 
 ![](../data_save\data_img\hl_legu_all.png)
 
-#### 北向资金流入 2023-06-28
+#### 北向资金流入 2023-06-30
 
 * 北向资金流入与其均线的偏离度
 * 计算分位数所用的周期长度 (60,120,200)
 * 输出: 累计流入量-偏离度-分位数
 
-purchase:	0.14	(52.7,**<font color="green">17.2</font>**,37.0)
+purchase:	-0.21	(31.6,**<font color="green">10.3</font>**,31.8)
 
 ![](../data_save\data_img\north_flow_bias_per.png)
 
@@ -63,8 +63,8 @@ purchase:	0.14	(52.7,**<font color="green">17.2</font>**,37.0)
 * 计算分位数所用的周期长度 (20,60,120)
 * 输出：指数-波动率指数-分位数
 
-1. 300ETF:	15.19	(28.9,33.7,39.9)
-1. 50ETF:	15.69	(**<font color="green">14.3</font>**,**<font color="green">17.2</font>**,24.4)
+1. 300ETF:	14.94	(**<font color="green">18.9</font>**,27.2,34.0)
+1. 50ETF:	15.84	(26.1,25.6,31.2)
 
 ![](../data_save\data_img\qvix_day_50ETF_per.png)
 
@@ -72,8 +72,8 @@ purchase:	0.14	(52.7,**<font color="green">17.2</font>**,37.0)
 * 计算分位数所用的周期长度 (60,120)
 * 输出：检索词-检索量-分位数
 
-1. 股市:   	 10979 (48.7,35.3)
-1. 上证50: 	  1522 (31.8,32.2)
+1. 股市:   	  9874 (39.5,28.6)
+1. 上证50: 	  1488 (27.9,28.4)
 
 ![](../data_save\data_img\bday_SZ50.png)
 
@@ -81,8 +81,8 @@ purchase:	0.14	(52.7,**<font color="green">17.2</font>**,37.0)
 * 输出：指数-某一周期新高数(分位数)-某一周期新低数(分位数)
 
 1. sz50
-    - High: 5 (23.8,**<font color="green">18.5</font>**); 0 (**<font color="green">0.0</font>**,**<font color="green">0.0</font>**); 0 (**<font color="green">0.0</font>**,**<font color="green">0.0</font>**);
-    - Low: 5 (**<font color="green">17.9</font>**,**<font color="green">17.9</font>**); 4 (**<font color="green">20.0</font>**,**<font color="green">20.0</font>**); 4 (22.2,22.2);
+    - High: 2 (**<font color="green">9.5</font>**,**<font color="green">7.4</font>**); 1 (**<font color="green">8.3</font>**,**<font color="green">5.9</font>**); 1 (**<font color="green">10.0</font>**,**<font color="green">10.0</font>**);
+    - Low: 6 (21.4,21.4); 6 (30.0,30.0); 6 (33.3,33.3);
 
 ![](../data_save\data_img\hl_legu_sz50.png)
 
@@ -92,8 +92,8 @@ purchase:	0.14	(52.7,**<font color="green">17.2</font>**,37.0)
 * 计算分位数所用的周期长度 (20,60,120)
 * 输出：指数-波动率指数-分位数
 
-1. 300ETF:	15.19	(28.9,33.7,39.9)
-1. 50ETF:	15.69	(**<font color="green">14.3</font>**,**<font color="green">17.2</font>**,24.4)
+1. 300ETF:	14.94	(**<font color="green">18.9</font>**,27.2,34.0)
+1. 50ETF:	15.84	(26.1,25.6,31.2)
 
 ![](../data_save\data_img\qvix_day_300ETF_per.png)
 
@@ -101,8 +101,8 @@ purchase:	0.14	(52.7,**<font color="green">17.2</font>**,37.0)
 * 计算分位数所用的周期长度 (60,120)
 * 输出：检索词-检索量-分位数
 
-1. 股市:   	 10979 (48.7,35.3)
-1. 上证50: 	  1522 (31.8,32.2)
+1. 股市:   	  9874 (39.5,28.6)
+1. 上证50: 	  1488 (27.9,28.4)
 
 ![](../data_save\data_img\bday_SZ50.png)
 
@@ -110,8 +110,8 @@ purchase:	0.14	(52.7,**<font color="green">17.2</font>**,37.0)
 * 输出：指数-某一周期新高数(分位数)-某一周期新低数(分位数)
 
 1. hs300
-    - High: 25 (22.7,**<font color="green">16.2</font>**); 7 (**<font color="green">13.0</font>**,**<font color="green">10.0</font>**); 3 (**<font color="green">6.4</font>**,**<font color="green">6.4</font>**);
-    - Low: 22 (**<font color="green">13.1</font>**,**<font color="green">16.8</font>**); 17 (**<font color="green">16.0</font>**,**<font color="green">16.0</font>**); 15 (**<font color="green">19.7</font>**,**<font color="green">19.7</font>**);
+    - High: 23 (20.6,**<font color="green">14.7</font>**); 10 (**<font color="green">18.5</font>**,**<font color="green">14.3</font>**); 5 (**<font color="green">10.6</font>**,**<font color="green">10.6</font>**);
+    - Low: 30 (**<font color="green">19.7</font>**,22.9); 23 (21.7,21.7); 22 (28.9,28.9);
 
 ![](../data_save\data_img\hl_legu_hs300.png)
 
@@ -121,8 +121,8 @@ purchase:	0.14	(52.7,**<font color="green">17.2</font>**,37.0)
 * 计算分位数所用的周期长度 (60,120)
 * 输出：检索词-检索量-分位数
 
-1. 股市:   	 10979 (48.7,35.3)
-1. 中证500:	  3918 (60.4,55.4)
+1. 股市:   	  9874 (39.5,28.6)
+1. 中证500:	  3458 (33.8,38.3)
 
 ![](../data_save\data_img\bday_ZZ500.png)
 
@@ -130,8 +130,8 @@ purchase:	0.14	(52.7,**<font color="green">17.2</font>**,37.0)
 * 输出：指数-某一周期新高数(分位数)-某一周期新低数(分位数)
 
 1. zz500
-    - High: 33 (25.7,**<font color="green">11.1</font>**); 10 (**<font color="green">12.9</font>**,**<font color="green">10.8</font>**); 5 (**<font color="green">8.6</font>**,**<font color="green">8.6</font>**);
-    - Low: 55 (**<font color="green">17.6</font>**,20.9); 22 (**<font color="green">9.8</font>**,**<font color="green">11.2</font>**); 18 (**<font color="green">13.9</font>**,**<font color="green">15.4</font>**);
+    - High: 42 (34.7,**<font color="green">14.5</font>**); 21 (28.6,24.1); 12 (20.7,20.7);
+    - Low: 45 (**<font color="green">13.5</font>**,**<font color="green">16.9</font>**); 31 (**<font color="green">14.5</font>**,**<font color="green">15.8</font>**); 28 (22.6,23.9);
 
 ![](../data_save\data_img\hl_legu_zz500.png)
 
@@ -141,8 +141,8 @@ purchase:	0.14	(52.7,**<font color="green">17.2</font>**,37.0)
 * 计算分位数所用的周期长度 (60,120)
 * 输出：检索词-检索量-分位数
 
-1. 股市:   	 10979 (48.7,35.3)
-1. 创业板指: 	 12851 (54.6,56.3)
+1. 股市:   	  9874 (39.5,28.6)
+1. 创业板指: 	 11793 (34.4,36.9)
 
 ![](../data_save\data_img\bday_399006.png)
 
@@ -150,8 +150,8 @@ purchase:	0.14	(52.7,**<font color="green">17.2</font>**,37.0)
 * 输出：指数-某一周期新高数(分位数)-某一周期新低数(分位数)
 
 1. cyb
-    - High: 7 (31.8,**<font color="green">15.6</font>**); 0 (**<font color="green">0.0</font>**,**<font color="green">0.0</font>**); 0 (**<font color="green">0.0</font>**,**<font color="green">0.0</font>**);
-    - Low: 19 (32.7,33.9); 11 (22.9,22.9); 8 (23.5,23.5);
+    - High: 9 (40.9,**<font color="green">20.0</font>**); 2 (**<font color="green">15.4</font>**,**<font color="green">10.5</font>**); 1 (**<font color="green">7.7</font>**,**<font color="green">7.7</font>**);
+    - Low: 14 (23.6,25.0); 11 (22.9,22.9); 10 (29.4,29.4);
 
 ![](../data_save\data_img\hl_legu_cyb.png)
 
@@ -161,8 +161,8 @@ purchase:	0.14	(52.7,**<font color="green">17.2</font>**,37.0)
 * 计算分位数所用的周期长度 (60,120)
 * 输出：检索词-检索量-分位数
 
-1. 股市:   	 10979 (48.7,35.3)
-1. 科创50: 	  2743 (49.7,72.9)
+1. 股市:   	  9874 (39.5,28.6)
+1. 科创50: 	  2754 (50.5,73.4)
 
 ![](../data_save\data_img\bday_KC50.png)
 
@@ -170,8 +170,8 @@ purchase:	0.14	(52.7,**<font color="green">17.2</font>**,37.0)
 * 输出：指数-某一周期新高数(分位数)-某一周期新低数(分位数)
 
 1. kc50
-    - High: 3 (25.0,**<font color="green">13.0</font>**); 2 (**<font color="green">18.2</font>**,**<font color="green">16.7</font>**); 0 (**<font color="green">0.0</font>**,**<font color="green">0.0</font>**);
-    - Low: 9 (28.6,31.0); 4 (**<font color="green">16.7</font>**,**<font color="green">16.7</font>**); 3 (**<font color="green">13.6</font>**,**<font color="green">13.6</font>**);
+    - High: 2 (**<font color="green">16.7</font>**,**<font color="green">8.7</font>**); 1 (**<font color="green">9.1</font>**,**<font color="green">8.3</font>**); 0 (**<font color="green">0.0</font>**,**<font color="green">0.0</font>**);
+    - Low: 10 (32.1,34.5); 6 (25.0,25.0); 3 (**<font color="green">13.6</font>**,**<font color="green">13.6</font>**);
 
 ![](../data_save\data_img\hl_legu_kc50.png)
 
@@ -181,12 +181,12 @@ purchase:	0.14	(52.7,**<font color="green">17.2</font>**,37.0)
 * 计算分位数所用的周期长度 (60,120)
 * 输出：检索词-检索量-分位数
 
-1. 港股:   	  1893 (53.6,50.0)
-1. 恒生指数: 	 11996 (48.2,38.2)
+1. 港股:   	  1970 (57.8,53.9)
+1. 恒生指数: 	 12512 (54.1,39.8)
 
 ![](../data_save\data_img\bday_HSI.png)
 
-恒生科技指数:	 10007 (**<font color="red">100.0</font>**,**<font color="red">82.0</font>**)
+恒生科技指数:	  8726 (75.4,60.1)
 
 ![](../data_save\data_img\bday_HSTECH.png)
 
@@ -197,9 +197,9 @@ purchase:	0.14	(52.7,**<font color="green">17.2</font>**,37.0)
 * 计算分位数所用的周期长度 (60,120)
 * 输出：检索词-检索量-分位数
 
-1. 美股行情: 	 16072 (43.2,24.6)
-1. 道琼斯指数:	 15209 (47.7,22.6)
-1. 纳斯达克指数:	 10515 (71.0,35.3)
+1. 美股行情: 	 15778 (40.7,22.1)
+1. 道琼斯指数:	 14576 (40.8,**<font color="green">17.8</font>**)
+1. 纳斯达克指数:	 10030 (61.5,28.7)
 
 ![](../data_save\data_img\bday_IXIC.png)
 
