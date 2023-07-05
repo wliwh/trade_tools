@@ -52,4 +52,18 @@ def calc_board_pct_sort(board_price:pd.DataFrame,
 
 def calc_board_cycle_position(board_st:pd.DataFrame):
     ''' 计算板块轮动强度 '''
-    pass
+    return board_st.diff().abs().sum(axis=1)
+
+
+def calc_board_cycle_ginni(board_st:pd.DataFrame):
+    ''' 计算板块间基尼系数 '''
+    lens,_ = board_st.shape
+    board_ginni = pd.Series(0,index=board_st.index)
+    for i in range(lens):
+        s0 = board_st.iloc[i]
+        se = s0.sort_values()
+        se = (se-se[0])/(se[-1]-se[0])
+        g1 = se.sum()/len(se)
+        g2 = (se[0]+se[-1])/2
+        board_ginni.iloc[i] = g1/g2
+    return board_ginni
