@@ -3,6 +3,9 @@ import numpy as np
 import efinance as ef
 import os
 import sys
+import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
+import matplotlib.dates as dates
 
 sys.path.append('..')
 os.chdir(os.path.dirname(__file__))
@@ -47,3 +50,14 @@ def rank_dfs(etf_pool,Nd=25,fun=rsrs_score):
     nls.sort_index(inplace=True)
     nls.fillna(method='ffill',inplace=True)
     return nls
+
+def rank_plt(score_pd:pd.DataFrame):
+    plt.figure(figsize=(8,6))
+    plt.plot(score_pd.iloc[-200:])
+    ax = plt.gca()
+    # plt.xlim(min(score_pd.index),max(score_pd.index))
+    # dates = pd.date_range(min(score_pd.index),max(score_pd.index),freq='M')
+    ax.xaxis.set_major_locator(ticker.MultipleLocator(7))
+    ax.xaxis.set_major_formatter(dates.DateFormatter('%m-%d'))
+    plt.xticks(rotation=60)
+    plt.show()

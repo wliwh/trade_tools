@@ -654,7 +654,7 @@ def doc_bsearch_info(cfg_file=''):
     return bday_doc_dic
 
 if __name__=='__main__':
-    append_bsearch_day_file()
+    # append_bsearch_day_file()
     # append_bsearch_hour_file()
     # doc_bsearch_info()
     pass
