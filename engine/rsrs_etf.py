@@ -6,7 +6,7 @@ import sys
 
 sys.path.append('..')
 os.chdir(os.path.dirname(__file__))
-from common.smooth_tool import trendflex,LLT_MA,HMA
+from common.smooth_tool import trendflex
 
 etf_dics = {
     'zzhl':'510880',        # 中证红利
