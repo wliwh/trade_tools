@@ -214,7 +214,7 @@ def doc_qvix_day(cfg_file=''):
         make_qvix_day_plt(q_pd,img_pth,sym,smooth_wind=main_period)
         qvix_doc_dict.update({
             'qvix_day_{}_tlst'.format(sym):q_tl[1:],
-            'qvix_day_{}_ppth'.format(sym):img_pth
+            'qvix_day_{}_ppth'.format(sym):os.path.abspath(img_pth)
         })
         qvix_doc_dict['qvix_day_date'] = q_pd.index[-1].date()
     qvix_doc_dict['qvix_day_tlst'] = '\n'.join(qvix_sta_lines)

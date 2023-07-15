@@ -243,7 +243,7 @@ def doc_high_low_legu(cfg_file=''):
         make_high_low_legu_plt(sym,img_pth, hl_new,_hl_columns_nums(hl_new.columns))
         hl_legu_doc_dict.update({
             'high_low_legu_{}_tlst'.format(sym):hl_tl,
-            'high_low_legu_{}_ppth'.format(sym):img_pth
+            'high_low_legu_{}_ppth'.format(sym):os.path.abspath(img_pth)
         })
     hl_legu_doc_dict['high_low_legu_tlst'] = '\n'.join(hl_legu_lines)
     # print(hl_legu_doc_dict)

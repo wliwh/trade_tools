@@ -648,7 +648,7 @@ def doc_bsearch_info(cfg_file=''):
         make_bsearch_day_plt(s,img_pth,idx_cl,bday_pd,bday_qut,main_period)
         bday_doc_dic.update({
             'bsearch_day_{}_tlst'.format(idx_name):bday_stas,
-            'bsearch_day_{}_ppth'.format(idx_name):img_pth
+            'bsearch_day_{}_ppth'.format(idx_name):os.path.abspath(img_pth)
         })
         bday_sym_set.add(idx_name)
     bday_doc_dic['bsearch_day_main_tlst'] = bday_doc_dic['bsearch_day_{}_tlst'.format(main_plt_idx)]

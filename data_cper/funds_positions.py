@@ -113,7 +113,7 @@ def doc_north_flow(cfg_file=''):
     nfl_info_dic = dict(north_flow_periods=all_periods,
                         north_flow_date=nfl_pd.index[-1],
                         north_flow_tlst=nfl_tlst,
-                        north_flow_ppth=img_pth)
+                        north_flow_ppth=os.path.abspath(img_pth))
     # print(nfl_info_dic)
     return nfl_info_dic
 

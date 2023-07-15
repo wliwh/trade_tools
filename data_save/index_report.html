@@ -1,0 +1,257 @@
+
+    <html lang="zh-cn">
+    <head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <link href="default.css" rel="stylesheet">
+    <link href="github.css" rel="stylesheet">
+    </head>
+    <body>
+    <h2 id="2023-07-14">股指日报 (2023-07-14)</h2>
+<h3 id="_1">总括</h3>
+<h4 id="2023-07-14_1">恐慌指数 2023-07-14</h4>
+<ul>
+<li>选用<strong>沪深300ETF</strong>期权波动率指数作为整个市场恐慌指数的表征</li>
+<li>其后另附<em>上证50ETF、中证500ETF</em>等的期权波动率指数</li>
+<li>计算分位数所用的周期长度 (20,60,120)</li>
+<li>
+<p>输出：指数-波动率指数-分位数</p>
+</li>
+<li>
+<p>300ETF:  14.17   (43.2,35.0,38.4)</p>
+</li>
+<li>50ETF:   14.80   (40.1,34.6,42.2)</li>
+</ul>
+<p><img width="1000" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\qvix_day_300ETF_per.png"></img></p>
+<h4 id="2023-07-12">检索量波动 2023-07-12</h4>
+<ul>
+<li>选用多个检索词刻画股市热度</li>
+<li>计算分位数所用的周期长度 (60,120)</li>
+<li>输出：检索词-检索量-分位数</li>
+<li>
+<p>其后附有<em>上证50、中证500、创业板</em>等检索情况</p>
+</li>
+<li>
+<p>股市:        8706 (41.6,20.7)</p>
+</li>
+<li>股票:       42534 (<strong><font color="red">88.3</font></strong>,<strong><font color="red">89.5</font></strong>)</li>
+<li>a股:       11606 (34.8,36.4)</li>
+<li>上证:        5069 (41.5,47.2)</li>
+<li>上证指数:    155064 (20.1,26.2)</li>
+</ul>
+<p><img width="1000" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\bday_SZZS.png"></img></p>
+<h4 id="2023-07-13">新高新低分位 2023-07-13</h4>
+<ul>
+<li>20-60-120日的新高新低数, 再对该数量使用周期长度 (60,120) 求取分位数</li>
+<li>
+<p>输出：指数-某一周期新高数(分位数)-某一周期新低数(分位数)</p>
+</li>
+<li>
+<p>all</p>
+<ul>
+<li>High: 748 (68.6,22.3); 242 (47.8,23.7); 124 (22.7,22.4);</li>
+<li>Low: 131 (<strong><font color="green">0.8</font></strong>,<strong><font color="green">3.1</font></strong>); 48 (<strong><font color="green">0.2</font></strong>,<strong><font color="green">1.5</font></strong>); 29 (<strong><font color="green">0.5</font></strong>,<strong><font color="green">1.8</font></strong>);</li>
+</ul>
+</li>
+</ul>
+<p><img width="1000" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\hl_legu_all.png"></img></p>
+<h4 id="2023-07-14_2">北向资金流入 2023-07-14</h4>
+<ul>
+<li>北向资金流入与其均线的偏离度</li>
+<li>计算分位数所用的周期长度 (60,120,200)</li>
+<li>输出: 累计流入量-偏离度-分位数</li>
+</ul>
+<p>purchase:   0.55    (<strong><font color="red">85.8</font></strong>,25.1,43.1)</p>
+<p><img width="1000" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\north_flow_bias_per.png"></img></p>
+<h3 id="_2">主要指数分析</h3>
+<p>包括内地宽基指数、港股指数等</p>
+<h4 id="50">上证50</h4>
+<ul>
+<li>上证50期权波动率指数</li>
+<li>计算分位数所用的周期长度 (20,60,120)</li>
+<li>
+<p>输出：指数-波动率指数-分位数</p>
+</li>
+<li>
+<p>300ETF:  14.17   (43.2,35.0,38.4)</p>
+</li>
+<li>50ETF:   14.80   (40.1,34.6,42.2)</li>
+</ul>
+<p><img width="1000" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\qvix_day_50ETF_per.png"></img></p>
+<ul>
+<li>上证50搜索指数</li>
+<li>计算分位数所用的周期长度 (60,120)</li>
+<li>
+<p>输出：检索词-检索量-分位数</p>
+</li>
+<li>
+<p>股市:        8706 (41.6,20.7)</p>
+</li>
+<li>上证50:      1468 (25.5,26.0)</li>
+</ul>
+<p><img width="1000" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\bday_SZ50.png"></img></p>
+<ul>
+<li>20-60-120日的新高新低数, 再对该数量使用周期长度 (60,120) 求取分位数</li>
+<li>
+<p>输出：指数-某一周期新高数(分位数)-某一周期新低数(分位数)</p>
+</li>
+<li>
+<p>sz50</p>
+<ul>
+<li>High: 12 (57.1,44.4); 1 (<strong><font color="green">8.3</font></strong>,<strong><font color="green">5.9</font></strong>); 1 (<strong><font color="green">10.0</font></strong>,<strong><font color="green">10.0</font></strong>);</li>
+<li>Low: 0 (<strong><font color="green">0.0</font></strong>,<strong><font color="green">0.0</font></strong>); 0 (<strong><font color="green">0.0</font></strong>,<strong><font color="green">0.0</font></strong>); 0 (<strong><font color="green">0.0</font></strong>,<strong><font color="green">0.0</font></strong>);</li>
+</ul>
+</li>
+</ul>
+<p><img width="1000" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\hl_legu_sz50.png"></img></p>
+<h4 id="300">沪深300</h4>
+<ul>
+<li>沪深300期权波动率指数</li>
+<li>计算分位数所用的周期长度 (20,60,120)</li>
+<li>
+<p>输出：指数-波动率指数-分位数</p>
+</li>
+<li>
+<p>300ETF:  14.17   (43.2,35.0,38.4)</p>
+</li>
+<li>50ETF:   14.80   (40.1,34.6,42.2)</li>
+</ul>
+<p><img width="1000" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\qvix_day_300ETF_per.png"></img></p>
+<ul>
+<li>沪深300搜索指数</li>
+<li>计算分位数所用的周期长度 (60,120)</li>
+<li>
+<p>输出：检索词-检索量-分位数</p>
+</li>
+<li>
+<p>股市:        8706 (41.6,20.7)</p>
+</li>
+<li>沪深300:     3741 (31.2,25.1)</li>
+</ul>
+<p><img width="1000" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\bday_HS300.png"></img></p>
+<ul>
+<li>沪深300成分股20-60-120日的新高新低数, 再对该数量使用周期长度 (60,120) 求取分位数</li>
+<li>
+<p>输出：指数-某一周期新高数(分位数)-某一周期新低数(分位数)</p>
+</li>
+<li>
+<p>hs300</p>
+<ul>
+<li>High: 70 (69.1,49.3); 9 (<strong><font color="green">16.7</font></strong>,<strong><font color="green">12.9</font></strong>); 4 (<strong><font color="green">8.5</font></strong>,<strong><font color="green">8.5</font></strong>);</li>
+<li>Low: 2 (<strong><font color="green">0.0</font></strong>,<strong><font color="green">1.5</font></strong>); 0 (<strong><font color="green">0.0</font></strong>,<strong><font color="green">0.0</font></strong>); 0 (<strong><font color="green">0.0</font></strong>,<strong><font color="green">0.0</font></strong>);</li>
+</ul>
+</li>
+</ul>
+<p><img width="1000" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\hl_legu_hs300.png"></img></p>
+<h4 id="500">中证500</h4>
+<ul>
+<li>中证500搜索指数</li>
+<li>计算分位数所用的周期长度 (60,120)</li>
+<li>
+<p>输出：检索词-检索量-分位数</p>
+</li>
+<li>
+<p>股市:        8706 (41.6,20.7)</p>
+</li>
+<li>中证500:     3410 (30.9,23.8)</li>
+</ul>
+<p><img width="1000" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\bday_ZZ500.png"></img></p>
+<ul>
+<li>20-60-120日的新高新低数, 再对该数量使用周期长度 (60,120) 求取分位数</li>
+<li>
+<p>输出：指数-某一周期新高数(分位数)-某一周期新低数(分位数)</p>
+</li>
+<li>
+<p>zz500</p>
+<ul>
+<li>High: 90 (<strong><font color="red">82.2</font></strong>,34.3); 19 (25.7,21.7); 10 (<strong><font color="green">17.2</font></strong>,<strong><font color="green">17.2</font></strong>);</li>
+<li>Low: 13 (<strong><font color="green">0.4</font></strong>,<strong><font color="green">4.3</font></strong>); 6 (<strong><font color="green">1.6</font></strong>,<strong><font color="green">3.1</font></strong>); 2 (<strong><font color="green">0.9</font></strong>,<strong><font color="green">1.7</font></strong>);</li>
+</ul>
+</li>
+</ul>
+<p><img width="1000" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\hl_legu_zz500.png"></img></p>
+<h4 id="_3">创业板指</h4>
+<ul>
+<li>创业板搜索指数</li>
+<li>计算分位数所用的周期长度 (60,120)</li>
+<li>
+<p>输出：检索词-检索量-分位数</p>
+</li>
+<li>
+<p>股市:        8706 (41.6,20.7)</p>
+</li>
+<li>创业板指:     11142 (21.0,24.0)</li>
+</ul>
+<p><img width="1000" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\bday_399006.png"></img></p>
+<ul>
+<li>20-60-120日的新高新低数, 再对该数量使用周期长度 (60,120) 求取分位数</li>
+<li>
+<p>输出：指数-某一周期新高数(分位数)-某一周期新低数(分位数)</p>
+</li>
+<li>
+<p>cyb</p>
+<ul>
+<li>High: 16 (<strong><font color="red">84.2</font></strong>,35.6); 2 (28.6,<strong><font color="green">10.5</font></strong>); 0 (<strong><font color="green">0.0</font></strong>,<strong><font color="green">0.0</font></strong>);</li>
+<li>Low: 3 (<strong><font color="green">3.6</font></strong>,<strong><font color="green">5.4</font></strong>); 2 (<strong><font color="green">4.2</font></strong>,<strong><font color="green">4.2</font></strong>); 0 (<strong><font color="green">0.0</font></strong>,<strong><font color="green">0.0</font></strong>);</li>
+</ul>
+</li>
+</ul>
+<p><img width="1000" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\hl_legu_cyb.png"></img></p>
+<h4 id="50_1">科创50</h4>
+<ul>
+<li>科创板搜索指数</li>
+<li>计算分位数所用的周期长度 (60,120)</li>
+<li>
+<p>输出：检索词-检索量-分位数</p>
+</li>
+<li>
+<p>股市:        8706 (41.6,20.7)</p>
+</li>
+<li>科创50:      2650 (62.8,69.4)</li>
+</ul>
+<p><img width="1000" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\bday_KC50.png"></img></p>
+<ul>
+<li>20-60-120日的新高新低数, 再对该数量使用周期长度 (60,120) 求取分位数</li>
+<li>
+<p>输出：指数-某一周期新高数(分位数)-某一周期新低数(分位数)</p>
+</li>
+<li>
+<p>kc50</p>
+<ul>
+<li>High: 8 (72.7,34.8); 2 (<strong><font color="green">20.0</font></strong>,<strong><font color="green">16.7</font></strong>); 1 (<strong><font color="green">10.0</font></strong>,<strong><font color="green">10.0</font></strong>);</li>
+<li>Low: 3 (<strong><font color="green">7.1</font></strong>,<strong><font color="green">10.3</font></strong>); 2 (<strong><font color="green">8.3</font></strong>,<strong><font color="green">8.3</font></strong>); 1 (<strong><font color="green">4.5</font></strong>,<strong><font color="green">4.5</font></strong>);</li>
+</ul>
+</li>
+</ul>
+<p><img width="1000" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\hl_legu_kc50.png"></img></p>
+<h4 id="_4">恒生</h4>
+<ul>
+<li>恒生、恒生科技搜索指数</li>
+<li>计算分位数所用的周期长度 (60,120)</li>
+<li>
+<p>输出：检索词-检索量-分位数</p>
+</li>
+<li>
+<p>港股:        1555 (37.9,30.5)</p>
+</li>
+<li>恒生指数:     15538 (71.9,62.1)</li>
+</ul>
+<p><img width="1000" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\bday_HSI.png"></img></p>
+<p>恒生科技指数:  11341 (<strong><font color="red">97.4</font></strong>,<strong><font color="red">97.4</font></strong>)</p>
+<p><img width="1000" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\bday_HSTECH.png"></img></p>
+<h4 id="_5">美股</h4>
+<ul>
+<li>美股搜索指数</li>
+<li>计算分位数所用的周期长度 (60,120)</li>
+<li>
+<p>输出：检索词-检索量-分位数</p>
+</li>
+<li>
+<p>美股行情:     15107 (47.6,<strong><font color="green">17.4</font></strong>)</p>
+</li>
+<li>道琼斯指数:    13901 (44.0,<strong><font color="green">13.8</font></strong>)</li>
+<li>纳斯达克指数:    9367 (54.8,21.2)</li>
+</ul>
+<p><img width="1000" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\bday_IXIC.png"></img></p>
+    </body>
+    </html>
+    

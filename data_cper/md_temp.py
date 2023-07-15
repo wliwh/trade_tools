@@ -15,7 +15,7 @@ Qvix_Day_Texts = '''
 
 {qvix_day_tlst}
 
-![]({qvix_day_300ETF_ppth})
+<img width="800" src="{qvix_day_300ETF_ppth}"></img>
 
 '''
 
@@ -29,7 +29,7 @@ Bsearch_Pred_Texts = '''
 
 {bsearch_day_main_tlst}
 
-![]({bsearch_day_main_ppth})
+<img width="800" src="{bsearch_day_main_ppth}"></img>
 
 '''
 
@@ -41,7 +41,7 @@ High_Low_Texts = '''
 
 {high_low_legu_all_tlst}
 
-![]({high_low_legu_all_ppth})
+<img width="800" src="{high_low_legu_all_ppth}"></img>
 '''
 
 North_Flow_Texts = '''
@@ -53,7 +53,7 @@ North_Flow_Texts = '''
 
 {north_flow_tlst}
 
-![]({north_flow_ppth})
+<img width="800" src="{north_flow_ppth}"></img>
 '''
 
 Margin_Purchase_Texts = '''
@@ -64,7 +64,7 @@ Margin_Purchase_Texts = '''
 
 {margin_rate_tlst}
 
-![]({margin_rate_300_ppth})
+<img width="800" src="{margin_rate_300_ppth}"></img>
 '''
 
 ETF_Amount_Texts = '''
@@ -76,11 +76,11 @@ ETF_Amount_Texts = '''
 
 {etf_amount_tlst}
 
-![]({etf_amount_plt_pth})
+<img width="800" src="{etf_amount_plt_pth}"></img>
 '''
 
 Second_Header = '''
-### 主要指数分析
+### 主要指数分析 {bsearch_day_date}
 
 包括内地宽基指数、港股指数等
 '''
@@ -94,7 +94,7 @@ SZ50_Texts = '''
 
 {qvix_day_tlst}
 
-![]({qvix_day_50ETF_ppth})
+<img width="800" src="{qvix_day_50ETF_ppth}"></img>
 
 * 上证50搜索指数
 * 计算分位数所用的周期长度 ({bsearch_day_periods})
@@ -102,14 +102,14 @@ SZ50_Texts = '''
 
 {bsearch_day_SZ50_tlst}
 
-![]({bsearch_day_SZ50_ppth})
+<img width="800" src="{bsearch_day_SZ50_ppth}"></img>
 
 * 20-60-120日的新高新低数, 再对该数量使用周期长度 ({high_low_legu_periods}) 求取分位数
 * 输出：指数-某一周期新高数(分位数)-某一周期新低数(分位数)
 
 {high_low_legu_sz50_tlst}
 
-![]({high_low_legu_sz50_ppth})
+<img width="800" src="{high_low_legu_sz50_ppth}"></img>
 '''
 
 HS300_Texts = '''
@@ -121,22 +121,22 @@ HS300_Texts = '''
 
 {qvix_day_tlst}
 
-![]({qvix_day_300ETF_ppth})
+<img width="800" src="{qvix_day_300ETF_ppth}"></img>
 
 * 沪深300搜索指数
 * 计算分位数所用的周期长度 ({bsearch_day_periods})
 * 输出：检索词-检索量-分位数
 
-{bsearch_day_SZ50_tlst}
+{bsearch_day_HS300_tlst}
 
-![]({bsearch_day_SZ50_ppth})
+<img width="800" src="{bsearch_day_HS300_ppth}"></img>
 
 * 沪深300成分股20-60-120日的新高新低数, 再对该数量使用周期长度 ({high_low_legu_periods}) 求取分位数
 * 输出：指数-某一周期新高数(分位数)-某一周期新低数(分位数)
 
 {high_low_legu_hs300_tlst}
 
-![]({high_low_legu_hs300_ppth})
+<img width="800" src="{high_low_legu_hs300_ppth}"></img>
 '''
 
 ZZ500_Texts = '''
@@ -148,14 +148,14 @@ ZZ500_Texts = '''
 
 {bsearch_day_ZZ500_tlst}
 
-![]({bsearch_day_ZZ500_ppth})
+<img width="800" src="{bsearch_day_ZZ500_ppth}"></img>
 
 * 20-60-120日的新高新低数, 再对该数量使用周期长度 ({high_low_legu_periods}) 求取分位数
 * 输出：指数-某一周期新高数(分位数)-某一周期新低数(分位数)
 
 {high_low_legu_zz500_tlst}
 
-![]({high_low_legu_zz500_ppth})
+<img width="800" src="{high_low_legu_zz500_ppth}"></img>
 '''
 
 CYB_Texts = '''
@@ -167,18 +167,18 @@ CYB_Texts = '''
 
 {bsearch_day_399006_tlst}
 
-![]({bsearch_day_399006_ppth})
+<img width="800" src="{bsearch_day_399006_ppth}"></img>
 
 * 20-60-120日的新高新低数, 再对该数量使用周期长度 ({high_low_legu_periods}) 求取分位数
 * 输出：指数-某一周期新高数(分位数)-某一周期新低数(分位数)
 
 {high_low_legu_cyb_tlst}
 
-![]({high_low_legu_cyb_ppth})
+<img width="800" src="{high_low_legu_cyb_ppth}"></img>
 '''
 
 KC_Texts = '''
-### 科创50
+#### 科创50
 
 * 科创板搜索指数
 * 计算分位数所用的周期长度 ({bsearch_day_periods})
@@ -186,18 +186,18 @@ KC_Texts = '''
 
 {bsearch_day_KC50_tlst}
 
-![]({bsearch_day_KC50_ppth})
+<img width="800" src="{bsearch_day_KC50_ppth}"></img>
 
 * 20-60-120日的新高新低数, 再对该数量使用周期长度 ({high_low_legu_periods}) 求取分位数
 * 输出：指数-某一周期新高数(分位数)-某一周期新低数(分位数)
 
 {high_low_legu_kc50_tlst}
 
-![]({high_low_legu_kc50_ppth})
+<img width="800" src="{high_low_legu_kc50_ppth}"></img>
 '''
 
 HSI_Texts = '''
-### 恒生
+#### 恒生
 
 * 恒生、恒生科技搜索指数
 * 计算分位数所用的周期长度 ({bsearch_day_periods})
@@ -205,16 +205,16 @@ HSI_Texts = '''
 
 {bsearch_day_HSI_tlst}
 
-![]({bsearch_day_HSI_ppth})
+<img width="800" src="{bsearch_day_HSI_ppth}"></img>
 
 {bsearch_day_HSTECH_tlst}
 
-![]({bsearch_day_HSTECH_ppth})
+<img width="800" src="{bsearch_day_HSTECH_ppth}"></img>
 
 '''
 
 IXIC_Texts = '''
-### 美股
+#### 美股
 
 * 美股搜索指数
 * 计算分位数所用的周期长度 ({bsearch_day_periods})
@@ -222,7 +222,7 @@ IXIC_Texts = '''
 
 {bsearch_day_IXIC_tlst}
 
-![]({bsearch_day_IXIC_ppth})
+<img width="800" src="{bsearch_day_IXIC_ppth}"></img>
 
 '''
 

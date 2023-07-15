@@ -233,7 +233,7 @@ def docs_funds_amt(cfg_file=''):
         etf_amount_date=up_date,
         etf_amount_periods=all_periods,
         etf_amount_tlst=etf_words_lst,
-        etf_amount_plt_pth=img_pth
+        etf_amount_plt_pth=os.path.abspath(img_pth)
     )
     # print(etf_amt_text_dic)
     return etf_amt_text_dic
