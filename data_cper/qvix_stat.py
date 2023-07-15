@@ -173,7 +173,7 @@ def make_qvix_day_tline(sym,winds,otb_dic:dict):
 
 def make_qvix_day_plt(otb:pd.DataFrame,fig_pth:str,sym='300ETF',smooth='LLT',smooth_wind=120):
     ''' qvix 绘图 '''
-    otb_near = otb.tail(120)
+    otb_near = otb.tail(75)
     xadd_plots = [
         mpf.make_addplot(otb_near.Smooth,color='slateblue',ylabel=smooth),
         mpf.make_addplot(otb_near.Dsmooth,type='bar',panel=1,width=0.7, color='lightgray',secondary_y=False,ylabel='DSmooth({})'.format(smooth_wind)),

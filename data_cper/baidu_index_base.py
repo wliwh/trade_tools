@@ -596,14 +596,14 @@ def make_bsearch_day_tline(sym:str, winds, bqut:dict):
 def make_bsearch_day_plt(sym:str,fpth:str,idx_pd:pd.DataFrame,bpd:pd.DataFrame,bqut:pd.DataFrame,wind:int):
     ''' 根据检索量绘图 '''
     idx_n = Keyword_Index_Dic[sym]
-    index_cl = idx_pd.tail(120)
-    bpd_n = bpd.tail(120)
-    bqut_n = bqut.tail(120)
+    index_cl = idx_pd.tail(75)
+    bpd_n = bpd.tail(75)
+    bqut_n = bqut.tail(75)
     xadd_plots = []
     for i,s in enumerate(Index_Plt_Dic[idx_n]):
         xadd_plots.extend([
-            mpf.make_addplot(bpd_n[s],type='bar',panel=i+1,width=0.7, color='lightgray',secondary_y=False,ylabel='{}({})'.format(s,wind)),
-            mpf.make_addplot(bqut_n[s+'_'+str(wind)],panel=i+1, color='tomato',secondary_y=True)
+            mpf.make_addplot(bpd_n[s],type='bar',panel=i+1,width=0.7, color='darkgray',secondary_y=False,ylabel='{}({})'.format(s,wind)),
+            mpf.make_addplot(bqut_n[s+'_'+str(wind)],panel=i+1,linewidths=0.7, color='tomato',secondary_y=True)
         ])
     mpf.plot(index_cl,type='candle',ylabel=idx_n,
              style=Mpf_Style, addplot=xadd_plots,
@@ -658,5 +658,5 @@ def doc_bsearch_info(cfg_file=''):
 if __name__=='__main__':
     # append_bsearch_day_file()
     # append_bsearch_hour_file()
-    # doc_bsearch_info()
+    doc_bsearch_info()
     pass

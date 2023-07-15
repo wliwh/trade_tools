@@ -11,8 +11,8 @@ def md2html(mdstr):
     <html lang="zh-cn">
     <head>
     <meta content="text/html; charset=utf-8" http-equiv="content-type" />
-    <link href="default.css" rel="stylesheet">
-    <link href="github.css" rel="stylesheet">
+    <link type="text/css" href="C:/Users/84066/Documents/trade_tools/data_save/docs/default.css" rel="stylesheet">
+    <link type="text/css" href="C:/Users/84066/Documents/trade_tools/data_save/docs/github.css" rel="stylesheet">
     </head>
     <body>
     %s
@@ -34,14 +34,17 @@ def markdown2pdf(mdp:str):
     optionp = {'encoding': 'utf-8',
             #    'page-size': 'A4',
             #    'dpi': '96',
-               'minimum-font-size': "26",
+               'minimum-font-size': "22",
                'enable-local-file-access': True}
+    
+    if os.path.exists(hp): os.remove(hp)
+    if os.path.exists(pdfp): os.remove(pdfp)
 
     with open(hp,'a',encoding='utf-8') as hf:
         hf.write(md2html(mds))
 
     with open(hp,'r',encoding='utf-8') as hf:
-        pdfkit.from_file(hf,pdfp,options=optionp,configuration=configp,css='../data_save/github.css')
+        pdfkit.from_file(hf,pdfp,options=optionp,configuration=configp)
 
 
 markdown2pdf('../data_save/index_report.md')
