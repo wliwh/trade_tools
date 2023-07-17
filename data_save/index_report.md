@@ -1,22 +1,22 @@
 
-## 股指日报 (2023-07-14)
+## 股指日报 (2023-07-17)
 
 ### 总括
 
-#### 恐慌指数 2023-07-14
+#### 恐慌指数 2023-07-17
 
 > * 选用**沪深300ETF**期权波动率指数作为整个市场恐慌指数的表征
 > * 其后另附*上证50ETF、中证500ETF*等的期权波动率指数
 > * 计算分位数所用的周期长度 (20,60,120)
 > * 输出：指数-波动率指数-分位数
 
-1. 300ETF:	14.17	(43.2,35.0,38.4)
-1. 50ETF:	14.80	(40.1,34.6,42.2)
+1. 300ETF:	14.39	(53.0,42.9,46.0)
+1. 50ETF:	15.04	(53.2,44.0,50.5)
 
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\qvix_day_300ETF_per.png"></img>
 
 
-#### 检索量波动 2023-07-14
+#### 检索量波动 2023-07-16
 
 > * 选用多个检索词刻画股市热度
 > * 计算分位数所用的周期长度 (60,120)
@@ -31,6 +31,12 @@
 
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\bday_SZZS.png"></img>
 
+1. 牛市:   	   432 (26.1,26.1)
+1. 熊市:   	   253 (23.8,23.0)
+1. 牛熊比:  	     1 (59.2,54.3)
+
+<img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\bday_cowbear.png"></img>
+
 
 #### 新高新低分位 2023-07-14
 
@@ -43,17 +49,17 @@
 
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\hl_legu_all.png"></img>
 
-#### 北向资金流入 2023-07-14
+#### 北向资金流入 2023-07-17
 
 > * 北向资金流入与其均线的偏离度
 > * 计算分位数所用的周期长度 (60,120,200)
 > * 输出: 累计流入量-偏离度-分位数
 
-purchase:	0.55	(**<font color="red">85.8</font>**,25.1,43.1)
+purchase:	0.50	(**<font color="red">82.3</font>**,24.1,42.3)
 
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\north_flow_bias_per.png"></img>
 
-### 主要指数分析 2023-07-14
+### 主要指数分析 2023-07-16
 
 包括内地宽基指数、港股指数等
 
@@ -64,8 +70,8 @@ purchase:	0.55	(**<font color="red">85.8</font>**,25.1,43.1)
 > * 计算分位数所用的周期长度 (20,60,120)
 > * 输出：指数-波动率指数-分位数
 
-1. 300ETF:	14.17	(43.2,35.0,38.4)
-1. 50ETF:	14.80	(40.1,34.6,42.2)
+1. 300ETF:	14.39	(53.0,42.9,46.0)
+1. 50ETF:	15.04	(53.2,44.0,50.5)
 
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\qvix_day_50ETF_per.png"></img>
 
@@ -97,8 +103,8 @@ purchase:	0.55	(**<font color="red">85.8</font>**,25.1,43.1)
 > * 计算分位数所用的周期长度 (20,60,120)
 > * 输出：指数-波动率指数-分位数
 
-1. 300ETF:	14.17	(43.2,35.0,38.4)
-1. 50ETF:	14.80	(40.1,34.6,42.2)
+1. 300ETF:	14.39	(53.0,42.9,46.0)
+1. 50ETF:	15.04	(53.2,44.0,50.5)
 
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\qvix_day_300ETF_per.png"></img>
 

@@ -24,7 +24,7 @@ from common.trade_date import get_trade_list
 
 Keyword_Index_Dic = {'股市':'ZZQZ','股票':'ZZQZ','a股':'SZZS',
     '上证':'SZZS','上证指数':'SZZS',
-    '基金':'BK0536','牛市':'SZZS','熊市':'SZZS',
+    '基金':'BK0536','牛市':'上证','熊市':'上证',
     '港股':'HSI','恒生指数':'HSI','恒生科技指数':'HSTECH',
     '美股行情':'IXIC','道琼斯指数':'DQS','纳斯达克指数':'IXIC','中概股':'PGJ',
     '上证50':'SZ50','沪深300':'HS300',
@@ -32,6 +32,7 @@ Keyword_Index_Dic = {'股市':'ZZQZ','股票':'ZZQZ','a股':'SZZS',
 
 Index_Plt_Dic = {'SZZS':['股市','股票','a股','上证','上证指数'],
                  'ZZQZ':['股市','股票','a股','上证','上证指数'],
+                 '上证':['牛市','熊市','牛熊比'],
                  'HSI':['港股','恒生指数'],
                  'HSTECH':['恒生科技指数'],
                  'IXIC':['美股行情','道琼斯指数','纳斯达克指数'],
@@ -594,7 +595,13 @@ def make_bsearch_day_tline(sym:str, winds, bqut:dict):
     return '\n'.join(bsets) if len(bsets)>1 else bsets[0][3:]
 
 def make_bsearch_day_plt(sym:str,fpth:str,idx_pd:pd.DataFrame,bpd:pd.DataFrame,bqut:pd.DataFrame,wind:int):
-    ''' 根据检索量绘图 '''
+    ''' 根据检索量绘图 
+        sym: 指数名称
+        fpth: 设定保存图片的地址
+        inx_pd: 指数每日行情
+        bpd: 检索量
+        bqut: 检索量分位数
+        wind: 计算分位数所用时间窗口'''
     idx_n = Keyword_Index_Dic[sym]
     index_cl = idx_pd.tail(75)
     bpd_n = bpd.tail(75)
@@ -632,23 +639,27 @@ def doc_bsearch_info(cfg_file=''):
     bday_main_pd = _get_bady_trade_day(fpth,_base_idx)
     bday_sym_set = set()
     for s in Keyword_Index_Dic.keys():
-        idx_name = Keyword_Index_Dic[s]
+        ## TODO: 牛熊的别名
+        idx_name, idx_sig = Keyword_Index_Dic[s], None
+        if idx_name == '上证': 
+            idx_sig = 'cowbear'
         if not Index_Plt_Dic.get(idx_name):
             continue
         if idx_name in bday_sym_set:
             continue
-        img_pth = os.path.join('../data_save', config.get('Basic_Info','doc_img_pth'),'bday_{}.png'.format(idx_name))
         idx_cl = _get_idx_ochl(idx_name,set(bday_main_pd.index))
+        idx_nname = idx_name if idx_sig is None else idx_sig
+        img_pth = os.path.join('../data_save', config.get('Basic_Info','doc_img_pth'),'bday_{}.png'.format(idx_nname))
         bday_pd = _get_bwords_pd(s,bday_main_pd,500)
-        if idx_name in ('HSTECH','IXIC','PGJ'):
+        if idx_nname in ('HSTECH','IXIC','PGJ'):
             bday_qut = make_bsearch_day_qu(all_prds,bday_pd,False)
         else:
             bday_qut = make_bsearch_day_qu(all_prds,bday_pd,True)
         bday_stas = make_bsearch_day_tline(s,all_prds,dict(bday_qut.iloc[-1]))
         make_bsearch_day_plt(s,img_pth,idx_cl,bday_pd,bday_qut,main_period)
         bday_doc_dic.update({
-            'bsearch_day_{}_tlst'.format(idx_name):bday_stas,
-            'bsearch_day_{}_ppth'.format(idx_name):os.path.abspath(img_pth)
+            'bsearch_day_{}_tlst'.format(idx_nname):bday_stas,
+            'bsearch_day_{}_ppth'.format(idx_nname):os.path.abspath(img_pth)
         })
         bday_sym_set.add(idx_name)
     bday_doc_dic['bsearch_day_main_tlst'] = bday_doc_dic['bsearch_day_{}_tlst'.format(main_plt_idx)]
@@ -658,5 +669,8 @@ def doc_bsearch_info(cfg_file=''):
 if __name__=='__main__':
     # append_bsearch_day_file()
     # append_bsearch_hour_file()
-    doc_bsearch_info()
+    kk = doc_bsearch_info()
+    print(kk)
     pass
+
+# VFICMOIDWUUFRCJM

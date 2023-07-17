@@ -74,10 +74,10 @@ def make_north_flow_tline(sym:str,winds,nfl_dt:dict):
     return basic_line.format(sym,nfl_dt[sym+'_bias'],*nfl_q)
 
 def make_north_flow_plt(idx_name:str,sym:str,fpth:str,nfl:pd.DataFrame,winds):
-    index_cl = ak.stock_zh_index_daily_em(idx_name).tail(220)
+    index_cl = ak.stock_zh_index_daily_em(idx_name).tail(120)
     index_cl.set_index('date',inplace=True)
     index_cl.index = pd.to_datetime(index_cl.index)
-    nfl_near = nfl.tail(220)
+    nfl_near = nfl.tail(120)
     c_0,c_1,c_2 = min(winds), winds[(len(winds)-1)//2],max(winds)
     if c_0>=45: c_1 = c_0
     xadd_plots = [

@@ -31,6 +31,10 @@ Bsearch_Pred_Texts = '''
 
 <img width="800" src="{bsearch_day_main_ppth}"></img>
 
+{bsearch_day_cowbear_tlst}
+
+<img width="800" src="{bsearch_day_cowbear_ppth}"></img>
+
 '''
 
 High_Low_Texts = '''

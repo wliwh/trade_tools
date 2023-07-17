@@ -201,10 +201,10 @@ def make_high_low_legu_tline(sym:str, winds, hl_cls:list, hl_dic:dict)->str:
 
 def make_high_low_legu_plt(sym:str,fig_pth:str, hl_lg:pd.DataFrame, ylabs):
     ''' high_low_legu 绘图 '''
-    index_cl = ak.stock_zh_index_daily_em(High_Low_Legu_Indexs[sym]).tail(150)
+    index_cl = ak.stock_zh_index_daily_em(High_Low_Legu_Indexs[sym]).tail(120)
     index_cl.set_index('date',inplace=True)
     index_cl.index = pd.to_datetime(index_cl.index)
-    hl_near = hl_lg.tail(150)
+    hl_near = hl_lg.tail(120)
     cor_lst = ('lightcoral','skyblue','tomato','dodgerblue','maroon','navy')
     xadd_plt = [
         mpf.make_addplot(hl_near[w],panel=i//2+1,ylabel=ylabs[i],color=cor_lst[i]) for i,w in enumerate(hl_near.columns)
