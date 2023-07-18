@@ -1,5 +1,6 @@
 funds_amt*.csv
 .vscode/
+*/file_conv.py
 */.cooks
 */__pycache__/
 */.ipynb*

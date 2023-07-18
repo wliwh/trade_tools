@@ -80,6 +80,6 @@ def doc_file(paras:list):
     
 
 if __name__=='__main__':
-    # update_files()
+    update_files()
     doc_file(Doc_Paras_List)
     pass

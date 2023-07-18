@@ -38,14 +38,14 @@
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\bday_cowbear.png"></img>
 
 
-#### 新高新低分位 2023-07-14
+#### 新高新低分位 2023-07-17
 
 > * 20-60-120日的新高新低数, 再对该数量使用周期长度 (60,120) 求取分位数
 > * 输出：指数-某一周期新高数(分位数)-某一周期新低数(分位数)
 
 1. all
-    - High: 561 (47.0,**<font color="green">15.3</font>**); 209 (38.9,**<font color="green">19.2</font>**); 110 (**<font color="green">18.5</font>**,**<font color="green">18.2</font>**);
-    - Low: 242 (**<font color="green">4.6</font>**,**<font color="green">6.8</font>**); 100 (**<font color="green">2.3</font>**,**<font color="green">3.6</font>**); 72 (**<font color="green">3.8</font>**,**<font color="green">5.0</font>**);
+    - High: 636 (55.7,**<font color="green">18.1</font>**); 275 (56.8,28.1); 125 (23.0,22.7);
+    - Low: 401 (**<font color="green">10.0</font>**,**<font color="green">12.1</font>**); 183 (**<font color="green">5.6</font>**,**<font color="green">6.9</font>**); 133 (**<font color="green">8.5</font>**,**<font color="green">9.6</font>**);
 
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\hl_legu_all.png"></img>
 
@@ -91,8 +91,8 @@ purchase:	0.50	(**<font color="red">82.3</font>**,24.1,42.3)
 > * 输出：指数-某一周期新高数(分位数)-某一周期新低数(分位数)
 
 1. sz50
-    - High: 7 (33.3,25.9); 1 (**<font color="green">8.3</font>**,**<font color="green">5.9</font>**); 0 (**<font color="green">0.0</font>**,**<font color="green">0.0</font>**);
-    - Low: 3 (**<font color="green">10.7</font>**,**<font color="green">10.7</font>**); 1 (**<font color="green">5.0</font>**,**<font color="green">5.0</font>**); 1 (**<font color="green">5.6</font>**,**<font color="green">5.6</font>**);
+    - High: 4 (**<font color="green">19.0</font>**,**<font color="green">14.8</font>**); 1 (**<font color="green">8.3</font>**,**<font color="green">5.9</font>**); 1 (**<font color="green">10.0</font>**,**<font color="green">10.0</font>**);
+    - Low: 4 (**<font color="green">14.3</font>**,**<font color="green">14.3</font>**); 1 (**<font color="green">5.0</font>**,**<font color="green">5.0</font>**); 0 (**<font color="green">0.0</font>**,**<font color="green">0.0</font>**);
 
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\hl_legu_sz50.png"></img>
 
@@ -124,8 +124,8 @@ purchase:	0.50	(**<font color="red">82.3</font>**,24.1,42.3)
 > * 输出：指数-某一周期新高数(分位数)-某一周期新低数(分位数)
 
 1. hs300
-    - High: 42 (40.2,28.7); 8 (**<font color="green">14.8</font>**,**<font color="green">11.4</font>**); 3 (**<font color="green">6.4</font>**,**<font color="green">6.4</font>**);
-    - Low: 12 (**<font color="green">7.9</font>**,**<font color="green">9.2</font>**); 3 (**<font color="green">2.8</font>**,**<font color="green">2.8</font>**); 3 (**<font color="green">3.9</font>**,**<font color="green">3.9</font>**);
+    - High: 29 (26.8,**<font color="green">19.1</font>**); 6 (**<font color="green">11.1</font>**,**<font color="green">8.6</font>**); 2 (**<font color="green">4.3</font>**,**<font color="green">4.3</font>**);
+    - Low: 16 (**<font color="green">11.1</font>**,**<font color="green">12.2</font>**); 6 (**<font color="green">5.7</font>**,**<font color="green">5.7</font>**); 3 (**<font color="green">3.9</font>**,**<font color="green">3.9</font>**);
 
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\hl_legu_hs300.png"></img>
 
@@ -147,8 +147,8 @@ purchase:	0.50	(**<font color="red">82.3</font>**,24.1,42.3)
 > * 输出：指数-某一周期新高数(分位数)-某一周期新低数(分位数)
 
 1. zz500
-    - High: 54 (46.5,**<font color="green">19.4</font>**); 11 (**<font color="green">14.3</font>**,**<font color="green">12.0</font>**); 4 (**<font color="green">6.9</font>**,**<font color="green">6.9</font>**);
-    - Low: 27 (**<font color="green">6.1</font>**,**<font color="green">9.8</font>**); 11 (**<font color="green">4.1</font>**,**<font color="green">5.6</font>**); 8 (**<font color="green">6.0</font>**,**<font color="green">6.8</font>**);
+    - High: 52 (44.6,**<font color="green">18.6</font>**); 14 (**<font color="green">18.6</font>**,**<font color="green">15.7</font>**); 8 (**<font color="green">13.8</font>**,**<font color="green">13.8</font>**);
+    - Low: 57 (**<font color="green">18.4</font>**,21.7); 34 (**<font color="green">16.1</font>**,**<font color="green">17.3</font>**); 22 (**<font color="green">18.1</font>**,**<font color="green">18.8</font>**);
 
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\hl_legu_zz500.png"></img>
 
@@ -170,8 +170,8 @@ purchase:	0.50	(**<font color="red">82.3</font>**,24.1,42.3)
 > * 输出：指数-某一周期新高数(分位数)-某一周期新低数(分位数)
 
 1. cyb
-    - High: 4 (21.1,**<font color="green">8.9</font>**); 1 (**<font color="green">14.3</font>**,**<font color="green">5.3</font>**); 0 (**<font color="green">0.0</font>**,**<font color="green">0.0</font>**);
-    - Low: 11 (**<font color="green">18.2</font>**,**<font color="green">19.6</font>**); 7 (**<font color="green">14.6</font>**,**<font color="green">14.6</font>**); 4 (**<font color="green">11.8</font>**,**<font color="green">11.8</font>**);
+    - High: 11 (57.9,24.4); 2 (28.6,**<font color="green">10.5</font>**); 1 (25.0,**<font color="green">7.7</font>**);
+    - Low: 17 (29.1,30.4); 8 (**<font color="green">16.7</font>**,**<font color="green">16.7</font>**); 5 (**<font color="green">14.7</font>**,**<font color="green">14.7</font>**);
 
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\hl_legu_cyb.png"></img>
 
@@ -193,8 +193,8 @@ purchase:	0.50	(**<font color="red">82.3</font>**,24.1,42.3)
 > * 输出：指数-某一周期新高数(分位数)-某一周期新低数(分位数)
 
 1. kc50
-    - High: 3 (27.3,**<font color="green">13.0</font>**); 1 (**<font color="green">10.0</font>**,**<font color="green">8.3</font>**); 0 (**<font color="green">0.0</font>**,**<font color="green">0.0</font>**);
-    - Low: 5 (**<font color="green">14.3</font>**,**<font color="green">17.2</font>**); 2 (**<font color="green">8.3</font>**,**<font color="green">8.3</font>**); 1 (**<font color="green">4.5</font>**,**<font color="green">4.5</font>**);
+    - High: 3 (27.3,**<font color="green">13.0</font>**); 1 (**<font color="green">10.0</font>**,**<font color="green">8.3</font>**); 1 (**<font color="green">10.0</font>**,**<font color="green">10.0</font>**);
+    - Low: 5 (**<font color="green">14.3</font>**,**<font color="green">17.2</font>**); 3 (**<font color="green">12.5</font>**,**<font color="green">12.5</font>**); 1 (**<font color="green">4.5</font>**,**<font color="green">4.5</font>**);
 
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\hl_legu_kc50.png"></img>
 
