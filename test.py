@@ -1,3 +1,4 @@
+import datetime
 import logging
 import os
 from data_cper import *
@@ -26,6 +27,16 @@ Doc_Paras_List = [
     HSI_Texts, IXIC_Texts
 ]
 
+Doc_Gen_Funs_Even = [
+    doc_qvix_day,
+    doc_high_low_legu,
+]
+
+Doc_Gen_Funs_Morn = [
+    doc_bsearch_info,
+    doc_north_flow
+]
+
 def basic_append_fun(fn,retry,**kwds):
     args, wsec = kwds.get('args',[]), kwds['words']
     args = args if isinstance(args,(list,tuple)) else [args]
@@ -42,29 +53,38 @@ def basic_append_fun(fn,retry,**kwds):
 
 
 def update_files(retry:int=3):
+    now_time = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M')
+    if now_time[11:]>='21-30' and now_time[11:]<='23-50':
+        download_type = 1
+    elif now_time[11:]>='07-50' and now_time[11:]<='09-05':
+        download_type = 2
     # 交易日 QVIX 分钟级数据
-    basic_append_fun(append_qvix_minute_file,retry,words='qvix minute')
+    if download_type==1:
+        basic_append_fun(append_qvix_minute_file,retry,words='qvix minute')
     # ;; QVIX 数据
     # bdsearch 检索词数据
-    basic_append_fun(append_bsearch_day_file,retry,words='bdsearch day')
-    basic_append_fun(append_bsearch_hour_file,retry,words='bdsearch hour')
+    if download_type==2:
+        basic_append_fun(append_bsearch_day_file,retry,words='bdsearch day')
+        basic_append_fun(append_bsearch_hour_file,retry,words='bdsearch hour')
     # ;; 北上资金
     # 延迟的两融数据
-    basic_append_fun(append_margin_file,retry,args='sh',words='margin-sh')
-    basic_append_fun(append_margin_file,retry,args='sz',words='margin-sz')
+        basic_append_fun(append_margin_file,retry,args='sh',words='margin-sh')
+        basic_append_fun(append_margin_file,retry,args='sz',words='margin-sz')
     # 交易日新高新低-乐股数据
-    basic_append_fun(append_high_low_legu_file,retry,words='high-low-legu')
+    if download_type==1:
+        basic_append_fun(append_high_low_legu_file,retry,words='high-low-legu')
     # 当日ETF成交数据
-    for r in range(retry):
-        try:
-            tm_rg, res = append_funds_trade_file()
-            ks = 'ready' if res==0 else 'to '+res
-            tm_rg = '' if tm_rg==0 else ' '+tm_rg
-            logging.info("Update{} etf amount {}.".format(tm_rg,ks))
-            break
-        except Exception as e:
-            logging.warning("Try update etf amount {} times. ({})".format(r+1,e))
-        if r==retry-1: logging.error("Can't update etf amount.")
+        for r in range(retry):
+            try:
+                tm_rg, res = append_funds_trade_file()
+                ks = 'ready' if res==0 else 'to '+res
+                tm_rg = '' if tm_rg==0 else ' '+tm_rg
+                logging.info("Update{} etf amount {}.".format(tm_rg,ks))
+                break
+            except Exception as e:
+                logging.warning("Try update etf amount {} times. ({})".format(r+1,e))
+            if r==retry-1:
+                logging.error("Can't update etf amount.")
 
 def doc_file(paras:list):
     trade_date = get_trade_day(7).strftime('%Y-%m-%d')
@@ -80,6 +100,7 @@ def doc_file(paras:list):
     
 
 if __name__=='__main__':
+    
     update_files()
-    doc_file(Doc_Paras_List)
+    # doc_file(Doc_Paras_List)
     pass

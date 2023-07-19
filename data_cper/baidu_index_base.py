@@ -32,7 +32,7 @@ Keyword_Index_Dic = {'股市':'ZZQZ','股票':'ZZQZ','a股':'SZZS',
 
 Index_Plt_Dic = {'SZZS':['股市','股票','a股','上证','上证指数'],
                  'ZZQZ':['股市','股票','a股','上证','上证指数'],
-                 '上证':['牛市','熊市','牛熊比'],
+                 '上证':['牛市','熊市'],
                  'HSI':['港股','恒生指数'],
                  'HSTECH':['恒生科技指数'],
                  'IXIC':['美股行情','道琼斯指数','纳斯达克指数'],
@@ -564,8 +564,9 @@ def _get_bwords_pd(sym:str, bday:pd.DataFrame, mday=400):
     qpd.sort_index(axis=0,inplace=True)
     return qpd.tail(mday)
 
-def _get_idx_ochl(idx_n:str,rng=None)->pd.DataFrame:
-    index_cl = ef.stock.get_quote_history(idx_n,beg='20220101')
+def _get_idx_ochl(idx_n:str,rng=None,
+                  start:str='20220101')->pd.DataFrame:
+    index_cl = ef.stock.get_quote_history(idx_n,beg=start)
     index_cl.rename(columns={'日期':'date','开盘':'open','收盘':'close', 
         '最高':'high', '最低':'low', '成交量':'volume', '成交额':'amount'},inplace=True)
     index_cl.set_index('date',inplace=True)

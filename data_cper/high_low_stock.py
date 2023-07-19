@@ -59,7 +59,7 @@ def append_high_low_legu_file(cfg_file=''):
     fpth = os.path.join('../data_save', config.get(cfg_sec, 'fpath'))
     up_date = config.get(cfg_sec, 'update_date')
     next_date = config.get(cfg_sec, 'next_update')
-    now_date = get_trade_day(8).strftime('%Y-%m-%d')
+    now_date = get_trade_day(20).strftime('%Y-%m-%d')
     next_day = get_delta_trade_day(now_date).strftime('%Y-%m-%d')
     if not os.path.exists(fpth):
         config.set(cfg_sec, 'update_date', now_date)
@@ -250,6 +250,6 @@ def doc_high_low_legu(cfg_file=''):
     return hl_legu_doc_dict
 
 if __name__ == '__main__':
-    # append_high_low_legu_file()
+    append_high_low_legu_file()
     # print(doc_high_low_legu())
     pass

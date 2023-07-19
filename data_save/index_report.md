@@ -1,39 +1,38 @@
 
-## 股指日报 (2023-07-17)
+## 股指日报 (2023-07-18)
 
 ### 总括
 
-#### 恐慌指数 2023-07-17
+#### 恐慌指数 2023-07-18
 
 > * 选用**沪深300ETF**期权波动率指数作为整个市场恐慌指数的表征
 > * 其后另附*上证50ETF、中证500ETF*等的期权波动率指数
 > * 计算分位数所用的周期长度 (20,60,120)
 > * 输出：指数-波动率指数-分位数
 
-1. 300ETF:	14.39	(53.0,42.9,46.0)
-1. 50ETF:	15.04	(53.2,44.0,50.5)
+1. 300ETF:	14.34	(51.8,42.0,45.0)
+1. 50ETF:	14.97	(48.6,40.7,47.5)
 
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\qvix_day_300ETF_per.png"></img>
 
 
-#### 检索量波动 2023-07-16
+#### 检索量波动 2023-07-17
 
 > * 选用多个检索词刻画股市热度
 > * 计算分位数所用的周期长度 (60,120)
 > * 输出：检索词-检索量-分位数
 > * 其后附有*上证50、中证500、创业板*等检索情况
 
-1. 股市:   	  8179 (27.8,**<font color="green">16.8</font>**)
-1. 股票:   	 41501 (**<font color="red">86.3</font>**,**<font color="red">87.8</font>**)
-1. a股:   	  9277 (**<font color="green">13.1</font>**,21.9)
-1. 上证:   	  4619 (31.8,38.7)
-1. 上证指数: 	148201 (**<font color="green">8.4</font>**,**<font color="green">17.2</font>**)
+1. 股市:   	  9373 (46.5,25.4)
+1. 股票:   	 41853 (**<font color="red">87.0</font>**,**<font color="red">88.4</font>**)
+1. a股:   	 12861 (39.5,43.0)
+1. 上证:   	  5914 (57.6,61.2)
+1. 上证指数: 	167324 (39.8,41.5)
 
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\bday_SZZS.png"></img>
 
-1. 牛市:   	   432 (26.1,26.1)
-1. 熊市:   	   253 (23.8,23.0)
-1. 牛熊比:  	     1 (59.2,54.3)
+1. 牛市:   	   402 (**<font color="green">17.0</font>**,**<font color="green">17.0</font>**)
+1. 熊市:   	   254 (24.6,23.6)
 
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\bday_cowbear.png"></img>
 
@@ -49,17 +48,17 @@
 
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\hl_legu_all.png"></img>
 
-#### 北向资金流入 2023-07-17
+#### 北向资金流入 2023-07-18
 
 > * 北向资金流入与其均线的偏离度
 > * 计算分位数所用的周期长度 (60,120,200)
 > * 输出: 累计流入量-偏离度-分位数
 
-purchase:	0.50	(**<font color="red">82.3</font>**,24.1,42.3)
+purchase:	0.04	(51.4,**<font color="green">15.0</font>**,35.4)
 
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\north_flow_bias_per.png"></img>
 
-### 主要指数分析 2023-07-16
+### 主要指数分析 2023-07-17
 
 包括内地宽基指数、港股指数等
 
@@ -70,8 +69,8 @@ purchase:	0.50	(**<font color="red">82.3</font>**,24.1,42.3)
 > * 计算分位数所用的周期长度 (20,60,120)
 > * 输出：指数-波动率指数-分位数
 
-1. 300ETF:	14.39	(53.0,42.9,46.0)
-1. 50ETF:	15.04	(53.2,44.0,50.5)
+1. 300ETF:	14.34	(51.8,42.0,45.0)
+1. 50ETF:	14.97	(48.6,40.7,47.5)
 
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\qvix_day_50ETF_per.png"></img>
 
@@ -80,8 +79,8 @@ purchase:	0.50	(**<font color="red">82.3</font>**,24.1,42.3)
 > * 计算分位数所用的周期长度 (60,120)
 > * 输出：检索词-检索量-分位数
 
-1. 股市:   	  8179 (27.8,**<font color="green">16.8</font>**)
-1. 上证50: 	  1485 (27.5,28.0)
+1. 股市:   	  9373 (46.5,25.4)
+1. 上证50: 	  1646 (45.5,45.7)
 
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\bday_SZ50.png"></img>
 
@@ -103,8 +102,8 @@ purchase:	0.50	(**<font color="red">82.3</font>**,24.1,42.3)
 > * 计算分位数所用的周期长度 (20,60,120)
 > * 输出：指数-波动率指数-分位数
 
-1. 300ETF:	14.39	(53.0,42.9,46.0)
-1. 50ETF:	15.04	(53.2,44.0,50.5)
+1. 300ETF:	14.34	(51.8,42.0,45.0)
+1. 50ETF:	14.97	(48.6,40.7,47.5)
 
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\qvix_day_300ETF_per.png"></img>
 
@@ -113,8 +112,8 @@ purchase:	0.50	(**<font color="red">82.3</font>**,24.1,42.3)
 > * 计算分位数所用的周期长度 (60,120)
 > * 输出：检索词-检索量-分位数
 
-1. 股市:   	  8179 (27.8,**<font color="green">16.8</font>**)
-1. 沪深300:	  3990 (49.5,39.8)
+1. 股市:   	  9373 (46.5,25.4)
+1. 沪深300:	  3830 (37.9,30.5)
 
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\bday_HS300.png"></img>
 
@@ -136,8 +135,8 @@ purchase:	0.50	(**<font color="red">82.3</font>**,24.1,42.3)
 > * 计算分位数所用的周期长度 (60,120)
 > * 输出：检索词-检索量-分位数
 
-1. 股市:   	  8179 (27.8,**<font color="green">16.8</font>**)
-1. 中证500:	  3476 (34.9,26.9)
+1. 股市:   	  9373 (46.5,25.4)
+1. 中证500:	  3249 (20.6,**<font color="green">15.8</font>**)
 
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\bday_ZZ500.png"></img>
 
@@ -159,8 +158,8 @@ purchase:	0.50	(**<font color="red">82.3</font>**,24.1,42.3)
 > * 计算分位数所用的周期长度 (60,120)
 > * 输出：检索词-检索量-分位数
 
-1. 股市:   	  8179 (27.8,**<font color="green">16.8</font>**)
-1. 创业板指: 	 11400 (26.4,29.2)
+1. 股市:   	  9373 (46.5,25.4)
+1. 创业板指: 	 10378 (**<font color="green">4.4</font>**,**<font color="green">8.0</font>**)
 
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\bday_399006.png"></img>
 
@@ -182,8 +181,8 @@ purchase:	0.50	(**<font color="red">82.3</font>**,24.1,42.3)
 > * 计算分位数所用的周期长度 (60,120)
 > * 输出：检索词-检索量-分位数
 
-1. 股市:   	  8179 (27.8,**<font color="green">16.8</font>**)
-1. 科创50: 	  2522 (49.0,64.3)
+1. 股市:   	  9373 (46.5,25.4)
+1. 科创50: 	  2440 (39.8,60.9)
 
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\bday_KC50.png"></img>
 
@@ -205,12 +204,12 @@ purchase:	0.50	(**<font color="red">82.3</font>**,24.1,42.3)
 > * 计算分位数所用的周期长度 (60,120)
 > * 输出：检索词-检索量-分位数
 
-1. 港股:   	  1263 (**<font color="green">12.4</font>**,**<font color="green">10.0</font>**)
-1. 恒生指数: 	 17232 (**<font color="red">90.8</font>**,72.8)
+1. 港股:   	  3642 (**<font color="red">100.0</font>**,**<font color="red">100.0</font>**)
+1. 恒生指数: 	  9017 (**<font color="green">0.0</font>**,**<font color="green">6.0</font>**)
 
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\bday_HSI.png"></img>
 
-恒生科技指数:	 12110 (**<font color="red">87.8</font>**,**<font color="red">88.1</font>**)
+恒生科技指数:	  3896 (**<font color="green">0.0</font>**,**<font color="green">0.0</font>**)
 
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\bday_HSTECH.png"></img>
 
@@ -222,9 +221,9 @@ purchase:	0.50	(**<font color="red">82.3</font>**,24.1,42.3)
 > * 计算分位数所用的周期长度 (60,120)
 > * 输出：检索词-检索量-分位数
 
-1. 美股行情: 	 13610 (32.6,**<font color="green">6.5</font>**)
-1. 道琼斯指数:	 12877 (31.6,**<font color="green">6.1</font>**)
-1. 纳斯达克指数:	  9674 (61.7,25.6)
+1. 美股行情: 	  7536 (**<font color="green">0.0</font>**,**<font color="green">0.0</font>**)
+1. 道琼斯指数:	  6614 (**<font color="green">0.0</font>**,**<font color="green">0.0</font>**)
+1. 纳斯达克指数:	  5243 (**<font color="green">0.0</font>**,**<font color="green">0.0</font>**)
 
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\bday_IXIC.png"></img>
 
