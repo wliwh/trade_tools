@@ -286,6 +286,6 @@ def make_margin_concat_pd(ntype:str='all'):
 
 if __name__=='__main__':
     # append_margin_file('sh')
-    # append_margin_file('sz')
+    append_margin_file('sz')
     # doc_north_flow()
     pass

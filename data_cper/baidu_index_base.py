@@ -6,6 +6,7 @@ from urllib.parse import urlencode, quote
 from Crypto.Cipher import AES
 from base64 import b64encode
 import efinance as ef
+import akshare as ak
 import mplfinance as mpf
 import datetime
 import numpy as np
@@ -28,7 +29,8 @@ Keyword_Index_Dic = {'股市':'ZZQZ','股票':'ZZQZ','a股':'SZZS',
     '港股':'HSI','恒生指数':'HSI','恒生科技指数':'HSTECH',
     '美股行情':'IXIC','道琼斯指数':'DQS','纳斯达克指数':'IXIC','中概股':'PGJ',
     '上证50':'SZ50','沪深300':'HS300',
-    '中证500':'ZZ500', '创业板指':'399006','科创50':'KC50'}
+    '中证500':'ZZ500', '创业板指':'399006','科创50':'KC50',
+    '螺纹钢':'RB0'}
 
 Index_Plt_Dic = {'SZZS':['股市','股票','a股','上证','上证指数'],
                  'ZZQZ':['股市','股票','a股','上证','上证指数'],
@@ -42,7 +44,8 @@ Index_Plt_Dic = {'SZZS':['股市','股票','a股','上证','上证指数'],
                  'HS300':['股市', '沪深300'],
                  'ZZ500':['股市', '中证500'],
                  '399006':['股市', '创业板指'],
-                 'KC50':['股市', '科创50']}
+                 'KC50':['股市', '科创50'],
+                 'RB0':['螺纹钢']}
 
 
 class ErrorCode(int, Enum):
@@ -566,9 +569,12 @@ def _get_bwords_pd(sym:str, bday:pd.DataFrame, mday=400):
 
 def _get_idx_ochl(idx_n:str,rng=None,
                   start:str='20220101')->pd.DataFrame:
-    index_cl = ef.stock.get_quote_history(idx_n,beg=start)
-    index_cl.rename(columns={'日期':'date','开盘':'open','收盘':'close', 
-        '最高':'high', '最低':'low', '成交量':'volume', '成交额':'amount'},inplace=True)
+    if 2<=len(idx_n)<=3 and idx_n[-1]=='0':
+        index_cl = ak.futures_main_sina(idx_n,start_date=start)
+        index_cl.rename(columns={'日期':'date','开盘价':'open','收盘价':'close', '最高价':'high', '最低价':'low', '成交量':'volume'},inplace=True)
+    else:
+        index_cl = ef.stock.get_quote_history(idx_n,beg=start)
+        index_cl.rename(columns={'日期':'date','开盘':'open','收盘':'close', '最高':'high', '最低':'low', '成交量':'volume', '成交额':'amount'},inplace=True)
     index_cl.set_index('date',inplace=True)
     index_cl.index = pd.to_datetime(index_cl.index)
     if rng is not None:
@@ -670,8 +676,6 @@ def doc_bsearch_info(cfg_file=''):
 if __name__=='__main__':
     # append_bsearch_day_file()
     # append_bsearch_hour_file()
-    kk = doc_bsearch_info()
-    print(kk)
+    # kk = doc_bsearch_info()
+    # print(kk)
     pass
-
-# VFICMOIDWUUFRCJM

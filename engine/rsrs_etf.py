@@ -48,7 +48,7 @@ def rank_dfs(etf_pool,Nd=25,fun=rsrs_score):
         nls.append(ns)
     nls =  pd.concat(nls,axis=1)
     nls.sort_index(inplace=True)
-    nls.fillna(method='ffill',inplace=True)
+    # nls.fillna(method='ffill',inplace=True)
     return nls
 
 def rank_plt(score_pd:pd.DataFrame):
@@ -59,5 +59,11 @@ def rank_plt(score_pd:pd.DataFrame):
     # dates = pd.date_range(min(score_pd.index),max(score_pd.index),freq='M')
     ax.xaxis.set_major_locator(ticker.MultipleLocator(7))
     ax.xaxis.set_major_formatter(dates.DateFormatter('%m-%d'))
+    plt.legend(score_pd.columns)
     plt.xticks(rotation=60)
     plt.show()
+
+
+if __name__=='__main__':
+    rkd = rank_dfs(etf_dics)
+    rank_plt(rkd)

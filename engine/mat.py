@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import matplotlib.dates as dates
 
-# bsearch 计算
+# 从机构重仓股的滚动年化收益推断顶底
 
 def get_funds_kline(cname:str,Ytd:int=242,Ypair=(3,)):
     e1 = ef.stock.get_quote_history(cname)
