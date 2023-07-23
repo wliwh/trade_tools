@@ -24,7 +24,8 @@ Doc_Paras_List = [
     Second_Header,
     SZ50_Texts, HS300_Texts, ZZ500_Texts,
     CYB_Texts, KC_Texts,
-    HSI_Texts, IXIC_Texts
+    HSI_Texts, IXIC_Texts,
+    RB0_Texts
 ]
 
 Doc_Gen_Funs_Even = [
@@ -56,7 +57,7 @@ def update_files(retry:int=3):
     now_time = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M')
     if now_time[11:]>='21-30' and now_time[11:]<='23-50':
         download_type = 1
-    elif now_time[11:]>='07-50' and now_time[11:]<='09-05':
+    elif now_time[11:]>='07-50' and now_time[11:]<='11-05':
         download_type = 2
     # 交易日 QVIX 分钟级数据
     if download_type==1:
@@ -101,6 +102,6 @@ def doc_file(paras:list):
 
 if __name__=='__main__':
     
-    update_files()
+    # update_files()
     doc_file(Doc_Paras_List)
     pass

@@ -248,3 +248,16 @@ IXIC_Texts = '''
 <img width="800" src="{bsearch_day_IXIC_ppth}"></img>
 
 '''
+
+RB0_Texts = '''
+#### 螺纹钢
+
+**螺纹钢搜索指数**
+
+> * 计算分位数所用的周期长度 ({bsearch_day_periods})
+> * 输出：检索词-检索量-分位数
+
+{bsearch_day_RB0_tlst}
+
+<img width="800" src="{bsearch_day_RB0_ppth}"></img>
+'''
