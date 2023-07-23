@@ -204,7 +204,9 @@ def make_high_low_legu_plt(sym:str,fig_pth:str, hl_lg:pd.DataFrame, ylabs):
     index_cl = ak.stock_zh_index_daily_em(High_Low_Legu_Indexs[sym]).tail(120)
     index_cl.set_index('date',inplace=True)
     index_cl.index = pd.to_datetime(index_cl.index)
-    hl_near = hl_lg.tail(120)
+    hl_near = hl_lg[hl_lg.index.map(lambda x:x in index_cl.index)]
+    hl_near = hl_near.sort_index(axis=0)
+    # hl_near = hl_near.tail(120)
     cor_lst = ('lightcoral','skyblue','tomato','dodgerblue','maroon','navy')
     xadd_plt = [
         mpf.make_addplot(hl_near[w],panel=i//2+1,ylabel=ylabs[i],color=cor_lst[i]) for i,w in enumerate(hl_near.columns)
@@ -235,7 +237,7 @@ def doc_high_low_legu(cfg_file=''):
         img_pth = os.path.join('../data_save', config.get('Basic_Info','doc_img_pth'),'hl_legu_{}.png'.format(sym))
         hl_new = hl_legu_main_pd[hl_legu_main_pd.symbol==sym]
         del hl_new['symbol']
-        hl_new.sort_index(axis=0,inplace=True)
+        hl_new = hl_new.sort_index(axis=0)
         hl_new.index = pd.to_datetime(hl_new.index)
         hl_qua = make_high_low_legu_qua(hl_new, all_prds)
         hl_tl = make_high_low_legu_tline(sym,all_prds,sorted(hl_new.columns,key=_rerange_hl_columns),dict(hl_qua.loc[up_date]))
@@ -250,6 +252,6 @@ def doc_high_low_legu(cfg_file=''):
     return hl_legu_doc_dict
 
 if __name__ == '__main__':
-    append_high_low_legu_file()
-    # print(doc_high_low_legu())
+    # append_high_low_legu_file()
+    print(doc_high_low_legu())
     pass
