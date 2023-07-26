@@ -1,22 +1,22 @@
 
-## 股指日报 (2023-07-21)
+## 股指日报 (2023-07-25)
 
 ### 总括
 
-#### 恐慌指数 2023-07-21
+#### 恐慌指数 2023-07-24
 
 > * 选用**沪深300ETF**期权波动率指数作为整个市场恐慌指数的表征
 > * 其后另附*上证50ETF、中证500ETF*等的期权波动率指数
 > * 计算分位数所用的周期长度 (20,60,120)
 > * 输出：指数-波动率指数-分位数
 
-1. 300ETF:	14.66	(54.5,44.1,47.1)
-1. 50ETF:	15.14	(47.6,39.9,46.9)
+1. 300ETF:	14.89	(69.1,47.2,50.0)
+1. 50ETF:	14.84	(36.1,29.1,34.8)
 
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\qvix_day_300ETF_per.png"></img>
 
 
-#### 检索量波动 2023-07-21
+#### 检索量波动 2023-07-23
 
 > * 选用多个检索词刻画股市热度
 > * 计算分位数所用的周期长度 (60,120)
@@ -37,28 +37,28 @@
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\bday_cowbear.png"></img>
 
 
-#### 新高新低分位 2023-07-21
+#### 新高新低分位 2023-07-24
 
 > * 20-60-120日的新高新低数, 再对该数量使用周期长度 (60,120) 求取分位数
 > * 输出：指数-某一周期新高数(分位数)-某一周期新低数(分位数)
 
 1. all
-    - High: 573 (48.4,**<font color="green">15.7</font>**); 182 (31.5,**<font color="green">15.6</font>**); 50 (**<font color="green">0.3</font>**,**<font color="green">0.3</font>**);
-    - Low: 989 (30.0,31.6); 238 (**<font color="green">7.8</font>**,**<font color="green">9.0</font>**); 144 (**<font color="green">9.3</font>**,**<font color="green">10.5</font>**);
+    - High: 481 (37.2,**<font color="green">12.3</font>**); 157 (24.7,**<font color="green">12.2</font>**); 53 (**<font color="green">1.2</font>**,**<font color="green">1.2</font>**);
+    - Low: 761 (22.2,23.8); 208 (**<font color="green">6.6</font>**,**<font color="green">7.9</font>**); 153 (**<font color="green">10.0</font>**,**<font color="green">11.1</font>**);
 
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\hl_legu_all.png"></img>
 
-#### 北向资金流入 2023-07-21
+#### 北向资金流入 2023-07-25
 
 > * 北向资金流入与其均线的偏离度
 > * 计算分位数所用的周期长度 (60,120,200)
 > * 输出: 累计流入量-偏离度-分位数
 
-purchase:	0.13	(60.6,**<font color="green">16.8</font>**,36.8)
+purchase:	-0.12	(43.5,**<font color="green">12.1</font>**,33.1)
 
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\north_flow_bias_per.png"></img>
 
-### 主要指数分析 2023-07-21
+### 主要指数分析 2023-07-23
 
 包括内地宽基指数、港股指数等
 
@@ -69,8 +69,8 @@ purchase:	0.13	(60.6,**<font color="green">16.8</font>**,36.8)
 > * 计算分位数所用的周期长度 (20,60,120)
 > * 输出：指数-波动率指数-分位数
 
-1. 300ETF:	14.66	(54.5,44.1,47.1)
-1. 50ETF:	15.14	(47.6,39.9,46.9)
+1. 300ETF:	14.89	(69.1,47.2,50.0)
+1. 50ETF:	14.84	(36.1,29.1,34.8)
 
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\qvix_day_50ETF_per.png"></img>
 
@@ -90,8 +90,8 @@ purchase:	0.13	(60.6,**<font color="green">16.8</font>**,36.8)
 > * 输出：指数-某一周期新高数(分位数)-某一周期新低数(分位数)
 
 1. sz50
-    - High: 4 (26.7,**<font color="green">17.4</font>**); 2 (**<font color="green">16.7</font>**,**<font color="green">16.7</font>**); 0 (**<font color="green">0.0</font>**,**<font color="green">0.0</font>**);
-    - Low: 6 (21.4,21.4); 2 (**<font color="green">10.0</font>**,**<font color="green">10.0</font>**); 2 (**<font color="green">11.1</font>**,**<font color="green">11.1</font>**);
+    - High: 1 (**<font color="green">6.7</font>**,**<font color="green">4.8</font>**); 0 (**<font color="green">0.0</font>**,**<font color="green">0.0</font>**); 0 (**<font color="green">0.0</font>**,**<font color="green">0.0</font>**);
+    - Low: 9 (32.1,32.1); 3 (**<font color="green">15.0</font>**,**<font color="green">15.0</font>**); 3 (**<font color="green">16.7</font>**,**<font color="green">16.7</font>**);
 
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\hl_legu_sz50.png"></img>
 
@@ -102,8 +102,8 @@ purchase:	0.13	(60.6,**<font color="green">16.8</font>**,36.8)
 > * 计算分位数所用的周期长度 (20,60,120)
 > * 输出：指数-波动率指数-分位数
 
-1. 300ETF:	14.66	(54.5,44.1,47.1)
-1. 50ETF:	15.14	(47.6,39.9,46.9)
+1. 300ETF:	14.89	(69.1,47.2,50.0)
+1. 50ETF:	14.84	(36.1,29.1,34.8)
 
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\qvix_day_300ETF_per.png"></img>
 
@@ -123,8 +123,8 @@ purchase:	0.13	(60.6,**<font color="green">16.8</font>**,36.8)
 > * 输出：指数-某一周期新高数(分位数)-某一周期新低数(分位数)
 
 1. hs300
-    - High: 27 (35.8,**<font color="green">18.9</font>**); 5 (**<font color="green">9.3</font>**,**<font color="green">9.1</font>**); 0 (**<font color="green">0.0</font>**,**<font color="green">0.0</font>**);
-    - Low: 45 (34.1,34.4); 19 (**<font color="green">17.9</font>**,**<font color="green">17.9</font>**); 13 (**<font color="green">17.1</font>**,**<font color="green">17.1</font>**);
+    - High: 16 (**<font color="green">19.4</font>**,**<font color="green">11.1</font>**); 0 (**<font color="green">0.0</font>**,**<font color="green">0.0</font>**); 0 (**<font color="green">0.0</font>**,**<font color="green">0.0</font>**);
+    - Low: 50 (38.1,37.2); 20 (**<font color="green">18.9</font>**,**<font color="green">18.9</font>**); 16 (21.1,21.1);
 
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\hl_legu_hs300.png"></img>
 
@@ -146,8 +146,8 @@ purchase:	0.13	(60.6,**<font color="green">16.8</font>**,36.8)
 > * 输出：指数-某一周期新高数(分位数)-某一周期新低数(分位数)
 
 1. zz500
-    - High: 70 (67.0,26.0); 10 (**<font color="green">12.9</font>**,**<font color="green">10.8</font>**); 4 (**<font color="green">6.9</font>**,**<font color="green">6.9</font>**);
-    - Low: 72 (24.6,27.6); 23 (**<font color="green">10.4</font>**,**<font color="green">11.7</font>**); 14 (**<font color="green">11.2</font>**,**<font color="green">12.0</font>**);
+    - High: 53 (48.9,**<font color="green">19.0</font>**); 6 (**<font color="green">7.1</font>**,**<font color="green">6.0</font>**); 2 (**<font color="green">3.4</font>**,**<font color="green">3.4</font>**);
+    - Low: 63 (20.9,24.0); 30 (**<font color="green">14.0</font>**,**<font color="green">15.3</font>**); 23 (**<font color="green">19.0</font>**,**<font color="green">19.7</font>**);
 
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\hl_legu_zz500.png"></img>
 
@@ -169,8 +169,8 @@ purchase:	0.13	(60.6,**<font color="green">16.8</font>**,36.8)
 > * 输出：指数-某一周期新高数(分位数)-某一周期新低数(分位数)
 
 1. cyb
-    - High: 9 (47.4,**<font color="green">20.0</font>**); 3 (75.0,**<font color="green">16.7</font>**); 0 (**<font color="green">0.0</font>**,**<font color="green">0.0</font>**);
-    - Low: 29 (50.9,51.8); 11 (22.9,22.9); 6 (**<font color="green">17.6</font>**,**<font color="green">17.6</font>**);
+    - High: 5 (26.3,**<font color="green">12.5</font>**); 0 (**<font color="green">0.0</font>**,**<font color="green">0.0</font>**); 0 (**<font color="green">0.0</font>**,**<font color="green">0.0</font>**);
+    - Low: 30 (52.7,53.6); 14 (29.2,29.2); 11 (32.4,32.4);
 
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\hl_legu_cyb.png"></img>
 
@@ -192,8 +192,8 @@ purchase:	0.13	(60.6,**<font color="green">16.8</font>**,36.8)
 > * 输出：指数-某一周期新高数(分位数)-某一周期新低数(分位数)
 
 1. kc50
-    - High: 2 (**<font color="green">18.2</font>**,**<font color="green">8.7</font>**); 0 (**<font color="green">0.0</font>**,**<font color="green">0.0</font>**); 0 (**<font color="green">0.0</font>**,**<font color="green">0.0</font>**);
-    - Low: 13 (42.9,44.8); 7 (29.2,29.2); 3 (**<font color="green">13.6</font>**,**<font color="green">13.6</font>**);
+    - High: 3 (27.3,**<font color="green">20.0</font>**); 0 (**<font color="green">0.0</font>**,**<font color="green">0.0</font>**); 0 (**<font color="green">0.0</font>**,**<font color="green">0.0</font>**);
+    - Low: 18 (63.0,62.1); 10 (41.7,41.7); 4 (**<font color="green">18.2</font>**,**<font color="green">18.2</font>**);
 
 <img width="800" src="c:\Users\84066\Documents\trade_tools\data_save\data_img\hl_legu_kc50.png"></img>
 

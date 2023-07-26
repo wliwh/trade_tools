@@ -100,9 +100,11 @@ def plt_index_with_tjy(index_name, zdf, beg, end):
     ndf.index = pd.to_datetime(ndf.index)
     bsP = mark_up_down(ndf)
     add_plot = [mpf.make_addplot(bsP.loc[beg:end,cl],scatter=True, type='scatter',**mark_dic(cl)) for cl in bsP.columns]
-    add_plot.append(mpf.make_addplot(ndf.loc[beg:end,'长周期指数'],panel=1,color='b', secondary_y='auto'))
-    add_plot.append(mpf.make_addplot(ndf.loc[beg:end,'强弱指数'],panel=2,color='tomato', secondary_y='auto'))
-    if 1: # not any(ndf.loc[:,'顶部指数'].isna()):
+    ndf['long_period'] = [x if x<=20 else np.nan for x in ndf.loc[:,'长周期指数']]
+    ndf['stg'] = [x if x>=60 else np.nan for x in ndf.loc[:,'强弱指数']]
+    add_plot.append(mpf.make_addplot(ndf.loc[beg:end,'long_period'],panel=1,color='b', secondary_y='auto'))
+    add_plot.append(mpf.make_addplot(ndf.loc[beg:end,'stg'],panel=2,color='tomato', secondary_y='auto'))
+    if not any(ndf.loc[:,'顶部指数'].isna()):
         add_plot.append(mpf.make_addplot(ndf.loc[beg:end,'底部指数'],panel=3,color='maroon', secondary_y='auto'))
         add_plot.append(mpf.make_addplot(ndf.loc[beg:end,'顶部指数'],panel=3,color='navy', secondary_y='auto'))
     # return add_plot
@@ -112,9 +114,14 @@ def plt_index_with_tjy(index_name, zdf, beg, end):
 
 def get_stock_df(idx_l=idx_lst[0],bword='牛市',beg='2018-06-01',end='2019-04-30'):
     # slim_date = ('2017-10','2018-06')
-    df = ak.index_zh_a_hist(idx_l,start_date='20160201',end_date='20230721')
-    df.set_index('日期',inplace=True)
-    df.index.name = 'date'
+    if 2<=len(idx_l)<=3 and idx_l[-1]=='0':
+        df = ak.futures_main_sina(idx_l,start_date='20160201',end_date='20230721')
+        df.rename(columns={'日期':'date','开盘价':'Open','收盘价':'Close', '最高价':'High', '最低价':'Low'},inplace=True)
+    else:
+        df = ak.index_zh_a_hist(idx_l,start_date='20160201',end_date='20230721')
+        df.rename({'日期':'date','开盘':'Open','收盘':'Close','最高':'High','最低':'Low'},axis=1,inplace=True)
+    df.set_index('date',inplace=True)
+    df.index = [x.strftime('%Y-%m-%d') for x in df.index]
     bsearch = pd.read_csv('../data_save/bsearch_day.csv',index_col=0)
     if isinstance(bword,str): bword = [bword]
     for b in bword:
@@ -122,12 +129,10 @@ def get_stock_df(idx_l=idx_lst[0],bword='牛市',beg='2018-06-01',end='2019-04-3
         bsplit.rename(columns={'count':b},inplace=True)
         df = pd.concat([df,bsplit],axis=1,join='inner')
         df['Q_'+b] = log_min_max_dist_ser(bsplit[b],120)
-    df.rename({'开盘':'Open','收盘':'Close',
-            '最高':'High','最低':'Low'},
-            axis=1,inplace=True)
     # df['Volume'] /= 1e8
     df.index = pd.to_datetime(df.index)
     bsP = mark_up_down(df)
+    # return bsP
     add_plot = [mpf.make_addplot(bsP.loc[beg:end,cl],
                     scatter=True, type='scatter',**mark_dic(cl)) for cl in bsP.columns]
     for i,b in enumerate(bword):
@@ -138,5 +143,6 @@ def get_stock_df(idx_l=idx_lst[0],bword='牛市',beg='2018-06-01',end='2019-04-3
              style=stl, addplot=add_plot, ylabel='price',datetime_format='%m-%d',xrotation=15,
              title='SH.'+idx_l,figratio=(6,5))
 
-get_stock_df('000001',('股市','上证指数','a股','牛市','熊市'), '2023-02-01','2023-05-21')
+# get_stock_df('000001',('股市','上证指数','a股','牛市','熊市'), '2023-02-01','2023-05-21')
+# get_stock_df('RB0','螺纹钢', '2022-02-01','2022-11-21')
 # plt.grid(True)

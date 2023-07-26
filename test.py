@@ -3,6 +3,7 @@ import logging
 import os
 from data_cper import *
 from common.trade_date import get_trade_day
+from data_cper.file_conv import markdown2pdf, sendMail
 
 logging.basicConfig(
     format='%(asctime)s [%(filename)s] - %(levelname)s: %(message)s',
@@ -101,7 +102,10 @@ def doc_file(paras:list):
     
 
 if __name__=='__main__':
-    
-    # update_files()
-    doc_file(Doc_Paras_List)
+    now_time = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M')
+    update_files()
+    if now_time[11:]>='07-50' and now_time[11:]<='11-05':
+        doc_file(Doc_Paras_List)
+        doc_date = markdown2pdf('../data_save/index_report.md')
+        sendMail('...','重要指数信息 '+doc_date,'../data_save/index_report.pdf','wljhwh@126.com')
     pass
