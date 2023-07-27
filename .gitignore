@@ -5,3 +5,4 @@ funds_amt*.csv
 */.cooks
 */__pycache__/
 */.ipynb*
+autorun.cmd

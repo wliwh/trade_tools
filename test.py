@@ -7,7 +7,9 @@ from data_cper.file_conv import markdown2pdf, sendMail
 
 logging.basicConfig(
     format='%(asctime)s [%(filename)s] - %(levelname)s: %(message)s',
-    level=logging.INFO)
+    level=logging.INFO,
+    filename='../trade_info.log',
+    filemode='a')
 
 Doc_Gen_Funs = [
     doc_qvix_day,
@@ -58,7 +60,7 @@ def update_files(retry:int=3):
     now_time = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M')
     if now_time[11:]>='21-30' and now_time[11:]<='23-50':
         download_type = 1
-    elif now_time[11:]>='07-50' and now_time[11:]<='11-05':
+    elif now_time[11:]>='07-50' and now_time[11:]<='10-05':
         download_type = 2
     # 交易日 QVIX 分钟级数据
     if download_type==1:
@@ -104,6 +106,7 @@ def doc_file(paras:list):
 if __name__=='__main__':
     now_time = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M')
     update_files()
+    # print('>>>>')
     if now_time[11:]>='07-50' and now_time[11:]<='11-05':
         doc_file(Doc_Paras_List)
         doc_date = markdown2pdf('../data_save/index_report.md')

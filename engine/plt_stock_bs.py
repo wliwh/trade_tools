@@ -144,5 +144,5 @@ def get_stock_df(idx_l=idx_lst[0],bword='牛市',beg='2018-06-01',end='2019-04-3
              title='SH.'+idx_l,figratio=(6,5))
 
 # get_stock_df('000001',('股市','上证指数','a股','牛市','熊市'), '2023-02-01','2023-05-21')
-# get_stock_df('RB0','螺纹钢', '2022-02-01','2022-11-21')
+get_stock_df('RB0','螺纹钢', '2022-10-01','2023-07-21')
 # plt.grid(True)
