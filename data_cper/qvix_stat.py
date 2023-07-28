@@ -83,7 +83,13 @@ def option_min_qvix(symbol='50') -> pd.DataFrame:
     """
     symbol = parse_symbol_str(symbol, True)
     url = f"http://1.optbbs.com/d/csv/d/vix{symbol}.csv"
-    temp_df = pd.read_csv(url).iloc[:, :2]
+    temp_df = pd.read_csv(url)
+    if temp_df.shape[1]>1:
+        pass
+    elif temp_df.shape[1]==1:
+        vls = [p[0].split('\t') for p in temp_df.values]
+        temp_df = pd.DataFrame(vls,columns=temp_df.columns[0].split('\t'))
+    temp_df = temp_df.iloc[:, :2]
     temp_df.columns = [
         "time",
         "qvix",
@@ -222,7 +228,7 @@ def doc_qvix_day(cfg_file=''):
     return qvix_doc_dict
 
 if __name__=='__main__':
-    # append_qvix_minute_file()
+    append_qvix_minute_file()
     # make_qvix_day_plt(make_qvix_macd_smooth(),'../data_save/300.png')
-    print(doc_qvix_day())
+    # print(doc_qvix_day())
     pass

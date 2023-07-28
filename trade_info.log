@@ -1,0 +1,10 @@
+2023-07-27 19:13:44,607 [test.py] - INFO: Update bdsearch day to 2023-07-26.
+2023-07-27 19:13:51,043 [test.py] - INFO: Update bdsearch hour to 2023-07-27 18.
+2023-07-27 19:13:51,227 [test.py] - INFO: Update margin-sh to 2023-07-26.
+2023-07-27 19:13:52,084 [test.py] - INFO: Update margin-sz to 2023-07-26.
+2023-07-27 22:31:11,511 [test.py] - WARNING: Try update qvix minute 1 times. (Length mismatch: Expected axis has 1 elements, new values have 2 elements)
+2023-07-27 22:31:11,577 [test.py] - WARNING: Try update qvix minute 2 times. (Length mismatch: Expected axis has 1 elements, new values have 2 elements)
+2023-07-27 22:31:11,640 [test.py] - WARNING: Try update qvix minute 3 times. (Length mismatch: Expected axis has 1 elements, new values have 2 elements)
+2023-07-27 22:31:11,640 [test.py] - ERROR: Can't update qvix minute.
+2023-07-27 22:31:14,520 [test.py] - INFO: Update high-low-legu to 2023-07-27.
+2023-07-27 22:31:24,526 [test.py] - INFO: Update day etf amount to 2023-07-27.

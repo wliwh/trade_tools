@@ -115,13 +115,14 @@ def plt_index_with_tjy(index_name, zdf, beg, end):
 def get_stock_df(idx_l=idx_lst[0],bword='牛市',beg='2018-06-01',end='2019-04-30'):
     # slim_date = ('2017-10','2018-06')
     if 2<=len(idx_l)<=3 and idx_l[-1]=='0':
-        df = ak.futures_main_sina(idx_l,start_date='20160201',end_date='20230721')
+        df = ak.futures_main_sina(idx_l,start_date='20160201',end_date=end)
         df.rename(columns={'日期':'date','开盘价':'Open','收盘价':'Close', '最高价':'High', '最低价':'Low'},inplace=True)
     else:
-        df = ak.index_zh_a_hist(idx_l,start_date='20160201',end_date='20230721')
+        df = ak.index_zh_a_hist(idx_l,start_date='20160201',end_date=end)
         df.rename({'日期':'date','开盘':'Open','收盘':'Close','最高':'High','最低':'Low'},axis=1,inplace=True)
     df.set_index('date',inplace=True)
-    df.index = [x.strftime('%Y-%m-%d') for x in df.index]
+    if not isinstance(df.index[0],str):
+        df.index = [x.strftime('%Y-%m-%d') for x in df.index]
     bsearch = pd.read_csv('../data_save/bsearch_day.csv',index_col=0)
     if isinstance(bword,str): bword = [bword]
     for b in bword:
@@ -143,6 +144,6 @@ def get_stock_df(idx_l=idx_lst[0],bword='牛市',beg='2018-06-01',end='2019-04-3
              style=stl, addplot=add_plot, ylabel='price',datetime_format='%m-%d',xrotation=15,
              title='SH.'+idx_l,figratio=(6,5))
 
-# get_stock_df('000001',('股市','上证指数','a股','牛市','熊市'), '2023-02-01','2023-05-21')
-get_stock_df('RB0','螺纹钢', '2022-10-01','2023-07-21')
+get_stock_df('000001',('股市','上证指数','a股','牛市','熊市'), '2023-03-01','2023-07-26')
+# get_stock_df('RB0','螺纹钢', '2023-03-01','2023-07-21')
 # plt.grid(True)
