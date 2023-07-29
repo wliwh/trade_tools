@@ -233,9 +233,7 @@ def smart_min_max_dist_pd(pds:pd.DataFrame, windows=120, id_name=None, fn=None):
             continue
         lmin = fn(0.8*bt.mean())
         lmax =  fn(bt.max())
-        if lmax==lmin: val=0
-        else:
-            val = (fn(bt.iloc[-1])-lmin)/(lmax-lmin)
+        val = (fn(bt.iloc[-1])-lmin)/(lmax-lmin)
         val[val<0] = 0
         mm_dist_pd.iloc[i] = val*100
     return mm_dist_pd if id_name is None else mm_dist_pd[id_name]

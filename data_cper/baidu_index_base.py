@@ -676,6 +676,6 @@ def doc_bsearch_info(cfg_file=''):
 if __name__=='__main__':
     # append_bsearch_day_file()
     # append_bsearch_hour_file()
-    # kk = doc_bsearch_info()
-    # print(kk)
+    kk = doc_bsearch_info()
+    print(kk)
     pass
