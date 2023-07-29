@@ -106,7 +106,6 @@ def doc_file(paras:list):
 if __name__=='__main__':
     now_time = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M')
     update_files()
-    # print('>>>>')
     if now_time[11:]>='07-50' and now_time[11:]<='11-05':
         doc_file(Doc_Paras_List)
         doc_date = markdown2pdf('../data_save/index_report.md')

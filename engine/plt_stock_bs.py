@@ -4,29 +4,18 @@ import pandas as pd
 import numpy as np
 import mplfinance as mpf
 import os
-from common.smooth_tool import log_min_max_dist_ser, min_max_dist_pd
+from common.smooth_tool import log_min_max_dist_ser, super_smoother, LLT_MA
+from common.mpf_set import Mpf_Style
 
 os.chdir(os.path.dirname(__file__))
 plt.rcParams['font.sans-serif'] = ['SimHei']
 plt.rcParams['axes.unicode_minus'] = False
 
-idx_lst = '000001 000016 000300 000852'.split()
-
-mark_col = mpf.make_marketcolors(
-    up="red",  # 上涨K线的颜色
-    down="green",  # 下跌K线的颜色
-    edge="black",  # 蜡烛图箱体的颜色
-    volume="inherit",  # 成交量柱子的颜色
-    wick="black"  # 蜡烛图影线的颜色
-)
-
-stl = mpf.make_mpf_style(
-    gridaxis='both',
-    gridstyle='-.',
-    y_on_right=False,
-    marketcolors=mark_col,
-    rc={'font.family': 'SimHei', 'axes.unicode_minus': 'False'}
-    )
+idx_dct = {'上证综指':'000001',
+           '上证50':'000016',
+           '沪深300':'000300',
+           '中证1000':'000852',
+           '中证全指':'000985'}
 
 def mark_up_down(dts,winds=(20,60,200),price='l/h'):
     ''' 添加买卖点 '''
@@ -84,10 +73,18 @@ def mark_dic(cl_n):
             'marker': p1, 'color': pcl, 'alpha':alp}
 
 
-def get_index_ohlc(idx_name,beg,end):
-    df = ak.index_zh_a_hist(idx_name,start_date=beg,end_date=end)
-    df.set_index('日期',inplace=True)
-    df.index.name = 'date'
+def get_index_ohlc(idx_l,beg,end):
+    if 2<=len(idx_l)<=3 and idx_l[-1]=='0':
+        df = ak.futures_main_sina(idx_l,start_date=beg,end_date=end)
+        df.rename(columns={'日期':'date','开盘价':'Open','收盘价':'Close', '最高价':'High', '最低价':'Low','成交量':'Volume'},inplace=True)
+        df['Volume'] /= 1e6
+    else:
+        df = ak.index_zh_a_hist(idx_l,start_date=beg,end_date=end)
+        df.rename({'日期':'date','开盘':'Open','收盘':'Close','最高':'High','最低':'Low','成交量':'Volume'},axis=1,inplace=True)
+        df['Volume'] /= 1e8
+    df.set_index('date',inplace=True)
+    if not isinstance(df.index[0],str):
+        df.index = [x.strftime('%Y-%m-%d') for x in df.index]
     return df
 
 
@@ -109,20 +106,12 @@ def plt_index_with_tjy(index_name, zdf, beg, end):
         add_plot.append(mpf.make_addplot(ndf.loc[beg:end,'顶部指数'],panel=3,color='navy', secondary_y='auto'))
     # return add_plot
     add_plot = [a for a in add_plot if not a['data'].isna().all()]
-    mpf.plot(ndf.loc[beg:end],type='candle',style=stl, addplot=add_plot, ylabel='price',title='SH.'+index_name,volume=False, figratio=(6,5),
+    mpf.plot(ndf.loc[beg:end],type='candle',style=Mpf_Style, addplot=add_plot, ylabel='price',title='SH.'+index_name,volume=False, figratio=(6,5),
              ylabel_lower='Volume')
 
-def get_stock_df(idx_l=idx_lst[0],bword='牛市',beg='2018-06-01',end='2019-04-30'):
+def get_stock_bdkey(idx_l:str,bword='牛市',beg='2018-06-01',end='2019-04-30'):
     # slim_date = ('2017-10','2018-06')
-    if 2<=len(idx_l)<=3 and idx_l[-1]=='0':
-        df = ak.futures_main_sina(idx_l,start_date='20160201',end_date=end)
-        df.rename(columns={'日期':'date','开盘价':'Open','收盘价':'Close', '最高价':'High', '最低价':'Low'},inplace=True)
-    else:
-        df = ak.index_zh_a_hist(idx_l,start_date='20160201',end_date=end)
-        df.rename({'日期':'date','开盘':'Open','收盘':'Close','最高':'High','最低':'Low'},axis=1,inplace=True)
-    df.set_index('date',inplace=True)
-    if not isinstance(df.index[0],str):
-        df.index = [x.strftime('%Y-%m-%d') for x in df.index]
+    df = get_index_ohlc(idx_l,'2016-01-01',end=end)
     bsearch = pd.read_csv('../data_save/bsearch_day.csv',index_col=0)
     if isinstance(bword,str): bword = [bword]
     for b in bword:
@@ -130,20 +119,24 @@ def get_stock_df(idx_l=idx_lst[0],bword='牛市',beg='2018-06-01',end='2019-04-3
         bsplit.rename(columns={'count':b},inplace=True)
         df = pd.concat([df,bsplit],axis=1,join='inner')
         df['Q_'+b] = log_min_max_dist_ser(bsplit[b],120)
-    # df['Volume'] /= 1e8
+        df['diff_'+b] = bsplit[b] - super_smoother(bsplit[b],20)
     df.index = pd.to_datetime(df.index)
     bsP = mark_up_down(df)
-    # return bsP
     add_plot = [mpf.make_addplot(bsP.loc[beg:end,cl],
                     scatter=True, type='scatter',**mark_dic(cl)) for cl in bsP.columns]
     for i,b in enumerate(bword):
-        add_plot.append(mpf.make_addplot(df.loc[beg:end,b],type='bar', panel=i+1, width=0.7, color='darkgray', secondary_y=False,ylabel=b))
-        add_plot.append(mpf.make_addplot(df.loc[beg:end,'Q_'+b], panel=i+1, linewidths=0.7, color='tomato',secondary_y=True))
+        add_plot.append(mpf.make_addplot(df.loc[beg:end,b],type='bar', panel=i+2, width=0.7, color='darkgray', secondary_y=False,ylabel=b))
+        add_plot.append(mpf.make_addplot(df.loc[beg:end,'Q_'+b], panel=i+2, linewidths=0.7, color='tomato',secondary_y=True))
+        if b==bword[-1]:
+            add_plot.append(mpf.make_addplot(df.loc[beg:end,'diff_'+b],panel=i+3,linewidths=0.7, color='darkblue',ylabel='diff:'+b))
     add_plot = [a for a in add_plot if not a['data'].isna().all()]
     mpf.plot(df.loc[beg:end],type='candle',
-             style=stl, addplot=add_plot, ylabel='price',datetime_format='%m-%d',xrotation=15,
-             title='SH.'+idx_l,figratio=(6,5))
+             style=Mpf_Style, addplot=add_plot, ylabel='price',datetime_format='%m-%d',xrotation=15,volume=True,
+             title=idx_l,figratio=(6,5))
 
-get_stock_df('000001',('股市','上证指数','a股','牛市','熊市'), '2023-03-01','2023-07-26')
-# get_stock_df('RB0','螺纹钢', '2023-03-01','2023-07-21')
-# plt.grid(True)
+
+if __name__=='__main__':
+    # get_stock_bdkey('000001',('股市','上证指数','a股','牛市','熊市'), '2022-10-01','2023-03-26')
+    # get_stock_bdkey('RB0','螺纹钢', '2023-03-01','2023-07-21')
+    print(get_index_ohlc('RB0','2022-02-01','2022-05-01'))
+    # plt.grid(True)

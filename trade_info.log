@@ -8,3 +8,10 @@
 2023-07-27 22:31:11,640 [test.py] - ERROR: Can't update qvix minute.
 2023-07-27 22:31:14,520 [test.py] - INFO: Update high-low-legu to 2023-07-27.
 2023-07-27 22:31:24,526 [test.py] - INFO: Update day etf amount to 2023-07-27.
+2023-07-28 21:12:06,372 [test.py] - INFO: Update qvix minute to 2023-07-28.
+2023-07-28 21:12:10,586 [test.py] - INFO: Update bdsearch day to 2023-07-27.
+2023-07-28 21:12:17,059 [test.py] - INFO: Update bdsearch hour to 2023-07-28 20.
+2023-07-28 21:12:17,258 [test.py] - INFO: Update margin-sh to 2023-07-27.
+2023-07-28 21:12:18,127 [test.py] - INFO: Update margin-sz to 2023-07-27.
+2023-07-28 21:12:20,991 [test.py] - INFO: Update high-low-legu to 2023-07-28.
+2023-07-28 21:12:30,489 [test.py] - INFO: Update day etf amount to 2023-07-28.

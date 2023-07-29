@@ -203,8 +203,11 @@ def min_max_dist_series(ser:pd.Series, winds:int=120, fn=None):
     for i,bt in enumerate(ser.rolling(winds)):
         if len(bt) < winds:
             continue
-        lmin, lmax = fn(bt.min()), fn(bt.max())
-        val = (fn(bt.iloc[-1])-lmin)/(lmax-lmin)
+        lmin, lmax = fn(bt.min()+0.01), fn(bt.max()+0.01)
+        if lmax==lmin:
+            val=0
+        else:
+            val = (fn(bt.iloc[-1]+0.01)-lmin)/(lmax-lmin)
         mm_dist_ser.iloc[i] = val*100
     return mm_dist_ser
 
@@ -230,7 +233,9 @@ def smart_min_max_dist_pd(pds:pd.DataFrame, windows=120, id_name=None, fn=None):
             continue
         lmin = fn(0.8*bt.mean())
         lmax =  fn(bt.max())
-        val = (fn(bt.iloc[-1])-lmin)/(lmax-lmin)
+        if lmax==lmin: val=0
+        else:
+            val = (fn(bt.iloc[-1])-lmin)/(lmax-lmin)
         val[val<0] = 0
         mm_dist_pd.iloc[i] = val*100
     return mm_dist_pd if id_name is None else mm_dist_pd[id_name]
