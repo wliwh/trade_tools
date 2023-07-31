@@ -8,6 +8,7 @@ from common.smooth_tool import log_min_max_dist_ser, super_smoother, LLT_MA
 from common.mpf_set import Mpf_Style
 
 os.chdir(os.path.dirname(__file__))
+bd_pth = os.path.abspath('../data_save/bsearch_day.csv')
 plt.rcParams['font.sans-serif'] = ['SimHei']
 plt.rcParams['axes.unicode_minus'] = False
 
@@ -112,8 +113,9 @@ def plt_index_with_tjy(index_name, zdf, beg, end):
 def get_stock_bdkey(idx_l:str,bword='牛市',beg='2018-06-01',end='2019-04-30'):
     # slim_date = ('2017-10','2018-06')
     df = get_index_ohlc(idx_l,'2016-01-01',end=end)
-    bsearch = pd.read_csv('../data_save/bsearch_day.csv',index_col=0)
+    bsearch = pd.read_csv(bd_pth,index_col=0)
     if isinstance(bword,str): bword = [bword]
+    tps = idx_l+bword[0]+beg[2:].replace('-','')+'.png'
     for b in bword:
         bsplit = bsearch[bsearch['keyword']==b][['count']]
         bsplit.rename(columns={'count':b},inplace=True)
@@ -125,18 +127,36 @@ def get_stock_bdkey(idx_l:str,bword='牛市',beg='2018-06-01',end='2019-04-30'):
     add_plot = [mpf.make_addplot(bsP.loc[beg:end,cl],
                     scatter=True, type='scatter',**mark_dic(cl)) for cl in bsP.columns]
     for i,b in enumerate(bword):
-        add_plot.append(mpf.make_addplot(df.loc[beg:end,b],type='bar', panel=i+2, width=0.7, color='darkgray', secondary_y=False,ylabel=b))
-        add_plot.append(mpf.make_addplot(df.loc[beg:end,'Q_'+b], panel=i+2, linewidths=0.7, color='tomato',secondary_y=True))
-        if b==bword[-1]:
-            add_plot.append(mpf.make_addplot(df.loc[beg:end,'diff_'+b],panel=i+3,linewidths=0.7, color='darkblue',ylabel='diff:'+b))
+        add_plot.append(mpf.make_addplot(df.loc[beg:end,b],type='bar', panel=i*2+2, width=0.7, color='darkgray', secondary_y=False,ylabel=b))
+        add_plot.append(mpf.make_addplot(df.loc[beg:end,'Q_'+b], panel=i*2+2, width=0.8, color='tomato',secondary_y=True))
+        add_plot.append(mpf.make_addplot(df.loc[beg:end,'diff_'+b],panel=i*2+3,width=0.6, color='darkblue',ylabel='Diff'))
     add_plot = [a for a in add_plot if not a['data'].isna().all()]
     mpf.plot(df.loc[beg:end],type='candle',
-             style=Mpf_Style, addplot=add_plot, ylabel='price',datetime_format='%m-%d',xrotation=15,volume=True,
-             title=idx_l,figratio=(6,5))
+             style=Mpf_Style, addplot=add_plot, ylabel='price',
+             #savefig={'fname':'./img/'+tps,'dpi':400,'bbox_inches':'tight'},
+             datetime_format='%m-%d',xrotation=15,volume=True,
+             title=idx_l,figratio=(6,max(6,len(bword)*2)))
+    
+
+def make_stk_plts(idx_l:str):
+    date_lst = (('2017-10-20','2018-02-05'),
+                ('2018-01-15','2018-04-10'),
+                ('2018-03-20','2018-06-10'),
+                ('2018-06-01','2018-09-10'),
+                ('2018-09-01','2018-12-10'),
+                ('2018-12-01','2019-02-10'))
+    for d in date_lst:
+        get_stock_bdkey('000001',('股市','上证指数','a股'), d[0],d[1])
+        get_stock_bdkey('000001',('牛市','熊市'), d[0],d[1])
+        get_stock_bdkey('000300',('沪深300','上证50','a股'), d[0],d[1])
+
 
 
 if __name__=='__main__':
-    # get_stock_bdkey('000001',('股市','上证指数','a股','牛市','熊市'), '2022-10-01','2023-03-26')
+    get_stock_bdkey('000001',('股市','上证指数','a股'), '2022-06-20','2022-12-31')
+    # get_stock_bdkey('000001',('牛市','熊市'), '2022-06-20','2022-12-31')
     # get_stock_bdkey('RB0','螺纹钢', '2023-03-01','2023-07-21')
-    print(get_index_ohlc('RB0','2022-02-01','2022-05-01'))
+    # print(get_index_ohlc('RB0','2022-02-01','2022-05-01'))
     # plt.grid(True)
+    # make_stk_plts(0)
+    pass

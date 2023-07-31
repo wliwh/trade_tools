@@ -19,3 +19,6 @@
 2023-07-29 08:59:06,243 [test.py] - INFO: Update bdsearch hour to 2023-07-29 07.
 2023-07-29 08:59:06,411 [test.py] - INFO: Update margin-sh to 2023-07-28.
 2023-07-29 08:59:06,418 [test.py] - INFO: Update margin-sz ready.
+2023-07-31 22:28:35,754 [test.py] - INFO: Update qvix minute to 2023-07-31.
+2023-07-31 22:28:38,569 [test.py] - INFO: Update high-low-legu to 2023-07-31.
+2023-07-31 22:28:47,821 [test.py] - INFO: Update day etf amount to 2023-07-31.
