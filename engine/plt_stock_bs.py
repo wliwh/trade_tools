@@ -4,6 +4,8 @@ import pandas as pd
 import numpy as np
 import mplfinance as mpf
 import os
+from pyecharts import options as opts
+from pyecharts.charts import Kline, Bar, Grid
 from common.smooth_tool import log_min_max_dist_ser, super_smoother, LLT_MA
 from common.mpf_set import Mpf_Style
 
@@ -133,30 +135,93 @@ def get_stock_bdkey(idx_l:str,bword='牛市',beg='2018-06-01',end='2019-04-30'):
     add_plot = [a for a in add_plot if not a['data'].isna().all()]
     mpf.plot(df.loc[beg:end],type='candle',
              style=Mpf_Style, addplot=add_plot, ylabel='price',
-             #savefig={'fname':'./img/'+tps,'dpi':400,'bbox_inches':'tight'},
+             savefig={'fname':'./img/'+tps,'dpi':400,'bbox_inches':'tight'},
              datetime_format='%m-%d',xrotation=15,volume=True,
-             title=idx_l,figratio=(6,max(6,len(bword)*2)))
+             title=idx_l,figratio=(10,max(10,len(bword)*3)))
     
 
 def make_stk_plts(idx_l:str):
-    date_lst = (('2017-10-20','2018-02-05'),
-                ('2018-01-15','2018-04-10'),
-                ('2018-03-20','2018-06-10'),
-                ('2018-06-01','2018-09-10'),
-                ('2018-09-01','2018-12-10'),
-                ('2018-12-01','2019-02-10'))
+    date_lst = (('2017-10-10','2018-04-10'),
+                ('2018-03-20','2018-09-10'),
+                ('2018-09-01','2019-02-10'),
+                ('2021-11-01','2022-05-20'),
+                ('2022-05-01','2022-12-10'))
     for d in date_lst:
         get_stock_bdkey('000001',('股市','上证指数','a股'), d[0],d[1])
         get_stock_bdkey('000001',('牛市','熊市'), d[0],d[1])
         get_stock_bdkey('000300',('沪深300','上证50','a股'), d[0],d[1])
+        get_stock_bdkey('399006',('创业板指','a股'), d[0],d[1])
+
+
+def make_echarts(idx_l:str,bword='牛市',beg='2018-06-01',end='2019-04-30'):
+    df = get_index_ohlc(idx_l,'2016-01-01',end=end)
+    data = df.loc[beg:,:'Low']
+    volume_ser = df.loc[beg:,'Volume']
+    bsearch = pd.read_csv(bd_pth,index_col=0)
+    kline = (
+        Kline(init_opts=opts.InitOpts(width="1000px", height="600px"))
+        .add_xaxis([d for d in data.index])
+        .add_yaxis("kline", data.values.tolist())
+        .set_global_opts(
+            xaxis_opts=opts.AxisOpts(is_scale=True),
+            yaxis_opts=opts.AxisOpts(
+                is_scale=True,
+                splitarea_opts=opts.SplitAreaOpts(
+                    is_show=True, areastyle_opts=opts.AreaStyleOpts(opacity=1)
+                ),
+            ),
+            datazoom_opts=[opts.DataZoomOpts(pos_bottom="2%")],
+            title_opts=opts.TitleOpts(title="Kline-DataZoom-slider-Position"),
+        )
+    )
+    bar = (
+        Bar()
+            .add_xaxis(xaxis_data=list(data.index))  # X轴数据
+            .add_yaxis(
+            series_name="volume",
+            y_axis=volume_ser.tolist(),  # Y轴数据
+            xaxis_index=1,
+            yaxis_index=1,
+            label_opts=opts.LabelOpts(is_show=False),
+            itemstyle_opts=opts.ItemStyleOpts(color='#ef232a'  # '#14b143'
+            ),
+        )
+        .set_global_opts(
+            xaxis_opts=opts.AxisOpts(
+                type_="category",  # 坐标轴类型-离散数据
+                grid_index=1,
+                axislabel_opts=opts.LabelOpts(is_show=False),
+            ),
+            legend_opts=opts.LegendOpts(is_show=False),
+        )
+    )
+    # 图像排列
+    grid_chart = Grid(
+        init_opts=opts.InitOpts(
+            width="1200px",  # 显示图形宽度
+            height="800px",
+            animation_opts=opts.AnimationOpts(animation=False),  # 关闭动画
+        )
+    )
+
+    grid_chart.add(  # 加入均线图
+        kline,
+        grid_opts=opts.GridOpts(pos_left="10%", pos_right="8%", height="50%"),
+    )
+    grid_chart.add(  # 加入成交量图
+        bar,
+        grid_opts=opts.GridOpts(pos_left="10%", pos_right="8%", pos_top="60%", height="20%"),
+    )
+    grid_chart.render("大量数据展示.html")
 
 
 
 if __name__=='__main__':
-    get_stock_bdkey('000001',('股市','上证指数','a股'), '2022-06-20','2022-12-31')
+    # get_stock_bdkey('000001',('股市','上证指数','a股'), '2022-06-20','2022-12-31')
     # get_stock_bdkey('000001',('牛市','熊市'), '2022-06-20','2022-12-31')
     # get_stock_bdkey('RB0','螺纹钢', '2023-03-01','2023-07-21')
     # print(get_index_ohlc('RB0','2022-02-01','2022-05-01'))
     # plt.grid(True)
     # make_stk_plts(0)
+    make_echarts('000001')
     pass
