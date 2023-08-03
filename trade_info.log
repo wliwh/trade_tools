@@ -26,3 +26,20 @@
 2023-08-01 08:07:01,054 [test.py] - INFO: Update bdsearch hour to 2023-08-01 07.
 2023-08-01 08:07:01,239 [test.py] - INFO: Update margin-sh to 2023-07-31.
 2023-08-01 08:07:02,127 [test.py] - INFO: Update margin-sz to 2023-07-28.
+2023-08-01 21:25:21,118 [test.py] - INFO: Update qvix minute to 2023-08-01.
+2023-08-01 21:25:25,307 [test.py] - INFO: Update bdsearch day to 2023-07-31.
+2023-08-01 21:25:32,229 [test.py] - INFO: Update bdsearch hour to 2023-08-01 20.
+2023-08-01 21:25:32,240 [test.py] - INFO: Update margin-sh ready.
+2023-08-01 21:25:33,891 [test.py] - INFO: Update margin-sz to 2023-07-31.
+2023-08-01 21:25:36,596 [test.py] - INFO: Update high-low-legu to 2023-08-01.
+2023-08-01 21:25:48,415 [test.py] - INFO: Update day etf amount to 2023-08-01.
+2023-08-02 22:48:42,911 [test.py] - WARNING: Try update qvix minute 1 times. (No columns to parse from file)
+2023-08-02 22:48:43,240 [test.py] - WARNING: Try update qvix minute 2 times. (No columns to parse from file)
+2023-08-02 22:48:43,588 [test.py] - WARNING: Try update qvix minute 3 times. (No columns to parse from file)
+2023-08-02 22:48:43,588 [test.py] - ERROR: Can't update qvix minute.
+2023-08-02 22:48:47,248 [test.py] - INFO: Update bdsearch day to 2023-08-01.
+2023-08-02 22:48:53,698 [test.py] - INFO: Update bdsearch hour to 2023-08-02 21.
+2023-08-02 22:48:53,885 [test.py] - INFO: Update margin-sh to 2023-08-01.
+2023-08-02 22:48:54,672 [test.py] - INFO: Update margin-sz to 2023-08-01.
+2023-08-02 22:49:00,561 [test.py] - INFO: Update high-low-legu to 2023-08-02.
+2023-08-02 22:49:09,323 [test.py] - INFO: Update day etf amount to 2023-08-02.
