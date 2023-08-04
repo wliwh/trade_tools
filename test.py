@@ -67,7 +67,7 @@ def update_files(retry:int=3):
         basic_append_fun(append_qvix_minute_file,retry,words='qvix minute')
     # ;; QVIX 数据
     # bdsearch 检索词数据
-    if download_type==1:
+    if download_type==2:
         basic_append_fun(append_bsearch_day_file,retry,words='bdsearch day')
         basic_append_fun(append_bsearch_hour_file,retry,words='bdsearch hour')
     # ;; 北上资金

@@ -5,7 +5,7 @@ import numpy as np
 import mplfinance as mpf
 import os
 from pyecharts import options as opts
-from pyecharts.charts import Kline, Bar, Grid, Line
+from pyecharts.charts import Kline, Bar, Grid, Line, Tab
 from pyecharts.commons.utils import JsCode
 from common.smooth_tool import min_max_dist_series, super_smoother, LLT_MA
 from common.mpf_set import Mpf_Style
@@ -20,7 +20,8 @@ idx_dct = {'上证综指':'000001',
            '沪深300':'000300',
            '中证1000':'000852',
            '创业板指': '399006',
-           '中证全指':'000985'}
+           '中证全指':'000985',
+           '螺纹钢':'RB0'}
 
 def mark_up_down(dts,winds=(20,60,200),price='l/h'):
     ''' 添加买卖点 '''
@@ -104,8 +105,8 @@ def get_index_with_bsearch(idx_l:str, bword, end:str,**kwargs):
         bsplit.rename(columns={'count':b},inplace=True)
         df = pd.concat([df,bsplit],axis=1,join='inner')
         df['Q_'+b] = min_max_dist_series(bsplit[b],bd_mm_dist)
-        df['diff_'+b] = bsplit[b] - super_smoother(bsplit[b],ssmooth_day)
-        df['llt_'+b] = bsplit[b] - LLT_MA(bsplit[b],1/llt_day)
+        df['diff_'+b] = bsplit[b] - 0.5*super_smoother(bsplit[b],ssmooth_day)-0.5*LLT_MA(bsplit[b],1/llt_day)
+        df['diffQ_'+b] = min_max_dist_series(df['diff_'+b],bd_mm_dist//2)
     return df
 
 def plt_index_with_tjy(index_name, zdf, beg, end):
@@ -131,6 +132,7 @@ def plt_index_with_tjy(index_name, zdf, beg, end):
 
 def get_stock_bdkey(idx_l:str,bword='牛市',beg='2018-06-01',end='2019-04-30'):
     # slim_date = ('2017-10','2018-06')
+    if isinstance(bword,str): bword = [bword]
     df = get_index_with_bsearch(idx_l,bword,end)
     df.index = pd.to_datetime(df.index)
     bsP = mark_up_down(df)
@@ -164,16 +166,61 @@ def make_stk_plts(idx_l:str):
 
 
 def make_echarts(idx_l:str,bword='牛市',beg='2018-06-01',end='2019-04-30'):
-    idx_name = None
-    if idx_l in idx_dct: 
-        idx_name = idx_l
-        idx_l = idx_dct[idx_l]
-    df = get_index_with_bsearch(idx_l,bword,end='2023-07-28')
-    ma_args = (5,10,20,60,120,240)
-    for d in ma_args:
+    def echart_args_get(idx_nm:str, bw:str):
+        echart_args = dict(ma_args = (5,10,20,60,120,240))
+        if idx_nm in idx_dct:
+            echart_args['idx_name'] = idx_nm
+            echart_args['idx_code'] = idx_dct[idx_nm]
+        elif idx_nm in idx_dct.values():
+            echart_args['idx_name'] = {v:k for k,v in idx_dct.items()}[idx_nm]
+            echart_args['idx_code'] = idx_nm
+        else: return None
+        if ',' in bw:
+            bwl = [a.strip() for a in bw.split(',')]
+            assert(len(bwl))==2, 'bword is too long.'
+            echart_args.update({
+                'bwlen':2, 'bword':bwl,
+                'grid':('34%','43%','11%','53%','10%','64%','10%','74%','10%','85%','10%'),
+                'qu_pos':('64%','84%'),
+                'height':'750px'})
+        else:
+            echart_args.update({
+                'bwlen':1, 'bword':[bw],
+                'grid':('45%','55%','13%','68%','12%','82%','10%'),
+                'qu_pos':('80%',),
+                'height':'700px'})
+        return echart_args
+    
+    echart_dic = echart_args_get(idx_l, bword)
+    idx_code = echart_dic['idx_code']
+    idx_name = echart_dic['idx_name']
+    _bwordl = echart_dic['bword']
+    _bwlen = echart_dic['bwlen']
+    df = get_index_with_bsearch(idx_code, _bwordl, end='2023-08-02')
+    for d in echart_dic['ma_args']:
         df['ma_'+str(d)] = df['Close'].rolling(d).mean()
     data = df.loc[beg:end,['Open','Close','Low','High']]
     volume_ser = df.loc[beg:end,'Volume']
+    _range_len = int((100*100)/len(data))
+    _range_len = 90 if _range_len>100 else _range_len
+    _datazoom_opt = [
+        opts.DataZoomOpts(is_show=False, type_="inside", 
+                            xaxis_index=[0, 0], range_start=100-_range_len,range_end=100),
+        opts.DataZoomOpts(is_show=True, pos_bottom="2%",
+                            range_start=100-_range_len,
+                            xaxis_index=[0, 1], range_end=100),
+        opts.DataZoomOpts(is_show=False, range_start=100-_range_len,
+                            xaxis_index=[0, 2], range_end=100),
+        opts.DataZoomOpts(is_show=False, range_start=100-_range_len,
+                            xaxis_index=[0, 3], range_end=100)
+    ]
+    if _bwlen==2:
+        _datazoom_opt.extend([
+            opts.DataZoomOpts(is_show=False, range_start=100-_range_len,
+                                xaxis_index=[0, 4], range_end=100),
+            opts.DataZoomOpts(is_show=False, range_start=100-_range_len,
+                                xaxis_index=[0, 5], range_end=100)
+        ])
     kline = (
         Kline()
         .add_xaxis([d for d in data.index])
@@ -186,17 +233,8 @@ def make_echarts(idx_l:str,bword='牛市',beg='2018-06-01',end='2019-04-30'):
                     is_show=True, areastyle_opts=opts.AreaStyleOpts(opacity=1)
                 ),
             ),
-            datazoom_opts=[
-                opts.DataZoomOpts(is_show=False, type_="inside", 
-                                  xaxis_index=[0, 0], range_start=85,range_end=100),
-                opts.DataZoomOpts(is_show=True, pos_bottom="2%",range_start=85,
-                                  xaxis_index=[0, 1], range_end=100),
-                opts.DataZoomOpts(is_show=False, range_start=85,
-                                  xaxis_index=[0, 2], range_end=100),
-                opts.DataZoomOpts(is_show=False, range_start=85,
-                                  xaxis_index=[0, 3], range_end=100)
-            ],
-            title_opts=opts.TitleOpts(title="Kline with {}".format(idx_name if idx_name else idx_l)),
+            datazoom_opts=_datazoom_opt,
+            title_opts=opts.TitleOpts(title="{}: {}".format(idx_name,bword)),
         )
     )
 
@@ -278,8 +316,8 @@ def make_echarts(idx_l:str,bword='牛市',beg='2018-06-01',end='2019-04-30'):
         Bar()
             .add_xaxis(xaxis_data=data.index.tolist())  # X轴数据
             .add_yaxis(
-            series_name=bword,
-            y_axis= df.loc[beg:end,bword].tolist(),  # Y轴数据
+            series_name=_bwordl[0],
+            y_axis= df.loc[beg:end,_bwordl[0]].tolist(),  # Y轴数据
             xaxis_index=1,
             yaxis_index=1,
             label_opts=opts.LabelOpts(is_show=False),
@@ -304,14 +342,13 @@ def make_echarts(idx_l:str,bword='牛市',beg='2018-06-01',end='2019-04-30'):
             legend_opts=opts.LegendOpts(is_show=False),
         )
     )
-
     bd_qut_line = (
         Line()
         .add_xaxis(xaxis_data=data.index.tolist())
         # .extend_axis(yaxis=opts.AxisOpts(type_="value", position="right",))
         .add_yaxis(
             series_name="Q120",
-            y_axis=df.loc[beg:end,'Q_'+bword].tolist(),
+            y_axis=df.loc[beg:end,'Q_'+_bwordl[0]].tolist(),
             is_smooth=False,
             # yaxis_index=1,
             linestyle_opts=opts.LineStyleOpts(opacity=1),
@@ -319,7 +356,7 @@ def make_echarts(idx_l:str,bword='牛市',beg='2018-06-01',end='2019-04-30'):
         )
         .add_yaxis(
             series_name='ssmooth',
-            y_axis=df.loc[beg:end,'diff_'+bword].tolist(),
+            y_axis=df.loc[beg:end,'diff_'+_bwordl[0]].tolist(),
             is_smooth=False,
             is_symbol_show=False,
             yaxis_index=1,
@@ -327,7 +364,7 @@ def make_echarts(idx_l:str,bword='牛市',beg='2018-06-01',end='2019-04-30'):
         )
         .add_yaxis(
             series_name='llt',
-            y_axis=df.loc[beg:end,'llt_'+bword].tolist(),
+            y_axis=df.loc[beg:end,'llt_'+_bwordl[0]].tolist(),
             is_smooth=False,
             is_symbol_show=False,
             yaxis_index=1,
@@ -343,41 +380,135 @@ def make_echarts(idx_l:str,bword='牛市',beg='2018-06-01',end='2019-04-30'):
                 type_="value",
                 grid_index=3,
                 split_number=3,
+                position='right',
                 axistick_opts=opts.AxisTickOpts(is_show=True),
                 splitline_opts=opts.SplitLineOpts(is_show=True),
             ),
-            legend_opts=opts.LegendOpts(pos_top="80%"),
+            legend_opts=opts.LegendOpts(pos_top=echart_dic['qu_pos'][0]),
         )
     )
+    if _bwlen==2:
+        # bd bar
+        bd_bar2 = (
+            Bar()
+                .add_xaxis(xaxis_data=data.index.tolist())  # X轴数据
+                .add_yaxis(
+                series_name=_bwordl[1],
+                y_axis= df.loc[beg:end,_bwordl[1]].tolist(),  # Y轴数据
+                xaxis_index=1,
+                yaxis_index=1,
+                label_opts=opts.LabelOpts(is_show=False),
+                itemstyle_opts=opts.ItemStyleOpts(color='#bbbbbb'),
+            )
+            .set_global_opts(
+                xaxis_opts=opts.AxisOpts(
+                    type_="category",
+                    grid_index=4,
+                    axislabel_opts=opts.LabelOpts(is_show=False),
+                ),
+                yaxis_opts=opts.AxisOpts(
+                    type_='value',
+                    grid_index=4,
+                    split_number=3,
+                    axisline_opts=opts.AxisLineOpts(is_on_zero=False),
+                    axistick_opts=opts.AxisTickOpts(is_show=False),
+                    splitline_opts=opts.SplitLineOpts(is_show=False),
+                    axislabel_opts=opts.LabelOpts(is_show=True),
+                ),
+                legend_opts=opts.LegendOpts(is_show=False),
+            )
+        )
+        bd_qut_line2 = (
+            Line()
+            .add_xaxis(xaxis_data=data.index.tolist())
+            .add_yaxis(
+                series_name="Q120",
+                y_axis=df.loc[beg:end,'Q_'+_bwordl[1]].tolist(),
+                is_smooth=False,
+                linestyle_opts=opts.LineStyleOpts(opacity=1),
+                label_opts=opts.LabelOpts(is_show=False),
+            )
+            .add_yaxis(
+                series_name='ssmooth',
+                y_axis=df.loc[beg:end,'diff_'+_bwordl[1]].tolist(),
+                is_smooth=False,
+                is_symbol_show=False,
+                yaxis_index=1,
+                label_opts=opts.LabelOpts(is_show=False),
+            )
+            .add_yaxis(
+                series_name='llt',
+                y_axis=df.loc[beg:end,'llt_'+_bwordl[1]].tolist(),
+                is_smooth=False,
+                is_symbol_show=False,
+                yaxis_index=1,
+                label_opts=opts.LabelOpts(is_show=False),
+            )
+            .set_global_opts(
+                tooltip_opts=opts.TooltipOpts(is_show=False,),
+                xaxis_opts=opts.AxisOpts(
+                    type_="category",
+                    axislabel_opts=opts.LabelOpts(is_show=False)),
+                yaxis_opts=opts.AxisOpts(
+                    type_="value",
+                    grid_index=5,
+                    split_number=3,
+                    position='right',
+                    axistick_opts=opts.AxisTickOpts(is_show=False),
+                    splitline_opts=opts.SplitLineOpts(is_show=True),
+                ),
+                legend_opts=opts.LegendOpts(is_show=False),
+            )
+        )
     # overlap_bd = bd_bar.overlap(bd_qut_line)
     # 图像排列
     grid_chart = Grid(
         init_opts=opts.InitOpts(
             width="1200px",  # 显示图形宽度
-            height="800px",
+            height=echart_dic['height'],
             animation_opts=opts.AnimationOpts(animation=False),  # 关闭动画
         )
     )
 
+    _g_hts = echart_dic['grid']
     grid_chart.add_js_funcs("var barData = {}".format(data.values.tolist()))
-
     grid_chart.add(  # 加入均线图
         overlap_kline_line,
-        grid_opts=opts.GridOpts(pos_left="10%", pos_right="8%", height="45%"),
+        grid_opts=opts.GridOpts(pos_left="10%", pos_right="8%", height=_g_hts[0]),
     )
     grid_chart.add(  # 加入成交量图
         bar,
-        grid_opts=opts.GridOpts(pos_left="10%", pos_right="8%", pos_top="55%", height="13%"),
+        grid_opts=opts.GridOpts(pos_left="10%", pos_right="8%", pos_top=_g_hts[1], height=_g_hts[2]),
     )
     grid_chart.add(  # 加入关键词量图
         bd_bar,
-        grid_opts=opts.GridOpts(pos_left="10%", pos_right="8%", pos_top="68%", height="12%"),
+        grid_opts=opts.GridOpts(pos_left="10%", pos_right="8%", pos_top=_g_hts[3], height=_g_hts[4]),
     )
     grid_chart.add(  # 加入关键词量图
         bd_qut_line,
-        grid_opts=opts.GridOpts(pos_left="10%", pos_right="8%", pos_top="82%", height="10%"),
+        grid_opts=opts.GridOpts(pos_left="10%", pos_right="8%", pos_top=_g_hts[5], height=_g_hts[6]),
     )
-    grid_chart.render("大量数据展示.html")
+    if _bwlen==2:
+        grid_chart.add(  # 加入关键词量图
+            bd_bar2,
+            grid_opts=opts.GridOpts(pos_left="10%", pos_right="8%", pos_top=_g_hts[7], height=_g_hts[8]),
+        )
+        grid_chart.add(  # 加入关键词量图
+            bd_qut_line2,
+            grid_opts=opts.GridOpts(pos_left="10%", pos_right="8%", pos_top=_g_hts[9], height=_g_hts[10]),
+        )        
+    # grid_chart.render("大量数据展示.html")
+    return grid_chart
+
+def multi_tab_echarts():
+    tab = Tab()
+    tab.add(make_echarts('上证综指','股市,a股',beg='2022-09-01',end='2023-07-28'), '股市')
+    tab.add(make_echarts('上证综指','上证,上证指数',beg='2022-09-01',end='2023-07-28'), '股市Ⅱ')
+    tab.add(make_echarts('上证综指','牛市,熊市',beg='2022-09-01',end='2023-07-28'), '牛熊')
+    tab.add(make_echarts('沪深300','沪深300',beg='2022-09-01',end='2023-07-28'), '核心资产')
+    tab.add(make_echarts('创业板指','创业板指',beg='2022-09-01',end='2023-07-28'), '创业板')
+    tab.add(make_echarts('螺纹钢','螺纹钢',beg='2022-09-01',end='2023-07-28'), '黑色系')
+    tab.render('大量数据展示.html')
 
 def bar_test():
     x_data = ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"]
@@ -446,10 +577,10 @@ def bar_test():
 if __name__=='__main__':
     # get_stock_bdkey('000001',('股市','上证指数','a股'), '2021-12-20','2022-06-30')
     # get_stock_bdkey('000001',('牛市','熊市'), '2022-12-20','2023-06-30')
-    # get_stock_bdkey('RB0','螺纹钢', '2021-07-01','2022-05-31')
+    # get_stock_bdkey('RB0','螺纹钢', '2023-03-01','2023-08-02')
     # print(get_index_ohlc('RB0','2022-02-01','2022-05-01'))
     # plt.grid(True)
     # make_stk_plts(0)
-    make_echarts('上证综指','牛市',beg='2017-09-01',end='2023-07-28')
-    # bar_test()
+    # make_echarts('上证综指','牛市,熊市',beg='2022-09-01',end='2023-07-28')
+    multi_tab_echarts()
     pass
