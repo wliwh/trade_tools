@@ -54,3 +54,5 @@
 2023-08-04 08:17:37,029 [test.py] - INFO: Update bdsearch hour to 2023-08-04 07.
 2023-08-04 08:17:37,213 [test.py] - INFO: Update margin-sh to 2023-08-03.
 2023-08-04 08:17:37,220 [test.py] - INFO: Update margin-sz ready.
+2023-08-04 22:27:48,624 [test.py] - INFO: Update high-low-legu to 2023-08-04.
+2023-08-04 22:27:58,300 [test.py] - INFO: Update day etf amount to 2023-08-04.

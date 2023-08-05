@@ -21,7 +21,9 @@ idx_dct = {'上证综指':'000001',
            '中证1000':'000852',
            '创业板指': '399006',
            '中证全指':'000985',
-           '螺纹钢':'RB0'}
+           '螺纹钢':'RB0',
+           '生猪':'lh0',
+           '原油':'sc0'}
 
 def mark_up_down(dts,winds=(20,60,200),price='l/h'):
     ''' 添加买卖点 '''
@@ -201,7 +203,7 @@ def make_echarts(idx_l:str,bword='牛市',beg='2018-06-01',end='2019-04-30'):
         df['ma_'+str(d)] = df['Close'].rolling(d).mean()
     data = df.loc[beg:end,['Open','Close','Low','High']]
     volume_ser = df.loc[beg:end,'Volume']
-    _range_len = int((100*100)/len(data))
+    _range_len = int((120*100)/len(data))
     _range_len = 90 if _range_len>100 else _range_len
     _datazoom_opt = [
         opts.DataZoomOpts(is_show=False, type_="inside", 
@@ -237,7 +239,6 @@ def make_echarts(idx_l:str,bword='牛市',beg='2018-06-01',end='2019-04-30'):
             title_opts=opts.TitleOpts(title="{}: {}".format(idx_name,bword)),
         )
     )
-
     kline_line = (
         Line()
         .add_xaxis(xaxis_data=data.index.tolist())
@@ -351,6 +352,7 @@ def make_echarts(idx_l:str,bword='牛市',beg='2018-06-01',end='2019-04-30'):
             y_axis=df.loc[beg:end,'Q_'+_bwordl[0]].tolist(),
             is_smooth=False,
             # yaxis_index=1,
+            symbol_size=2,
             linestyle_opts=opts.LineStyleOpts(opacity=1),
             label_opts=opts.LabelOpts(is_show=False),
         )
@@ -358,18 +360,18 @@ def make_echarts(idx_l:str,bword='牛市',beg='2018-06-01',end='2019-04-30'):
             series_name='ssmooth',
             y_axis=df.loc[beg:end,'diff_'+_bwordl[0]].tolist(),
             is_smooth=False,
-            is_symbol_show=False,
+            symbol_size = 2,
             yaxis_index=1,
             label_opts=opts.LabelOpts(is_show=False),
         )
-        .add_yaxis(
-            series_name='llt',
-            y_axis=df.loc[beg:end,'llt_'+_bwordl[0]].tolist(),
-            is_smooth=False,
-            is_symbol_show=False,
-            yaxis_index=1,
-            label_opts=opts.LabelOpts(is_show=False),
-        )
+        # .add_yaxis(
+        #     series_name='llt',
+        #     y_axis=df.loc[beg:end,'llt_'+_bwordl[0]].tolist(),
+        #     is_smooth=False,
+        #     is_symbol_show=False,
+        #     yaxis_index=1,
+        #     label_opts=opts.LabelOpts(is_show=False),
+        # )
         .set_global_opts(
             tooltip_opts=opts.TooltipOpts(is_show=True,),
                 #trigger="axis", axis_pointer_type="cross"),
@@ -425,6 +427,7 @@ def make_echarts(idx_l:str,bword='牛市',beg='2018-06-01',end='2019-04-30'):
                 series_name="Q120",
                 y_axis=df.loc[beg:end,'Q_'+_bwordl[1]].tolist(),
                 is_smooth=False,
+                symbol_size=2,
                 linestyle_opts=opts.LineStyleOpts(opacity=1),
                 label_opts=opts.LabelOpts(is_show=False),
             )
@@ -432,18 +435,18 @@ def make_echarts(idx_l:str,bword='牛市',beg='2018-06-01',end='2019-04-30'):
                 series_name='ssmooth',
                 y_axis=df.loc[beg:end,'diff_'+_bwordl[1]].tolist(),
                 is_smooth=False,
-                is_symbol_show=False,
+                symbol_size=2,
                 yaxis_index=1,
                 label_opts=opts.LabelOpts(is_show=False),
             )
-            .add_yaxis(
-                series_name='llt',
-                y_axis=df.loc[beg:end,'llt_'+_bwordl[1]].tolist(),
-                is_smooth=False,
-                is_symbol_show=False,
-                yaxis_index=1,
-                label_opts=opts.LabelOpts(is_show=False),
-            )
+            # .add_yaxis(
+            #     series_name='llt',
+            #     y_axis=df.loc[beg:end,'llt_'+_bwordl[1]].tolist(),
+            #     is_smooth=False,
+            #     is_symbol_show=False,
+            #     yaxis_index=1,
+            #     label_opts=opts.LabelOpts(is_show=False),
+            # )
             .set_global_opts(
                 tooltip_opts=opts.TooltipOpts(is_show=False,),
                 xaxis_opts=opts.AxisOpts(
@@ -502,77 +505,15 @@ def make_echarts(idx_l:str,bword='牛市',beg='2018-06-01',end='2019-04-30'):
 
 def multi_tab_echarts():
     tab = Tab()
-    tab.add(make_echarts('上证综指','股市,a股',beg='2022-09-01',end='2023-07-28'), '股市')
-    tab.add(make_echarts('上证综指','上证,上证指数',beg='2022-09-01',end='2023-07-28'), '股市Ⅱ')
-    tab.add(make_echarts('上证综指','牛市,熊市',beg='2022-09-01',end='2023-07-28'), '牛熊')
-    tab.add(make_echarts('沪深300','沪深300',beg='2022-09-01',end='2023-07-28'), '核心资产')
-    tab.add(make_echarts('创业板指','创业板指',beg='2022-09-01',end='2023-07-28'), '创业板')
-    tab.add(make_echarts('螺纹钢','螺纹钢',beg='2022-09-01',end='2023-07-28'), '黑色系')
+    tab.add(make_echarts('上证综指','股市,a股',beg='2021-09-01',end='2023-08-03'), '股市')
+    tab.add(make_echarts('上证综指','上证,上证指数',beg='2021-09-01',end='2023-08-03'), '股市Ⅱ')
+    tab.add(make_echarts('上证综指','牛市,熊市',beg='2021-09-01',end='2023-08-03'), '牛熊')
+    tab.add(make_echarts('沪深300','沪深300',beg='2021-09-01',end='2023-08-03'), '核心资产')
+    tab.add(make_echarts('创业板指','创业板指',beg='2021-09-01',end='2023-08-03'), '创业板')
+    tab.add(make_echarts('螺纹钢','螺纹钢',beg='2021-09-01',end='2023-08-03'), '螺纹钢')
+    tab.add(make_echarts('原油','原油',beg='2021-09-01',end='2023-08-03'), '原油')
     tab.render('大量数据展示.html')
 
-def bar_test():
-    x_data = ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"]
-    beg,end = '2023-06-01','2023-07-28'
-    df = get_index_with_bsearch('399006','创业板指',end='2023-07-28')
-    data = df.loc[beg:end,['Open','Close','Low','High']]
-    volume_ser = df.loc[beg:end,'Volume']
-
-    bd_bar = (
-        Bar()
-        .add_xaxis(xaxis_data=data.index.tolist())
-        .add_yaxis(
-            series_name="count",
-            y_axis=df.loc[beg:end, '创业板指'].tolist(),
-            label_opts=opts.LabelOpts(is_show=True),
-            itemstyle_opts=opts.ItemStyleOpts(color='#bbbbbb'),
-        )
-        .extend_axis(
-            yaxis=opts.AxisOpts(
-                name="Q120",
-                type_="value",
-                min_=30,
-                max_=100,
-                # interval=5,
-                axislabel_opts=opts.LabelOpts(formatter="{value}"),
-            )
-        )
-        .set_global_opts(
-            tooltip_opts=opts.TooltipOpts(
-                is_show=True, trigger="axis", axis_pointer_type="cross"
-            ),
-            xaxis_opts=opts.AxisOpts(
-                type_="category",
-                axispointer_opts=opts.AxisPointerOpts(is_show=True),
-            ),
-            yaxis_opts=opts.AxisOpts(
-                name="count",
-                type_="value",
-                # min_=0,
-                # max_=25000,
-                # interval=50,
-                position='left',
-                # axislabel_opts=opts.LabelOpts(formatter="{value}"),
-                axisline_opts=opts.AxisLineOpts(is_show=False),
-                axistick_opts=opts.AxisTickOpts(is_show=False),
-                splitline_opts=opts.SplitLineOpts(is_show=False),
-                axislabel_opts=opts.LabelOpts(is_show=False),
-            ),
-        )
-    )
-
-    bd_qut_line = (
-        Line()
-        .add_xaxis(xaxis_data=data.index.tolist())
-        .add_yaxis(
-            series_name="Q120",
-            yaxis_index=1,
-            is_smooth=False,
-            y_axis=df.loc[beg:end, 'Q_创业板指'].tolist(),
-            label_opts=opts.LabelOpts(is_show=False),
-        )
-    )
-
-    bd_bar.overlap(bd_qut_line).render("mixed_bar_and_line.html")
 
 if __name__=='__main__':
     # get_stock_bdkey('000001',('股市','上证指数','a股'), '2021-12-20','2022-06-30')

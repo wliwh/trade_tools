@@ -76,7 +76,7 @@ def LLT_MA(price: pd.Series, alpha: float) -> pd.Series:
     if not isinstance(price, pd.Series):
         raise ValueError('price必须为pd.Series')
 
-    llt_ser: pd.Series = pd.Series(index=price.index)
+    llt_ser: pd.Series = pd.Series(index=price.index,dtype='float64')
     llt_ser[0], llt_ser[1] = price[0], price[1]
 
     for i, e in enumerate(price.values):
