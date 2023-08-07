@@ -15,7 +15,7 @@ BD_PTH = os.path.abspath('../data_save/bsearch_day.csv')
 plt.rcParams['font.sans-serif'] = ['SimHei']
 plt.rcParams['axes.unicode_minus'] = False
 
-idx_dct = {'上证综指':'000001',
+IDX_DCT = {'上证综指':'000001',
            '上证50':'000016',
            '沪深300':'000300',
            '中证1000':'000852',
@@ -101,6 +101,7 @@ def get_index_with_bsearch(idx_l:str, bword, end:str,**kwargs):
     bd_mm_dist = kwargs.get('dist_day',120)
     ssmooth_day = kwargs.get('ssmooth_day',20)
     llt_day = kwargs.get('llt_ma',14)
+    qz_dst = kwargs.get('calc_qz',(0.6,0.4))
     if isinstance(bword,str): bword = [bword]
     for b in bword:
         bsplit = bsearch[bsearch['keyword']==b][['count']]
@@ -108,7 +109,8 @@ def get_index_with_bsearch(idx_l:str, bword, end:str,**kwargs):
         df = pd.concat([df,bsplit],axis=1,join='inner')
         df['Q_'+b] = min_max_dist_series(bsplit[b],bd_mm_dist)
         df['diff_'+b] = bsplit[b] - 0.5*super_smoother(bsplit[b],ssmooth_day)-0.5*LLT_MA(bsplit[b],1/llt_day)
-        df['diffQ_'+b] = min_max_dist_series(df['diff_'+b],bd_mm_dist//2)
+        df['diffQ_'+b] = min_max_dist_series(df['diff_'+b],bd_mm_dist)
+        df['CalcQ_'+b] = qz_dst[0]*df['Q_'+b]+qz_dst[1]*df['diffQ_'+b]
     return df
 
 def plt_index_with_tjy(index_name, zdf, beg, end):
@@ -167,14 +169,16 @@ def make_stk_plts(idx_l:str):
         get_stock_bdkey('399006',('创业板指','a股'), d[0],d[1])
 
 
-def make_echarts(idx_l:str,bword='牛市',beg='2018-06-01',end='2019-04-30'):
+def make_echarts(idx_l:str,bword='牛市',beg='2018-06-01',end='2019-04-30',**kwargs):
+    _plt_range_len = kwargs.get('df_range_len',100)
+    _plt_xticks = kwargs.get('plt_xticks',1200)
     def echart_args_get(idx_nm:str, bw:str):
         echart_args = dict(ma_args = (5,10,20,60,120,240))
-        if idx_nm in idx_dct:
+        if idx_nm in IDX_DCT:
             echart_args['idx_name'] = idx_nm
-            echart_args['idx_code'] = idx_dct[idx_nm]
-        elif idx_nm in idx_dct.values():
-            echart_args['idx_name'] = {v:k for k,v in idx_dct.items()}[idx_nm]
+            echart_args['idx_code'] = IDX_DCT[idx_nm]
+        elif idx_nm in IDX_DCT.values():
+            echart_args['idx_name'] = {v:k for k,v in IDX_DCT.items()}[idx_nm]
             echart_args['idx_code'] = idx_nm
         else: return None
         if ',' in bw:
@@ -198,12 +202,12 @@ def make_echarts(idx_l:str,bword='牛市',beg='2018-06-01',end='2019-04-30'):
     idx_name = echart_dic['idx_name']
     _bwordl = echart_dic['bword']
     _bwlen = echart_dic['bwlen']
-    df = get_index_with_bsearch(idx_code, _bwordl, end='2023-08-02')
+    df = get_index_with_bsearch(idx_code, _bwordl, end=end)
     for d in echart_dic['ma_args']:
         df['ma_'+str(d)] = df['Close'].rolling(d).mean()
     data = df.loc[beg:end,['Open','Close','Low','High']]
     volume_ser = df.loc[beg:end,'Volume']
-    _range_len = int((120*100)/len(data))
+    _range_len = int((_plt_range_len*100)/len(data))
     _range_len = 90 if _range_len>100 else _range_len
     _datazoom_opt = [
         opts.DataZoomOpts(is_show=False, type_="inside", 
@@ -467,7 +471,7 @@ def make_echarts(idx_l:str,bword='牛市',beg='2018-06-01',end='2019-04-30'):
     # 图像排列
     grid_chart = Grid(
         init_opts=opts.InitOpts(
-            width="1200px",  # 显示图形宽度
+            width="{}px".format(_plt_xticks),  # 显示图形宽度
             height=echart_dic['height'],
             animation_opts=opts.AnimationOpts(animation=False),  # 关闭动画
         )
@@ -503,25 +507,31 @@ def make_echarts(idx_l:str,bword='牛市',beg='2018-06-01',end='2019-04-30'):
     # grid_chart.render("大量数据展示.html")
     return grid_chart
 
-def multi_tab_echarts():
+
+def multi_tab_echarts(notebook=False,start='2023-01-01',end='2023-08-04',**kwargs):
+    IdxKey = (
+        ('上证综指','股市,a股','股市Ⅰ'),
+        ('上证综指','上证,上证指数','股市Ⅱ'),
+        ('上证综指','牛市,熊市','牛熊'),
+        ('沪深300','沪深300','沪深'),
+        ('创业板指','创业板指','创业板')
+    )
     tab = Tab()
-    tab.add(make_echarts('上证综指','股市,a股',beg='2021-09-01',end='2023-08-03'), '股市')
-    tab.add(make_echarts('上证综指','上证,上证指数',beg='2021-09-01',end='2023-08-03'), '股市Ⅱ')
-    tab.add(make_echarts('上证综指','牛市,熊市',beg='2021-09-01',end='2023-08-03'), '牛熊')
-    tab.add(make_echarts('沪深300','沪深300',beg='2021-09-01',end='2023-08-03'), '核心资产')
-    tab.add(make_echarts('创业板指','创业板指',beg='2021-09-01',end='2023-08-03'), '创业板')
-    tab.add(make_echarts('螺纹钢','螺纹钢',beg='2021-09-01',end='2023-08-03'), '螺纹钢')
-    tab.add(make_echarts('原油','原油',beg='2021-09-01',end='2023-08-03'), '原油')
-    tab.render('大量数据展示.html')
+    for k in IdxKey:
+        tab.add(make_echarts(k[0],k[1],start,end,**kwargs),k[2])
+    tab.add(make_echarts('螺纹钢','螺纹钢',beg='2021-09-01',end='2023-08-04'), '螺纹钢')
+    # tab.add(make_echarts('原油','原油',beg='2021-09-01',end='2023-08-04'), '原油')
+    # tab.add(make_echarts('生猪','生猪',beg='2021-09-01',end='2023-08-04'), '生猪')
+    if notebook:
+        return tab
+    else:
+        tab.render('stockPlot.html')
 
 
 if __name__=='__main__':
     # get_stock_bdkey('000001',('股市','上证指数','a股'), '2021-12-20','2022-06-30')
-    # get_stock_bdkey('000001',('牛市','熊市'), '2022-12-20','2023-06-30')
     # get_stock_bdkey('RB0','螺纹钢', '2023-03-01','2023-08-02')
-    # print(get_index_ohlc('RB0','2022-02-01','2022-05-01'))
-    # plt.grid(True)
     # make_stk_plts(0)
     # make_echarts('上证综指','牛市,熊市',beg='2022-09-01',end='2023-07-28')
-    multi_tab_echarts()
+    multi_tab_echarts(start='2021-10-10',end='2023-08-04')
     pass

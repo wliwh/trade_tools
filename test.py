@@ -63,7 +63,7 @@ def update_files(retry:int=3):
     elif now_time[11:]>='07-50' and now_time[11:]<='10-05':
         download_type = 2
     # 交易日 QVIX 分钟级数据
-    if download_type==2:
+    if download_type==1:
         basic_append_fun(append_qvix_minute_file,retry,words='qvix minute')
     # ;; QVIX 数据
     # bdsearch 检索词数据
