@@ -58,7 +58,7 @@ def basic_append_fun(fn,retry,**kwds):
 
 def update_files(retry:int=3):
     now_time = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M')
-    if now_time[11:]>='21-20' and now_time[11:]<='23-50':
+    if now_time[11:]>='20-20' and now_time[11:]<='23-50':
         download_type = 1
     elif now_time[11:]>='07-50' and now_time[11:]<='10-05':
         download_type = 2
@@ -67,7 +67,7 @@ def update_files(retry:int=3):
         basic_append_fun(append_qvix_minute_file,retry,words='qvix minute')
     # ;; QVIX 数据
     # bdsearch 检索词数据
-    if download_type==2:
+    if download_type==1:
         basic_append_fun(append_bsearch_day_file,retry,words='bdsearch day')
         basic_append_fun(append_bsearch_hour_file,retry,words='bdsearch hour')
     # ;; 北上资金
