@@ -533,5 +533,5 @@ if __name__=='__main__':
     # get_stock_bdkey('RB0','螺纹钢', '2023-03-01','2023-08-02')
     # make_stk_plts(0)
     # make_echarts('上证综指','牛市,熊市',beg='2022-09-01',end='2023-07-28')
-    multi_tab_echarts(start='2021-10-10',end='2023-08-08')
+    multi_tab_echarts(start='2022-10-10',end='2023-08-10')
     pass
