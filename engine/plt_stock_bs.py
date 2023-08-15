@@ -508,7 +508,7 @@ def make_echarts(idx_l:str,bword='牛市',beg='2018-06-01',end='2019-04-30',**kw
     return grid_chart
 
 
-def multi_tab_echarts(notebook=False,start='2023-01-01',end='2023-08-04',**kwargs):
+def multi_tab_echarts(notebook=False,start='2022-01-01',end='2023-08-04',**kwargs):
     IdxKey = (
         ('上证综指','股市,a股','股市Ⅰ'),
         ('上证综指','上证,上证指数','股市Ⅱ'),
@@ -519,9 +519,9 @@ def multi_tab_echarts(notebook=False,start='2023-01-01',end='2023-08-04',**kwarg
     tab = Tab()
     for k in IdxKey:
         tab.add(make_echarts(k[0],k[1],start,end,**kwargs),k[2])
-    tab.add(make_echarts('螺纹钢','螺纹钢',beg='2021-09-01',end='2023-08-08'), '螺纹钢')
-    tab.add(make_echarts('原油','原油',beg='2021-09-01',end='2023-08-04'), '原油')
-    tab.add(make_echarts('生猪','生猪',beg='2021-09-01',end='2023-08-04'), '生猪')
+    tab.add(make_echarts('螺纹钢','螺纹钢',beg='2021-09-01',end='2023-08-11'), '螺纹钢')
+    tab.add(make_echarts('原油','原油',beg='2021-09-01',end='2023-08-11'), '原油')
+    tab.add(make_echarts('生猪','生猪',beg='2021-09-01',end='2023-08-11'), '生猪')
     if notebook:
         return tab
     else:
@@ -533,5 +533,5 @@ if __name__=='__main__':
     # get_stock_bdkey('RB0','螺纹钢', '2023-03-01','2023-08-02')
     # make_stk_plts(0)
     # make_echarts('上证综指','牛市,熊市',beg='2022-09-01',end='2023-07-28')
-    multi_tab_echarts(start='2022-10-10',end='2023-08-10')
+    multi_tab_echarts(start='2022-08-10',end='2023-08-11')
     pass
