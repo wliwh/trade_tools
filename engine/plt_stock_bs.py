@@ -169,6 +169,133 @@ def make_stk_plts(idx_l:str):
         get_stock_bdkey('399006',('创业板指','a股'), d[0],d[1])
 
 
+def make_windA_echarts(beg='2018-06-01',end='2023-08-16'):
+    wa = pd.read_csv('../data_save/windA.csv',index_col=0)
+    wa.sort_index(inplace=True)
+    wa.columns = ['Open','High','Low','Close','Exc','Pct','Volume','Amount']
+    wa.index.name = 'date'
+    _plt_range_len = 120
+    _annual_day = 243
+    _annual_inc = 1.06
+    _day_inc = np.power(_annual_inc,1/_annual_day)
+    _base_day = '2022-10-31' # '2019-01-04' '2022-04-27' '2022-10-31'
+    _base_point = wa.loc[_base_day,'Low']
+    wa['bline'] = _base_point
+    for i,d in enumerate(wa.loc[_base_day:].index):
+        wa.loc[d,'bline'] = _base_point*np.power(_day_inc,i)
+    for i,d in enumerate(wa.loc[_base_day::-1].index):
+        wa.loc[d,'bline'] = _base_point*np.power(_day_inc,-i)
+
+    data = wa.loc[beg:end,['Open','Close','Low','High']]
+    volume_ser = wa.loc[beg:end,'Volume']
+    bline = wa.loc[beg:end,'bline']
+    _range_len = int((_plt_range_len*100)/len(data))
+    _range_len = 90 if _range_len>100 else _range_len
+    _datazoom_opt = [
+        opts.DataZoomOpts(is_show=False, type_="inside", 
+                            xaxis_index=[0, 0], range_start=100-_range_len,range_end=100),
+        opts.DataZoomOpts(is_show=True, pos_bottom="2%",
+                            range_start=100-_range_len,
+                            xaxis_index=[0, 1], range_end=100)
+    ]
+    kline = (
+        Kline()
+        .add_xaxis([d for d in data.index])
+        .add_yaxis("kline", data.values.tolist())
+        .set_global_opts(
+            xaxis_opts=opts.AxisOpts(is_scale=True),
+            yaxis_opts=opts.AxisOpts(
+                is_scale=True,
+                splitarea_opts=opts.SplitAreaOpts(
+                    is_show=True, areastyle_opts=opts.AreaStyleOpts(opacity=1)
+                ),
+            ),
+            datazoom_opts=_datazoom_opt,
+            title_opts=opts.TitleOpts(title="万得全A"),
+        )
+    )
+    base_line = (
+        Line()
+        .add_xaxis(xaxis_data=data.index.tolist())
+        .add_yaxis(
+            series_name="base_line",
+            y_axis=bline,
+            is_smooth=True,
+            is_symbol_show=False,
+            linestyle_opts=opts.LineStyleOpts(opacity=0.5),
+            label_opts=opts.LabelOpts(is_show=False),
+        )
+        .set_global_opts(
+            xaxis_opts=opts.AxisOpts(
+                type_="category",
+                grid_index=1,
+                axislabel_opts=opts.LabelOpts(is_show=False),
+            ),
+            yaxis_opts=opts.AxisOpts(
+                grid_index=1,
+                split_number=3,
+                axisline_opts=opts.AxisLineOpts(is_on_zero=False),
+                axistick_opts=opts.AxisTickOpts(is_show=False),
+                splitline_opts=opts.SplitLineOpts(is_show=False),
+                axislabel_opts=opts.LabelOpts(is_show=True),
+            ),
+        )
+    )
+    overlap_kline_line = kline.overlap(base_line)
+    bar = (
+        Bar()
+            .add_xaxis(xaxis_data=data.index.tolist())  # X轴数据
+            .add_yaxis(
+            series_name="vols",
+            y_axis=volume_ser.tolist(),  # Y轴数据
+            xaxis_index=1,
+            yaxis_index=1,
+            label_opts=opts.LabelOpts(is_show=False),
+            itemstyle_opts=opts.ItemStyleOpts(
+                color=JsCode(
+                """
+                function(params) {
+                    var colorList;
+                    if (barData[params.dataIndex][1] > barData[params.dataIndex][0]) {
+                        colorList = '#ef232a';
+                    } else {
+                        colorList = '#14b143';
+                    }
+                    return colorList;
+                }
+                """
+                )
+            ),
+        )
+        .set_global_opts(
+            xaxis_opts=opts.AxisOpts(
+                type_="category",  # 坐标轴类型-离散数据
+                grid_index=1,
+                axislabel_opts=opts.LabelOpts(is_show=False),
+            ),
+            yaxis_opts=opts.AxisOpts(position='right'),
+            legend_opts=opts.LegendOpts(is_show=False),
+        )
+    )
+    grid_chart = Grid(
+        init_opts=opts.InitOpts(
+            width="{}px".format(1200),  # 显示图形宽度
+            height='750px',
+            animation_opts=opts.AnimationOpts(animation=False),  # 关闭动画
+        )
+    )
+
+    grid_chart.add_js_funcs("var barData = {}".format(data.values.tolist()))
+    grid_chart.add(  # 加入均线图
+        overlap_kline_line,
+        grid_opts=opts.GridOpts(pos_left="10%", pos_right="8%", height='65%'),
+    )
+    grid_chart.add(  # 加入成交量图
+        bar,
+        grid_opts=opts.GridOpts(pos_left="10%", pos_right="8%", pos_top='75%', height='20%'),
+    )
+    grid_chart.render('stockWindA.html')
+
 def make_echarts(idx_l:str,bword='牛市',beg='2018-06-01',end='2019-04-30',**kwargs):
     _plt_range_len = kwargs.get('df_range_len',100)
     _plt_xticks = kwargs.get('plt_xticks',1200)
@@ -519,9 +646,9 @@ def multi_tab_echarts(notebook=False,start='2022-01-01',end='2023-08-04',**kwarg
     tab = Tab()
     for k in IdxKey:
         tab.add(make_echarts(k[0],k[1],start,end,**kwargs),k[2])
-    tab.add(make_echarts('螺纹钢','螺纹钢',beg='2021-09-01',end='2023-08-11'), '螺纹钢')
-    tab.add(make_echarts('原油','原油',beg='2021-09-01',end='2023-08-11'), '原油')
-    tab.add(make_echarts('生猪','生猪',beg='2021-09-01',end='2023-08-11'), '生猪')
+    tab.add(make_echarts('螺纹钢','螺纹钢',beg='2021-09-01',end='2023-08-14'), '螺纹钢')
+    tab.add(make_echarts('原油','原油',beg='2021-09-01',end='2023-08-14'), '原油')
+    tab.add(make_echarts('生猪','生猪',beg='2021-09-01',end='2023-08-14'), '生猪')
     if notebook:
         return tab
     else:
@@ -533,5 +660,6 @@ if __name__=='__main__':
     # get_stock_bdkey('RB0','螺纹钢', '2023-03-01','2023-08-02')
     # make_stk_plts(0)
     # make_echarts('上证综指','牛市,熊市',beg='2022-09-01',end='2023-07-28')
-    multi_tab_echarts(start='2022-08-10',end='2023-08-11')
+    # multi_tab_echarts(start='2022-08-10',end='2023-08-14')
+    make_windA_echarts()
     pass

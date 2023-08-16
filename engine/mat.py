@@ -56,4 +56,4 @@ def get_afre_with_month():
     # z_ax.set_ylabel('社融规模')
     plt.show()
 
-get_afre_with_month()
+# get_afre_with_month()

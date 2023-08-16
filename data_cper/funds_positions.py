@@ -282,10 +282,34 @@ def append_margin_file(market='sh', cfg_file=''):
 
 def make_margin_concat_pd(ntype:str='all'):
     ''' 合并处理两融表格 '''
-    pass
+    cfg_file = '../trade.ini'
+    if ntype.lower() not in ('all', 'sh', 'sz'):
+        return
+    elif ntype.lower() == 'all':
+        cfg_secs = ['Margin_SH','Margin_SZ']
+        # 'Margin_{}'.format(market.upper())
+    config = configparser.ConfigParser()
+    config.read(cfg_file, encoding='utf-8')
+    fpth1 = os.path.join('../data_save', config.get(cfg_secs[0], 'fpath'))
+    fpth2 = os.path.join('../data_save', config.get(cfg_secs[1], 'fpath'))
+    up_date1 = config.get(cfg_secs[0], 'update_date')    
+    up_date2 = config.get(cfg_secs[1], 'update_date')    
+    marg1 = pd.read_csv(fpth1,index_col=0)[['融资净买入','两融总额','两融差额']]
+    marg2 = pd.read_csv(fpth2,index_col=0)[['融资净买入','两融总额','两融差额']]
+    marg1.index = marg1.index.map(lambda x:x.replace('-',''))
+    marg2.index = marg2.index.map(lambda x:x.replace('-',''))
+    marg1.rename(columns=lambda x:x+'sh',inplace=True)
+    marg2.rename(columns=lambda x:x+'sz',inplace=True)
+    marg = marg1.join(marg2)
+    marg['融资净买入'] = marg['融资净买入sh'] + marg['融资净买入sz']
+    marg['两融总额'] = marg['两融总额sh'] + marg['两融总额sz']
+    marg['两融差额'] = marg['两融差额sh'] + marg['两融差额sz']
+    marg['两融总额pct'] = marg['两融总额'].pct_change(3)*100
+    marg['两融差额pct'] = marg['两融差额'].pct_change(3)*100
+    return marg
 
 if __name__=='__main__':
     # append_margin_file('sh')
-    append_margin_file('sz')
+    # append_margin_file('sz')
     # doc_north_flow()
     pass
