@@ -169,22 +169,22 @@ def make_stk_plts(idx_l:str):
         get_stock_bdkey('399006',('创业板指','a股'), d[0],d[1])
 
 
-def make_windA_echarts(beg='2018-06-01',end='2023-08-16'):
+def make_windA_echarts(beg='2011-06-01',end='2023-08-17',annual_inc=1.1):
     wa = pd.read_csv('../data_save/windA.csv',index_col=0)
     wa.sort_index(inplace=True)
     wa.columns = ['Open','High','Low','Close','Exc','Pct','Volume','Amount']
     wa.index.name = 'date'
     _plt_range_len = 120
     _annual_day = 243
-    _annual_inc = 1.06
-    _day_inc = np.power(_annual_inc,1/_annual_day)
-    _base_day = '2022-10-31' # '2019-01-04' '2022-04-27' '2022-10-31'
+    _base_day = '2018-10-19' # '2019-01-04' '2022-04-27' '2022-10-31'
     _base_point = wa.loc[_base_day,'Low']
+    _base_idx = wa.index.get_loc(_base_day)
     wa['bline'] = _base_point
-    for i,d in enumerate(wa.loc[_base_day:].index):
-        wa.loc[d,'bline'] = _base_point*np.power(_day_inc,i)
-    for i,d in enumerate(wa.loc[_base_day::-1].index):
-        wa.loc[d,'bline'] = _base_point*np.power(_day_inc,-i)
+    for i,d in enumerate(wa.index):
+        if i>_base_idx:
+            wa.loc[d,'bline'] = _base_point*np.power(1.09,(i-_base_idx)/_annual_day)
+        else:
+            wa.loc[d,'bline'] = _base_point*np.power(annual_inc,(i-_base_idx)/_annual_day)
 
     data = wa.loc[beg:end,['Open','Close','Low','High']]
     volume_ser = wa.loc[beg:end,'Volume']
@@ -646,9 +646,9 @@ def multi_tab_echarts(notebook=False,start='2022-01-01',end='2023-08-04',**kwarg
     tab = Tab()
     for k in IdxKey:
         tab.add(make_echarts(k[0],k[1],start,end,**kwargs),k[2])
-    tab.add(make_echarts('螺纹钢','螺纹钢',beg='2021-09-01',end='2023-08-14'), '螺纹钢')
-    tab.add(make_echarts('原油','原油',beg='2021-09-01',end='2023-08-14'), '原油')
-    tab.add(make_echarts('生猪','生猪',beg='2021-09-01',end='2023-08-14'), '生猪')
+    tab.add(make_echarts('螺纹钢','螺纹钢',beg='2021-09-01',end=end), '螺纹钢')
+    tab.add(make_echarts('原油','原油',beg='2021-09-01',end=end), '原油')
+    tab.add(make_echarts('生猪','生猪',beg='2021-09-01',end=end), '生猪')
     if notebook:
         return tab
     else:
@@ -660,6 +660,6 @@ if __name__=='__main__':
     # get_stock_bdkey('RB0','螺纹钢', '2023-03-01','2023-08-02')
     # make_stk_plts(0)
     # make_echarts('上证综指','牛市,熊市',beg='2022-09-01',end='2023-07-28')
-    # multi_tab_echarts(start='2022-08-10',end='2023-08-14')
-    make_windA_echarts()
+    # multi_tab_echarts(start='2022-08-10',end='2023-08-16')
+    make_windA_echarts(beg='2005-01-01')
     pass
