@@ -67,7 +67,7 @@ def update_files(retry:int=3):
         basic_append_fun(append_qvix_minute_file,retry,words='qvix minute')
     # ;; QVIX 数据
     # bdsearch 检索词数据
-    if download_type==1:
+    if download_type==2:
         basic_append_fun(append_bsearch_day_file,retry,words='bdsearch day')
         basic_append_fun(append_bsearch_hour_file,retry,words='bdsearch hour')
     # ;; 北上资金
@@ -106,8 +106,8 @@ def doc_file(paras:list):
 if __name__=='__main__':
     now_time = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M')
     update_files()
-    if now_time[11:]>='07-50' and now_time[11:]<='10-05':
-        doc_file(Doc_Paras_List)
-        doc_date = markdown2pdf('../data_save/index_report.md')
-        sendMail('...','重要指数信息 '+doc_date,'../data_save/index_report.pdf','wljhwh@126.com')
-    pass
+    # if now_time[11:]>='07-50' and now_time[11:]<='10-05':
+    #     doc_file(Doc_Paras_List)
+    #     doc_date = markdown2pdf('../data_save/index_report.md')
+    #     sendMail('...','重要指数信息 '+doc_date,'../data_save/index_report.pdf','wljhwh@126.com')
+    # pass
