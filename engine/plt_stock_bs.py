@@ -169,7 +169,7 @@ def make_stk_plts(idx_l:str):
         get_stock_bdkey('399006',('创业板指','a股'), d[0],d[1])
 
 
-def make_windA_echarts(beg='2011-06-01',end='2023-08-17',annual_inc=1.1):
+def make_windA_echarts(beg='2011-06-01',end='2023-08-22',annual_inc=1.1):
     wa = pd.read_csv('../data_save/windA.csv',index_col=0)
     wa.sort_index(inplace=True)
     wa.columns = ['Open','High','Low','Close','Exc','Pct','Volume','Amount']
@@ -660,6 +660,6 @@ if __name__=='__main__':
     # get_stock_bdkey('RB0','螺纹钢', '2023-03-01','2023-08-02')
     # make_stk_plts(0)
     # make_echarts('上证综指','牛市,熊市',beg='2022-09-01',end='2023-07-28')
-    multi_tab_echarts(start='2022-08-10',end='2023-08-18')
-    # make_windA_echarts(beg='2005-01-01')
+    # multi_tab_echarts(start='2022-08-10',end='2023-08-18')
+    make_windA_echarts(beg='2005-01-01')
     pass

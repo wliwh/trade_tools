@@ -60,7 +60,7 @@ def update_files(retry:int=3):
     now_time = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M')
     if now_time[11:]>='20-20' and now_time[11:]<='23-50':
         download_type = 1
-    elif now_time[11:]>='07-50' and now_time[11:]<='11-05':
+    elif now_time[11:]>='07-50' and now_time[11:]<='12-05':
         download_type = 2
     # 交易日 QVIX 分钟级数据
     if download_type==1:
