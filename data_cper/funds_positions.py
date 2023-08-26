@@ -280,7 +280,7 @@ def append_margin_file(market='sh', cfg_file=''):
         return next_date
     return 0
 
-def make_margin_concat_pd(ntype:str='all'):
+def make_margin_concat_pd(ntype:str='all',pday=1):
     ''' 合并处理两融表格 '''
     cfg_file = '../trade.ini'
     if ntype.lower() not in ('all', 'sh', 'sz'):
@@ -304,12 +304,12 @@ def make_margin_concat_pd(ntype:str='all'):
     marg['融资净买入'] = marg['融资净买入sh'] + marg['融资净买入sz']
     marg['两融总额'] = marg['两融总额sh'] + marg['两融总额sz']
     marg['两融差额'] = marg['两融差额sh'] + marg['两融差额sz']
-    marg['两融总额pct'] = marg['两融总额'].pct_change(3)*100
-    marg['两融差额pct'] = marg['两融差额'].pct_change(3)*100
+    marg['两融总额pct'] = marg['两融总额'].pct_change(pday)*100
+    marg['两融差额pct'] = marg['两融差额'].pct_change(pday)*100
     return marg
 
 if __name__=='__main__':
-    # append_margin_file('sh')
-    # append_margin_file('sz')
+    append_margin_file('sh')
+    append_margin_file('sz')
     # doc_north_flow()
     pass

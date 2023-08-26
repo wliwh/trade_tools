@@ -9,6 +9,7 @@ from pyecharts.charts import Kline, Bar, Grid, Line, Tab
 from pyecharts.commons.utils import JsCode
 from common.smooth_tool import min_max_dist_series, super_smoother, LLT_MA
 from common.mpf_set import Mpf_Style
+from data_cper.funds_positions import make_margin_concat_pd
 
 os.chdir(os.path.dirname(__file__))
 BD_PTH = os.path.abspath('../data_save/bsearch_day.csv')
@@ -82,6 +83,7 @@ def mark_dic(cl_n):
 
 
 def get_index_ohlc(idx_l,beg,end):
+    ''' 获取index基本表格 '''
     if 2<=len(idx_l)<=3 and idx_l[-1]=='0':
         df = ak.futures_main_sina(idx_l,start_date=beg,end_date=end)
         df.rename(columns={'日期':'date','开盘价':'Open','收盘价':'Close', '最高价':'High', '最低价':'Low','成交量':'Volume'},inplace=True)
@@ -295,6 +297,99 @@ def make_windA_echarts(beg='2011-06-01',end='2023-08-22',annual_inc=1.1):
         grid_opts=opts.GridOpts(pos_left="10%", pos_right="8%", pos_top='75%', height='20%'),
     )
     grid_chart.render('stockWindA.html')
+
+
+def make_marg_echarts(beg='2017-01-01',end='2023-08-24'):
+    dts = get_index_ohlc('399317',beg,end)
+    dts.index.name = 'date'
+    dts.index = dts.index.map(lambda x:x.replace('-',''))
+    dt2 = make_margin_concat_pd('all',pday=1)
+    # dt2.index = [x[:4]+'-'+x[4:6]+'-'+x[6:] for x in dt2.index]
+    _plt_range_len = 120
+    dts = dts.join(dt2)
+    # beg, end= '20170101', '20230801'
+    data = dts.loc[beg:end,['Open','Close','Low','High']]
+    bline = dts.loc[beg:end,'两融差额pct']
+    _range_len = int((_plt_range_len*100)/len(data))
+    _range_len = 90 if _range_len>100 else _range_len
+    _datazoom_opt = [
+        opts.DataZoomOpts(is_show=False, type_="inside", 
+                            xaxis_index=[0, 0], range_start=100-_range_len,range_end=100),
+        opts.DataZoomOpts(is_show=True, pos_bottom="2%",
+                            range_start=100-_range_len,
+                            xaxis_index=[0, 1], range_end=100),
+    ]
+    kline = (
+        Kline()
+        .add_xaxis([d for d in data.index])
+        .add_yaxis("kline", data.values.tolist())
+        .set_global_opts(
+            xaxis_opts=opts.AxisOpts(is_scale=True),
+            yaxis_opts=opts.AxisOpts(
+                is_scale=True,
+                splitarea_opts=opts.SplitAreaOpts(
+                    is_show=True, areastyle_opts=opts.AreaStyleOpts(opacity=1)
+                ),
+            ),
+            datazoom_opts=_datazoom_opt,
+            title_opts=opts.TitleOpts(title="国证A指"),
+        )
+    )
+    bar = (
+        Bar()
+            .add_xaxis(xaxis_data=data.index.tolist())  # X轴数据
+            .add_yaxis(
+            series_name="两融差值",
+            y_axis=bline.abs().tolist(),  # Y轴数据
+            xaxis_index=1,
+            yaxis_index=1,
+            label_opts=opts.LabelOpts(is_show=False),
+            itemstyle_opts=opts.ItemStyleOpts(
+                color=JsCode(
+                """
+                function(params) {
+                    var colorList;
+                    if (barData[params.dataIndex][20] > 0) {
+                        colorList = '#ef232a';
+                    } else {
+                        colorList = '#14b143';
+                    }
+                    return colorList;
+                }
+                """
+                )
+            ),
+        )
+        .set_global_opts(
+            xaxis_opts=opts.AxisOpts(
+                type_="category",  # 坐标轴类型-离散数据
+                grid_index=1,
+                axislabel_opts=opts.LabelOpts(is_show=False),
+            ),
+            yaxis_opts=opts.AxisOpts(position='right'),
+            legend_opts=opts.LegendOpts(is_show=False),
+        )
+    )
+
+    grid_chart = Grid(
+        init_opts=opts.InitOpts(
+            width="{}px".format(1200),  # 显示图形宽度
+            height='750px',
+            animation_opts=opts.AnimationOpts(animation=False),  # 关闭动画
+        )
+    )
+    grid_chart.add_js_funcs("var barData = {}".format(dts.loc[beg:end].values.tolist()))
+    grid_chart.add(
+        kline,
+        grid_opts=opts.GridOpts(pos_left="10%", pos_right="8%", height='65%'),
+    )
+    grid_chart.add(  # 加入融资变量
+        bar,
+        grid_opts=opts.GridOpts(pos_left="10%", pos_right="8%", pos_top='75%', height='20%'),
+    )
+    grid_chart.render('stockWindA.html')
+
+
 
 def make_echarts(idx_l:str,bword='牛市',beg='2018-06-01',end='2019-04-30',**kwargs):
     _plt_range_len = kwargs.get('df_range_len',100)
@@ -660,6 +755,7 @@ if __name__=='__main__':
     # get_stock_bdkey('RB0','螺纹钢', '2023-03-01','2023-08-02')
     # make_stk_plts(0)
     # make_echarts('上证综指','牛市,熊市',beg='2022-09-01',end='2023-07-28')
-    # multi_tab_echarts(start='2022-08-10',end='2023-08-18')
-    make_windA_echarts(beg='2005-01-01')
+    multi_tab_echarts(start='2022-08-10',end='2023-08-25')
+    # make_windA_echarts(beg='2005-01-01')
+    # make_marg_echarts()
     pass
