@@ -232,3 +232,26 @@
 2023-08-31 22:05:40,896 [test.py] - INFO: Update margin-sz to 2023-08-30.
 2023-08-31 22:05:43,785 [test.py] - INFO: Update high-low-legu to 2023-08-31.
 2023-08-31 22:05:52,347 [test.py] - INFO: Update day etf amount to 2023-08-31.
+2023-09-01 23:04:57,754 [test.py] - INFO: Update qvix minute to 2023-09-01.
+2023-09-01 23:05:03,015 [test.py] - INFO: Update bdsearch day to 2023-08-31.
+2023-09-01 23:05:06,060 [test.py] - WARNING: Try update bdsearch hour 1 times. (All objects passed were None)
+2023-09-01 23:05:09,159 [test.py] - WARNING: Try update bdsearch hour 2 times. (All objects passed were None)
+2023-09-01 23:05:12,253 [test.py] - WARNING: Try update bdsearch hour 3 times. (All objects passed were None)
+2023-09-01 23:05:12,253 [test.py] - ERROR: Can't update bdsearch hour.
+2023-09-01 23:05:12,436 [test.py] - INFO: Update margin-sh to 2023-08-31.
+2023-09-01 23:05:13,336 [test.py] - INFO: Update margin-sz to 2023-08-31.
+2023-09-01 23:05:13,868 [test.py] - WARNING: Try update high-low-legu 1 times. (datetime.date(2023, 9, 1))
+2023-09-01 23:05:14,249 [test.py] - WARNING: Try update high-low-legu 2 times. (datetime.date(2023, 9, 1))
+2023-09-01 23:05:14,636 [test.py] - WARNING: Try update high-low-legu 3 times. (datetime.date(2023, 9, 1))
+2023-09-01 23:05:14,636 [test.py] - ERROR: Can't update high-low-legu.
+2023-09-01 23:05:28,441 [test.py] - INFO: Update day etf amount to 2023-09-01.
+2023-09-04 23:06:55,171 [test.py] - INFO: Update qvix minute to 2023-09-04.
+2023-09-04 23:06:59,796 [test.py] - INFO: Update bdsearch day to 2023-09-03.
+2023-09-04 23:07:02,889 [test.py] - WARNING: Try update bdsearch hour 1 times. (All objects passed were None)
+2023-09-04 23:07:05,932 [test.py] - WARNING: Try update bdsearch hour 2 times. (All objects passed were None)
+2023-09-04 23:07:09,013 [test.py] - WARNING: Try update bdsearch hour 3 times. (All objects passed were None)
+2023-09-04 23:07:09,013 [test.py] - ERROR: Can't update bdsearch hour.
+2023-09-04 23:07:09,193 [test.py] - INFO: Update margin-sh to 2023-09-01.
+2023-09-04 23:07:11,389 [test.py] - INFO: Update margin-sz to 2023-09-01.
+2023-09-04 23:07:14,225 [test.py] - INFO: Update high-low-legu to 2023-09-04.
+2023-09-04 23:07:24,054 [test.py] - INFO: Update day etf amount to 2023-09-04.
