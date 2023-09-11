@@ -298,3 +298,10 @@
 2023-09-08 22:38:52,406 [test.py] - INFO: Update margin-sz to 2023-09-07.
 2023-09-08 22:38:55,224 [test.py] - INFO: Update high-low-legu to 2023-09-08.
 2023-09-08 22:39:05,182 [test.py] - INFO: Update day etf amount to 2023-09-08.
+2023-09-10 09:36:18,452 [test.py] - INFO: Update bdsearch day to 2023-09-09.
+2023-09-10 09:36:21,560 [test.py] - WARNING: Try update bdsearch hour 1 times. (All objects passed were None)
+2023-09-10 09:36:24,654 [test.py] - WARNING: Try update bdsearch hour 2 times. (All objects passed were None)
+2023-09-10 09:36:27,748 [test.py] - WARNING: Try update bdsearch hour 3 times. (All objects passed were None)
+2023-09-10 09:36:27,748 [test.py] - ERROR: Can't update bdsearch hour.
+2023-09-10 09:36:27,932 [test.py] - INFO: Update margin-sh to 2023-09-08.
+2023-09-10 09:36:27,940 [test.py] - INFO: Update margin-sz ready.
