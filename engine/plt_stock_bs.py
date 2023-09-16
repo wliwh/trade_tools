@@ -171,6 +171,22 @@ def make_stk_plts(idx_l:str):
         get_stock_bdkey('399006',('创业板指','a股'), d[0],d[1])
 
 
+def _get_windA_mins(p1:pd.DataFrame,annual_day=243):
+    ylst = ('2005','2008', '2013','2019','2022','2023')
+    pairs = ((0,2),(1,2),(2,3),(3,4),(4,5))
+    plst = list()
+    prs = list()
+    for y in ylst:
+        ls = p1[p1['Low']==p1.loc[y+'-01-01':y+'-12-31','Low'].min()]
+        plst.append(ls.index[0])
+    for i1,i2 in pairs:
+        d1,d2 = plst[i1],plst[i2]
+        ddt = p1.index.get_loc(d2) - p1.index.get_loc(d1)
+        low1, low2 = p1.loc[d1,'Low'], p1.loc[d2,'Low']
+        ann_inc = np.power(low2/low1,annual_day/ddt)
+        prs.append((d1,d2,low1,low2,ann_inc))
+    return prs
+
 def make_windA_echarts(beg='2011-06-01',end='2023-08-22',annual_inc=1.1):
     wa = pd.read_csv('../data_save/windA.csv',index_col=0)
     wa.sort_index(inplace=True)
@@ -178,6 +194,7 @@ def make_windA_echarts(beg='2011-06-01',end='2023-08-22',annual_inc=1.1):
     wa.index.name = 'date'
     _plt_range_len = 120
     _annual_day = 243
+    inctb = _get_windA_mins(wa,_annual_day)
     _base_day = '2018-10-19' # '2019-01-04' '2022-04-27' '2022-10-31'
     _base_point = wa.loc[_base_day,'Low']
     _base_idx = wa.index.get_loc(_base_day)
@@ -755,7 +772,7 @@ if __name__=='__main__':
     # get_stock_bdkey('RB0','螺纹钢', '2023-03-01','2023-08-02')
     # make_stk_plts(0)
     # make_echarts('上证综指','牛市,熊市',beg='2022-09-01',end='2023-07-28')
-    multi_tab_echarts(start='2022-08-10',end='2023-09-05')
-    # make_windA_echarts(beg='2005-01-01',end='2023-09-01')
+    # multi_tab_echarts(start='2022-08-10',end='2023-09-05')
+    make_windA_echarts(beg='2005-01-01',end='2023-09-01')
     # make_marg_echarts()
     pass
