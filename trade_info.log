@@ -355,3 +355,16 @@
 2023-09-15 23:43:46,344 [test.py] - INFO: Update margin-sz to 2023-09-14.
 2023-09-15 23:43:49,364 [test.py] - INFO: Update high-low-legu to 2023-09-15.
 2023-09-15 23:44:01,974 [test.py] - INFO: Update day etf amount to 2023-09-15.
+2023-09-19 22:52:41,504 [test.py] - INFO: Update qvix minute to 2023-09-19.
+2023-09-19 22:52:43,169 [test.py] - WARNING: Try update bdsearch day 1 times. (All objects passed were None)
+2023-09-19 22:52:44,776 [test.py] - WARNING: Try update bdsearch day 2 times. (All objects passed were None)
+2023-09-19 22:52:46,487 [test.py] - WARNING: Try update bdsearch day 3 times. (All objects passed were None)
+2023-09-19 22:52:46,487 [test.py] - ERROR: Can't update bdsearch day.
+2023-09-19 22:52:49,529 [test.py] - WARNING: Try update bdsearch hour 1 times. (All objects passed were None)
+2023-09-19 22:52:52,603 [test.py] - WARNING: Try update bdsearch hour 2 times. (All objects passed were None)
+2023-09-19 22:52:55,695 [test.py] - WARNING: Try update bdsearch hour 3 times. (All objects passed were None)
+2023-09-19 22:52:55,697 [test.py] - ERROR: Can't update bdsearch hour.
+2023-09-19 22:52:55,869 [test.py] - INFO: Update margin-sh to 2023-09-15.
+2023-09-19 22:52:56,690 [test.py] - INFO: Update margin-sz to 2023-09-15.
+2023-09-19 22:52:59,451 [test.py] - INFO: Update high-low-legu to 2023-09-19.
+2023-09-19 22:53:08,469 [test.py] - INFO: Update day etf amount to 2023-09-19.
