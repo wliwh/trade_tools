@@ -503,7 +503,7 @@ def append_bsearch_day_file(cfg_file=''):
     fpth = os.path.join('../data_save', config.get(cfg_sec, 'fpath'))
     cookpth = os.path.join('../data_save', '.cooks')
     with open(cookpth,'r') as ckf:
-        cookie = ckf.readlines()[-1].strip()
+        cookie = ckf.readlines()[0].strip()
     up_date = config.get(cfg_sec, 'update_date')
     next_date = (pd.to_datetime(up_date) + pd.offsets.Day(1)).strftime('%Y-%m-%d')
     now_date = datetime.date.today().strftime('%Y-%m-%d')
