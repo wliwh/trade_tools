@@ -58,7 +58,7 @@ def basic_append_fun(fn,retry,**kwds):
 
 def update_files(retry:int=3):
     now_time = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M')
-    if now_time[11:]>='20-20' and now_time[11:]<='23-50':
+    if now_time[11:]>='20-20' and now_time[11:]<='23-58':
         download_type = 1
     elif now_time[11:]>='07-50' and now_time[11:]<='12-05':
         download_type = 2
