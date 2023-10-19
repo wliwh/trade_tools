@@ -24,7 +24,9 @@ IDX_DCT = {'上证综指':'000001',
            '中证全指':'000985',
            '螺纹钢':'RB0',
            '生猪':'lh0',
-           '原油':'sc0'}
+           '原油':'sc0',
+           '豆粕':'m0',
+           '纸浆':'sp0'}
 
 def mark_up_down(dts,winds=(20,60,200),price='l/h'):
     ''' 添加买卖点 '''
@@ -772,7 +774,7 @@ if __name__=='__main__':
     # get_stock_bdkey('RB0','螺纹钢', '2023-03-01','2023-08-02')
     # make_stk_plts(0)
     # make_echarts('上证综指','牛市,熊市',beg='2022-09-01',end='2023-07-28')
-    # multi_tab_echarts(start='2022-08-10',end='2023-09-05')
-    make_windA_echarts(beg='2005-01-01',end='2023-09-01')
+    multi_tab_echarts(start='2022-08-10',end='2023-09-05')
+    # make_windA_echarts(beg='2005-01-01',end='2023-09-01')
     # make_marg_echarts()
     pass
