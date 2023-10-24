@@ -762,7 +762,7 @@ def multi_tab_echarts(notebook=False,start='2022-01-01',end='2023-08-04',**kwarg
         tab.add(make_echarts(k[0],k[1],start,end,**kwargs),k[2])
     tab.add(make_echarts('螺纹钢','螺纹钢',beg='2021-09-01',end=end), '螺纹钢')
     tab.add(make_echarts('原油','原油',beg='2021-09-01',end=end), '原油')
-    tab.add(make_echarts('生猪','生猪',beg='2021-09-01',end=end), '生猪')
+    tab.add(make_echarts('豆粕','豆粕价格',beg='2021-09-01',end=end), '豆粕')
     if notebook:
         return tab
     else:
