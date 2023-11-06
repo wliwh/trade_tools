@@ -167,6 +167,35 @@ def lognormal_dist_per(pds, id_name='cnt', windows=120):
     return log_val_lst
 
 
+def high_low_ndays(ser:pd.Series, start_idx:int, close=False):
+    ''' 某个序列中各元素一直大于或小于它前面元素的最大个数
+        TODO: 加速
+    '''
+    if isinstance(close,float) and 0.8<=close<=1.0:
+        clr = close
+    elif close is False:
+        clr = 1.0
+    else:
+        raise ValueError
+    rkn = pd.Series(np.zeros_like(ser))
+    for i,tmp in enumerate(ser.iloc[start_idx:]):
+        sgn, tmpi = 0, i+start_idx
+        for j in range(tmpi-1,-1,-1):
+            if tmp>clr*ser.iloc[j] and sgn>=0:
+                sgn = 1
+            elif tmp<(2-clr)*ser.iloc[j] and sgn<=0:
+                sgn = -1
+            elif clr==1.0 and tmp==ser.iloc[j]:
+                pass
+            else:
+                rkn.iloc[tmpi] = sgn*(tmpi-j) -sgn
+                break
+            if j==0:
+                rkn.iloc[tmpi] = tmpi if sgn>=0 else -tmpi
+    return rkn
+
+high_low_ndays(pd.Series([4554.25,4500.32,4444.47,4387.77,4381.06,4435.52,4428.87,4506.29,4543.03,4532.92,4536.81]),3)
+
 def __min_max_dist_per(pds, id_name='cnt', windows=120, fn=None):
     ''' 废弃：最大最小分布 '''
     log_val_lst = [np.nan for _ in range(windows-1)]

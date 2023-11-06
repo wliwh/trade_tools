@@ -26,7 +26,8 @@ IDX_DCT = {'上证综指':'000001',
            '生猪':'lh0',
            '原油':'sc0',
            '豆粕':'m0',
-           '纸浆':'sp0'}
+           '纸浆':'sp0',
+           '热卷':'hc0'}
 
 def mark_up_down(dts,winds=(20,60,200),price='l/h'):
     ''' 添加买卖点 '''
@@ -409,7 +410,6 @@ def make_marg_echarts(beg='2017-01-01',end='2023-08-24'):
     grid_chart.render('stockWindA.html')
 
 
-
 def make_echarts(idx_l:str,bword='牛市',beg='2018-06-01',end='2019-04-30',**kwargs):
     _plt_range_len = kwargs.get('df_range_len',100)
     _plt_xticks = kwargs.get('plt_xticks',1200)
@@ -749,23 +749,33 @@ def make_echarts(idx_l:str,bword='牛市',beg='2018-06-01',end='2019-04-30',**kw
     return grid_chart
 
 
-def multi_tab_echarts(notebook=False,start='2022-01-01',end='2023-08-04',**kwargs):
-    IdxKey = (
-        ('上证综指','股市,a股','股市Ⅰ'),
-        ('上证综指','上证,上证指数','股市Ⅱ'),
-        ('上证综指','牛市,熊市','牛熊'),
-        ('沪深300','沪深300','沪深'),
-        ('创业板指','创业板指','创业板')
-    )
+def multi_tab_echarts(notebook='stock',start='2022-01-01',end='2023-08-04',**kwargs):
+    if notebook.lower() in ('stock','stk','fund'):
+        IdxKey = (
+            ('上证综指','股市,a股','股市Ⅰ'),
+            ('上证综指','上证,上证指数','股市Ⅱ'),
+            ('上证综指','牛市,熊市','牛熊'),
+            ('沪深300','沪深300','沪深'),
+            ('创业板指','创业板指','创业板')
+        )
+    elif notebook.lower() in ('future','com'):
+        IdxKey = (
+            ('螺纹钢','螺纹钢', '黑色-螺纹'),
+            ('热卷','热卷', '黑色-热卷'),
+            ('原油','原油', '能源-原油'),
+            ('生猪','生猪', '生猪链-生猪'),
+            ('豆粕','豆粕价格', '生猪链-豆粕'),
+            ('纸浆','纸浆', '轻工-纸浆'),
+        )
     tab = Tab()
     for k in IdxKey:
         tab.add(make_echarts(k[0],k[1],start,end,**kwargs),k[2])
-    tab.add(make_echarts('螺纹钢','螺纹钢',beg='2021-09-01',end=end), '螺纹钢')
-    tab.add(make_echarts('原油','原油',beg='2021-09-01',end=end), '原油')
-    tab.add(make_echarts('豆粕','豆粕价格',beg='2021-09-01',end=end), '豆粕')
-    if notebook:
-        return tab
-    else:
+    # tab.add(make_echarts('螺纹钢','螺纹钢',beg='2021-09-01',end=end), '螺纹钢')
+    # tab.add(make_echarts('原油','原油',beg='2021-09-01',end=end), '原油')
+    # tab.add(make_echarts('豆粕','豆粕价格',beg='2021-09-01',end=end), '豆粕')
+    # if notebook:
+    #     return tab
+    # else:
         tab.render('stockPlot.html')
 
 
