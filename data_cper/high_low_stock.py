@@ -79,6 +79,20 @@ def append_high_low_legu_file(cfg_file=''):
         return 0
     return 0
 
+def check_hl_legu_file_dates():
+    ''' 检查HL文件的日期是否完整 '''
+    cfg_file = '../trade.ini'
+    cfg_sec = 'High_Low_Legu'
+    config = configparser.ConfigParser()
+    config.read(cfg_file, encoding='utf-8')
+    fpth = os.path.join('../data_save', config.get(cfg_sec, 'fpath'))
+    hl_days = set(pd.read_csv(fpth,index_col=0).index)
+    all_days = ak.tool_trade_date_hist_sina()
+    all_days['trade_date'] = all_days['trade_date'].apply(lambda x:x.strftime('%Y-%m-%d'))
+    rg_days = set(all_days.loc[(all_days['trade_date']>=min(hl_days)) & (all_days['trade_date']<=max(hl_days)),'trade_date'])
+    return rg_days - hl_days
+    
+
 def _get_constituent_codes(cons_pd:pd.DataFrame, code: str, date: str):
     ''' 获取指数的成分股代码, 返回成分股调样的日期列表和对应表格 '''
     cons_pd = cons_pd[cons_pd['index_code'].apply(lambda x:x.endswith(code))]

@@ -174,7 +174,7 @@ def high_low_ndays(ser:pd.Series, start_idx:int, close=False):
     if isinstance(close,float) and 0.8<=close<=1.0:
         clr = close
     elif close is False:
-        clr = 1.0
+        clr = 1
     else:
         raise ValueError
     rkn = pd.Series(np.zeros_like(ser))
@@ -194,7 +194,35 @@ def high_low_ndays(ser:pd.Series, start_idx:int, close=False):
                 rkn.iloc[tmpi] = tmpi if sgn>=0 else -tmpi
     return rkn
 
-high_low_ndays(pd.Series([4554.25,4500.32,4444.47,4387.77,4381.06,4435.52,4428.87,4506.29,4543.03,4532.92,4536.81]),3)
+
+def high_low_ndays2(ser:pd.Series, start_idx:int, close=False):
+    ''' 某个序列中各元素一直大于或小于它前面元素的最大个数 '''
+    if isinstance(close,float) and 0.8<=close<=1.0:
+        clr = close
+    elif close is False:
+        clr = 1
+    else:
+        raise ValueError
+    rkn = pd.Series(np.zeros_like(ser,dtype='int'))
+    for i,tmp in enumerate(ser.iloc[start_idx:]):
+        sgn, tmpi, j, vrkn = 0, i+start_idx, i+start_idx-1, 0
+        while j>-1:
+            jval = ser.iloc[j]
+            vrkn = rkn.iloc[j]
+            if sgn>=0 and tmp>clr*jval:
+                sgn = 1; j-=(vrkn if vrkn>=0 else 0)
+            elif sgn<=0 and tmp<(2-clr)*jval:
+                sgn = -1; j-=(-vrkn if vrkn<0 else 0)
+            elif clr==1 and tmp==jval:
+                pass
+            else:
+                rkn.iloc[tmpi] = sgn*(tmpi-j-1)
+                break
+            j-=1
+        if j==-1: rkn.iloc[tmpi] = tmpi if sgn>=0 else -tmpi
+    return rkn
+
+
 
 def __min_max_dist_per(pds, id_name='cnt', windows=120, fn=None):
     ''' 废弃：最大最小分布 '''
