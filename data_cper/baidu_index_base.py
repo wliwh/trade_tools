@@ -624,7 +624,7 @@ def analyse_bsearch_table(qut=120,diff_method='super_smooth'):
         else:
             bct = _calc_bsearch_cnt(p1,120,'super_smooth',False)
         bcntL.append(bct)
-    bctL = pd.concat(bcntL,axis=0)
+    bcntL = pd.concat(bcntL,axis=0)
     ball_tab = bpd.merge(bcntL,left_index=True,right_index=True)
     return ball_tab
 
