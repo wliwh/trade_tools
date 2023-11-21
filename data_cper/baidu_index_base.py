@@ -18,7 +18,7 @@ import sys
 sys.path.append('..')
 os.chdir(os.path.dirname(__file__))
 
-from common.smooth_tool import log_min_max_dist_pd, smart_min_max_dist_pd, log_min_max_dist_ser,super_smoother,LLT_MA,high_low_ndays
+from common.smooth_tool import log_min_max_dist_pd, smart_min_max_dist_pd, log_min_max_dist_ser, smart_min_max_dist_ser, super_smoother,LLT_MA,high_low_ndays
 from common.mpf_set import Mpf_Style, M80_20
 from common.trade_date import get_trade_list
 
@@ -588,7 +588,10 @@ def _calc_bsearch_cnt(p:pd.Series,winds,diff_method,is_smart:bool=False):
     diff_funs,diff_args = (LLT_MA,1/14) if diff_method.lower()=='llt' else (super_smoother,20)
     bqulst = list()
     for w in winds:
-        bqu = log_min_max_dist_ser(p,w)
+        if is_smart:
+            bqu = smart_min_max_dist_ser(p,w,np.log)
+        else:
+            bqu = log_min_max_dist_ser(p,w)
         bqu.name = 'Q{}'.format(w)
         bqulst.append(bqu)
     bqulst = pd.concat(bqulst,axis=1)
@@ -601,7 +604,7 @@ def _calc_bsearch_cnt(p:pd.Series,winds,diff_method,is_smart:bool=False):
     return bpds
 
 
-def analyse_bsearch_table(qut=120,diff_method='super_smooth'):
+def analyse_bsearch_table(qut=120,diff_method='super_smooth',savef=True):
     ''' 分析所有的检索词: cnt,Q120,Diff,HighD '''
     cfg_sec = 'BSearch_Day'
     config = configparser.ConfigParser()
@@ -626,7 +629,9 @@ def analyse_bsearch_table(qut=120,diff_method='super_smooth'):
         bcntL.append(bct)
     bcntL = pd.concat(bcntL,axis=0)
     ball_tab = bpd.merge(bcntL,left_index=True,right_index=True)
-    return ball_tab
+    if savef:
+        wpth = os.path.join(os.path.dirname(fpth),'bsearch_tmp.csv')
+        ball_tab.to_csv(wpth,index_label='i')
 
     
 def make_bsearch_day_qu(winds, bdf:pd.DataFrame, is_norm:bool=True):
@@ -721,7 +726,8 @@ def doc_bsearch_info(cfg_file=''):
     return bday_doc_dic
 
 if __name__=='__main__':
-    # append_bsearch_day_file()
+    append_bsearch_day_file()
+    analyse_bsearch_table()
     # append_bsearch_hour_file()
     # kk = doc_bsearch_info()
     # print(kk)

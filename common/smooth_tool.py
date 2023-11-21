@@ -295,6 +295,22 @@ def smart_min_max_dist_pd(pds:pd.DataFrame, windows=120, id_name=None, fn=None):
         mm_dist_pd.iloc[i] = val*100
     return mm_dist_pd if id_name is None else mm_dist_pd[id_name]
 
+def smart_min_max_dist_ser(ser:pd.Series, windows=120, fn=None):
+    ''' 最大最小分布：滚动窗口 '''
+    mm_dist_ser = ser.copy()
+    mm_dist_ser.iloc[:windows]=np.nan
+    if fn is None:
+        def fn(x): return x
+    for i,bt in enumerate(ser.rolling(windows)):
+        if len(bt) < windows:
+            continue
+        lmin = fn(0.8*bt.mean())
+        lmax =  fn(bt.max())
+        val = (fn(bt.iloc[-1])-lmin)/(lmax-lmin)
+        val[val<0] = 0
+        mm_dist_ser.iloc[i] = val*100
+    return mm_dist_ser
+
 def log_min_max_dist_pd(pds:pd.DataFrame, windows=120, id_name=None):
     ''' log 最大最小分布：滚动窗口 '''
     return min_max_dist_pd(pds, windows, id_name, np.log)
