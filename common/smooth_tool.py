@@ -306,8 +306,10 @@ def smart_min_max_dist_ser(ser:pd.Series, windows=120, fn=None):
             continue
         lmin = fn(0.8*bt.mean())
         lmax =  fn(bt.max())
-        val = (fn(bt.iloc[-1])-lmin)/(lmax-lmin)
-        val[val<0] = 0
+        if lmax==lmin:
+            val=0
+        else:
+            val = (fn(bt.iloc[-1])-lmin)/(lmax-lmin)
         mm_dist_ser.iloc[i] = val*100
     return mm_dist_ser
 

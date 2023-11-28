@@ -629,9 +629,10 @@ def analyse_bsearch_table(qut=120,diff_method='super_smooth',savef=True):
         bcntL.append(bct)
     bcntL = pd.concat(bcntL,axis=0)
     ball_tab = bpd.merge(bcntL,left_index=True,right_index=True)
+    ball_tab.insert(1,'weekn',pd.to_datetime(ball_tab['date']).map(lambda x:x.weekday()+1))
     if savef:
         wpth = os.path.join(os.path.dirname(fpth),'bsearch_tmp.csv')
-        ball_tab.to_csv(wpth,index_label='i')
+        ball_tab.to_csv(wpth,index_label='i',float_format='%.2f')
 
     
 def make_bsearch_day_qu(winds, bdf:pd.DataFrame, is_norm:bool=True):
@@ -726,7 +727,7 @@ def doc_bsearch_info(cfg_file=''):
     return bday_doc_dic
 
 if __name__=='__main__':
-    append_bsearch_day_file()
+    # append_bsearch_day_file()
     analyse_bsearch_table()
     # append_bsearch_hour_file()
     # kk = doc_bsearch_info()
