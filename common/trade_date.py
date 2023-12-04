@@ -26,7 +26,8 @@ def get_trade_day(cut_hour=16) -> pd.Timestamp :
 
 def get_delta_trade_day(day:str,delta:int=1):
     ''' 获取某一日的相隔若干个交易日的日期 '''
-    ndate = datetime.datetime.strptime(day,"%Y-%m-%d").date()
+    # ndate = datetime.datetime.strptime(day,"%Y-%m-%d").date()
+    ndate = pd.to_datetime(day).date()
     n_idx = (Trade_List.trade_date>ndate).argmax()
     if delta>0: 
         return Trade_List.loc[n_idx+delta-1,'trade_date']

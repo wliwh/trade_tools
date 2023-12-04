@@ -6,3 +6,4 @@ funds_amt*.csv
 */__pycache__/
 */.ipynb*
 autorun.cmd
+kmin/

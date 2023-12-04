@@ -67,7 +67,7 @@ def update_files(retry:int=3):
         basic_append_fun(append_qvix_minute_file,retry,words='qvix minute')
     # ;; QVIX 数据
     # bdsearch 检索词数据
-    if download_type==1:
+    if download_type>=1:
         basic_append_fun(append_bsearch_day_file,retry,words='bdsearch day')
         basic_append_fun(append_bsearch_hour_file,retry,words='bdsearch hour')
     # ;; 北上资金
@@ -75,9 +75,10 @@ def update_files(retry:int=3):
         basic_append_fun(append_margin_file,retry,args='sh',words='margin-sh')
         basic_append_fun(append_margin_file,retry,args='sz',words='margin-sz')
     # 交易日新高新低-乐股数据
-    if download_type==1:
+    if download_type>=1:
         basic_append_fun(append_high_low_legu_file,retry,words='high-low-legu')
     # 当日ETF成交数据
+    if download_type==1:
         for r in range(retry):
             try:
                 tm_rg, res = append_funds_trade_file()

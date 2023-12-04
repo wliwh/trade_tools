@@ -5,6 +5,9 @@ import akshare as ak
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import matplotlib.dates as dates
+import mplfinance as mpf
+from common.mpf_set import Mpf_Style
+import zigzag
 
 # 从机构重仓股的滚动年化收益推断顶底
 
@@ -57,3 +60,28 @@ def get_afre_with_month():
     plt.show()
 
 # get_afre_with_month()
+
+
+def plt_index_zigzag(idx_name:str,zigpct:int,**paras:dict):
+    ''' 绘制指数zigzag图像, 可根据paras灵活调整 '''
+    commd = paras.get('most_day',20)
+    mpct = paras.get('min_pct',2)
+    idx_p = ef.stock.get_quote_history(idx_name,klt=101,fqt=2)
+    idx_p.columns = ('name', 'code', 'data', 'open', 'close', 'high', 'low', 'amount', 'vol', 'zf', 'pct', 'inc', 'hh')
+    idx_p = idx_p.loc[:,'name':'low']
+    idx_p.set_index('data',inplace=True)
+    idx_p.index = pd.to_datetime(idx_p.index)
+    idx_p = idx_p.tail(400)
+    idx_p['prc'] = (2*idx_p['open']+idx_p['high']+idx_p['low']+2*idx_p['close'])/6.0
+    zg = zigzag.peak_valley_pivots_detailed(idx_p['prc'].values,zigpct/100,-zigpct/100,True,True)
+    idx_p['zg'] = idx_p['prc']
+    idx_p.loc[zg==0,'zg'] = np.nan
+    idx_p['zg'] = idx_p['zg'].interpolate()
+    mpf.plot(idx_p,type='candle',ylabel=idx_name,
+             style=Mpf_Style, addplot=mpf.make_addplot(idx_p['zg'],color='k'),
+             datetime_format='%m-%d',xrotation=15,
+             figratio=(6,6),figscale=1.5)
+    # return idx_p
+
+
+plt_index_zigzag('上证50',3)
