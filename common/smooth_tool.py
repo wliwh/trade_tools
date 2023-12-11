@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import scipy
 import akshare as ak
 import datetime
 import talib as ta
