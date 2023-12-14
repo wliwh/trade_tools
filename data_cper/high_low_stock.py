@@ -268,5 +268,5 @@ def doc_high_low_legu(cfg_file=''):
 if __name__ == '__main__':
     # append_high_low_legu_file()
     # print(doc_high_low_legu())
-    print(check_hl_legu_file_dates())
+    # print(check_hl_legu_file_dates())
     pass

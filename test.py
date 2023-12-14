@@ -62,6 +62,8 @@ def update_files(retry:int=3):
         download_type = 1
     elif now_time[11:]>='07-50' and now_time[11:]<='12-05':
         download_type = 2
+    elif now_time[7:9] in ('04','11','18','25'):
+        download_type = 3
     # 交易日 QVIX 分钟级数据
     if download_type==1:
         basic_append_fun(append_qvix_minute_file,retry,words='qvix minute')
@@ -78,7 +80,7 @@ def update_files(retry:int=3):
     if download_type>=1:
         basic_append_fun(append_high_low_legu_file,retry,words='high-low-legu')
     # 当日ETF成交数据
-    if download_type==1:
+    if download_type==3:
         for r in range(retry):
             try:
                 tm_rg, res = append_funds_trade_file()

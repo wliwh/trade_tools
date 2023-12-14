@@ -758,7 +758,7 @@ def multi_tab_echarts(notebook='stock',start='2022-01-01',end='2023-08-04',**kwa
             ('沪深300','沪深300','沪深'),
             ('创业板指','创业板指','创业板')
         )
-    elif notebook.lower() in ('future','com'):
+    elif notebook.lower() in ('future','com','comm'):
         IdxKey = (
             ('螺纹钢','螺纹钢', '黑色-螺纹'),
             ('热卷','热卷', '黑色-热卷'),

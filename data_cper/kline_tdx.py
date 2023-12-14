@@ -1,4 +1,5 @@
 # 由tdx导出指数的高频数据重新整理
+# 或由joinquant获取高频数据
 
 import os
 import os.path as osp
