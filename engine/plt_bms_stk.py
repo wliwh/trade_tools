@@ -78,14 +78,19 @@ def arange_bms_index_min(dt:str,
         bms_min_tb[nm], bms_amt_tb[nm] = calc_index_pct(kpth,dt,comp_day)
     return bms_min_tb*100.0, bms_amt_tb
 
-def get_index_zig(idx_l,pct,beg,end):
-    ''' 日频数据添加转向 '''
+def get_index_pd(code:str,beg:str,end:str):
     _beg = beg.replace('-','').replace('/','')
     _end = end.replace('-','').replace('/','')
-    df = ef.stock.get_quote_history(idx_l,beg=_beg,end=_end,fqt=0)
-    df.rename({'日期':'date','开盘':'Open','收盘':'Close','最高':'High','最低':'Low','成交量':'Volume'},axis=1,inplace=True)
-    df['Volume'] /= 1e8
+    df = ef.stock.get_quote_history(code,beg=_beg,end=_end,fqt=0)
+    df.columns = ('name','code','date','o','h','l','c','amt','Volume','zf','inc','pct','hs')
     df.set_index('date',inplace=True)
+    return df
+
+def get_index_zig(idx_l,pct,beg,end):
+    ''' 日频数据添加转向 '''
+    df = get_index_pd(idx_l,beg,end)
+    df.rename({'o':'Open','c':'Close','h':'High','l':'Low','vol':'Volume'},axis=1,inplace=True)
+    df['Volume'] /= 1e8
     if not isinstance(df.index[0],str):
         df.index = [x.strftime('%Y-%m-%d') for x in df.index]
     zg_idx = zigzag.peak_valley_pivots_detailed(df.Close.values,pct/100,-pct/100,True,True)
@@ -93,7 +98,7 @@ def get_index_zig(idx_l,pct,beg,end):
     df['zig'] = df['zig'].interpolate(method='linear')
     return df
 
-def find_zigs(code:str,pct:int,beg:str,end:str):
+def find_first_zig(code:str,pct:int,beg:str,end:str):
     p1 = ef.stock.get_quote_history(code,beg.replace('-',''),end.replace('-',''),fqt=0)
     p1.columns = ('name','code','date','o','h','l','c','amt','vol','zf','inc','pct','hs')
     p1.set_index('date',inplace=True)
@@ -118,7 +123,7 @@ def find_zigs(code:str,pct:int,beg:str,end:str):
                 bd1_dt = (lidx[1], hidx[1])
             except IndexError as e:
                 next_day = get_delta_trade_day(end,1).strftime('%Y-%m-%d')
-                return find_zigs(code,pct,beg,next_day)
+                return find_first_zig(code,pct,beg,next_day)
             bd1_inc = (p1.iloc[bd1_dt[0]]['c'],p1.iloc[bd1_dt[1]]['c'])
     return dict(beg=p1.iloc[bd1_dt[0]].name,
                 end=p1.iloc[bd1_dt[1]].name,
@@ -142,14 +147,14 @@ def make_comp_tb(beg:str,end:str,start:str,**kwargs):
         work_tb[nm].append(p_day.loc[240,nm]-p_day.loc[1,nm])
         work_tb[nm].append(p_day.loc[240,nm]-p_day[nm].min())
         work_tb[nm].append(amt_day.loc[240,nm])
-        zigs = find_zigs(nm,zig_pct,beg,end)
+        zigs = find_first_zig(nm,zig_pct,beg,end)
         if zigs:
             work_tb[nm].extend([zigs['beg'],zigs['end'],zigs['days'],zigs['inc']])
         else:
             work_tb[nm].extend(['-','-','-','-'])
     return pd.DataFrame(work_tb,index=work_clm_name).transpose()
 
-print(make_comp_tb('2023-08-10','2023-09-20','2023-08-29',comp_day=-2))
+# print(make_comp_tb('2023-08-10','2023-09-20','2023-08-29',comp_day=-2))
 
 def plt_bms_index_min(bms_tb:pd.DataFrame,
                       idx_name:tuple=BMS_Index_Name,
@@ -334,4 +339,4 @@ def make_codes_zig(idx_names=BMS_Index_Name,beg='2018-06-01',end='2019-04-30',**
 
 # plt_bms_index_min(arange_bms_index_min('2023-10-19'))
 # print(find_zigs('国证2000',5,'2023-07-05','2023-07-26'))
-# make_codes_zig(beg='2022-10-10',end='2023-12-09',zig_pct=4)
+make_codes_zig(beg='2022-10-10',end='2023-12-09',zig_pct=4)

@@ -529,7 +529,7 @@ def append_bsearch_hour_file(cfg_file=''):
     fpth = os.path.join('../data_save', config.get(cfg_sec, 'fpath'))
     cookpth = os.path.join('../data_save', '.cooks')
     with open(cookpth,'r') as ckf:
-        cookie = ckf.read()
+        cookie = ckf.readlines()[1].strip()
     up_date = config.get(cfg_sec, 'update_date')
     up_hour = config.get(cfg_sec, 'update_time')
     next_tm = (pd.to_datetime(up_date) + pd.offsets.Hour(int(up_hour)+10)).strftime('%Y-%m-%d %H')

@@ -849,3 +849,15 @@
 2023-12-13 23:50:24,724 [test.py] - ERROR: Can't update margin-sz.
 2023-12-13 23:50:24,729 [test.py] - INFO: Update high-low-legu ready.
 2023-12-13 23:58:59,642 [test.py] - INFO: Update week etf amount to 2023-12-13.
+2023-12-14 22:14:52,681 [test.py] - INFO: Update qvix minute to 2023-12-14.
+2023-12-14 22:14:58,327 [test.py] - INFO: Update bdsearch day to 2023-12-13.
+2023-12-14 22:15:02,001 [test.py] - WARNING: Try update bdsearch hour 1 times. (All objects passed were None)
+2023-12-14 22:15:05,693 [test.py] - WARNING: Try update bdsearch hour 2 times. (All objects passed were None)
+2023-12-14 22:15:09,387 [test.py] - WARNING: Try update bdsearch hour 3 times. (All objects passed were None)
+2023-12-14 22:15:09,387 [test.py] - ERROR: Can't update bdsearch hour.
+2023-12-14 22:15:09,564 [test.py] - INFO: Update margin-sh to 2023-12-01.
+2023-12-14 22:15:10,002 [test.py] - WARNING: Try update margin-sz 1 times. ('20230921')
+2023-12-14 22:15:10,318 [test.py] - WARNING: Try update margin-sz 2 times. ('20230921')
+2023-12-14 22:15:10,664 [test.py] - WARNING: Try update margin-sz 3 times. ('20230921')
+2023-12-14 22:15:10,665 [test.py] - ERROR: Can't update margin-sz.
+2023-12-14 22:15:13,504 [test.py] - INFO: Update high-low-legu to 2023-12-14.
