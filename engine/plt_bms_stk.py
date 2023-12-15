@@ -8,7 +8,7 @@ import zigzag
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import matplotlib.dates as dates
-from common.trade_date import get_delta_trade_day
+from common.trade_date import get_delta_trade_day,get_trade_day
 from pyecharts import options as opts
 from pyecharts.commons.utils import JsCode
 from pyecharts.charts import Kline, Bar, Grid, Line, Tab
@@ -82,11 +82,11 @@ def get_index_pd(code:str,beg:str,end:str):
     _beg = beg.replace('-','').replace('/','')
     _end = end.replace('-','').replace('/','')
     df = ef.stock.get_quote_history(code,beg=_beg,end=_end,fqt=0)
-    df.columns = ('name','code','date','o','h','l','c','amt','Volume','zf','inc','pct','hs')
+    df.columns = ('name','code','date','o','c','h','l','amt','vol','zf','inc','pct','hs')
     df.set_index('date',inplace=True)
     return df
 
-def get_index_zig(idx_l,pct,beg,end):
+def get_index_zigs(idx_l,pct,beg,end):
     ''' 日频数据添加转向 '''
     df = get_index_pd(idx_l,beg,end)
     df.rename({'o':'Open','c':'Close','h':'High','l':'Low','vol':'Volume'},axis=1,inplace=True)
@@ -98,10 +98,11 @@ def get_index_zig(idx_l,pct,beg,end):
     df['zig'] = df['zig'].interpolate(method='linear')
     return df
 
-def find_first_zig(code:str,pct:int,beg:str,end:str):
-    p1 = ef.stock.get_quote_history(code,beg.replace('-',''),end.replace('-',''),fqt=0)
-    p1.columns = ('name','code','date','o','h','l','c','amt','vol','zf','inc','pct','hs')
-    p1.set_index('date',inplace=True)
+def find_first_zig(p1:pd.DataFrame, pct:int, beg:str, end:str):
+    ''' 搜寻指数的第一个反转 '''
+    # p1 = ef.stock.get_quote_history(code,beg.replace('-',''),end.replace('-',''),fqt=0)
+    # p1.columns = ('name','code','date','o','h','l','c','amt','vol','zf','inc','pct','hs')
+    # p1.set_index('date',inplace=True)
     while pct>=2:
         wpct = pct/100
         res = zigzag.peak_valley_pivots_detailed(p1.loc[beg:end,'c'].values,wpct,-wpct,False,False)
@@ -123,7 +124,7 @@ def find_first_zig(code:str,pct:int,beg:str,end:str):
                 bd1_dt = (lidx[1], hidx[1])
             except IndexError as e:
                 next_day = get_delta_trade_day(end,1).strftime('%Y-%m-%d')
-                return find_first_zig(code,pct,beg,next_day)
+                return find_first_zig(p1,pct,beg,next_day)
             bd1_inc = (p1.iloc[bd1_dt[0]]['c'],p1.iloc[bd1_dt[1]]['c'])
     return dict(beg=p1.iloc[bd1_dt[0]].name,
                 end=p1.iloc[bd1_dt[1]].name,
@@ -132,7 +133,7 @@ def find_first_zig(code:str,pct:int,beg:str,end:str):
                 high=bd1_inc[1],
                 inc=bd1_inc[1]/bd1_inc[0]*100-100)
 
-def make_comp_tb(beg:str,end:str,start:str,**kwargs):
+def index_comp_tb(beg:str,end:str,start:str,**kwargs):
     idx_name = kwargs.get('idx_name',BMS_Index_Name)
     zig_pct = kwargs.get('zig_pct',5)
     idx_ticks = kwargs.get('index_ticks',Index_Ticks)
@@ -144,17 +145,19 @@ def make_comp_tb(beg:str,end:str,start:str,**kwargs):
     for nm in idx_name:
         for i_tick in idx_ticks:
             work_tb[nm].append(p_day.loc[i_tick,nm])
-        work_tb[nm].append(p_day.loc[240,nm]-p_day.loc[1,nm])
-        work_tb[nm].append(p_day.loc[240,nm]-p_day[nm].min())
+        itb = get_index_pd(nm,beg,get_trade_day().strftime('%Y-%m-%d'))
+        work_tb[nm].append(itb.loc[start,'c']/itb.loc[start,'o']*100-100)
+        work_tb[nm].append(itb.loc[start,'c']/itb.loc[start,'l']*100-100)
         work_tb[nm].append(amt_day.loc[240,nm])
-        zigs = find_first_zig(nm,zig_pct,beg,end)
+        zigs = find_first_zig(itb,zig_pct,beg,end)
         if zigs:
             work_tb[nm].extend([zigs['beg'],zigs['end'],zigs['days'],zigs['inc']])
         else:
             work_tb[nm].extend(['-','-','-','-'])
-    return pd.DataFrame(work_tb,index=work_clm_name).transpose()
+    p1 = pd.DataFrame(work_tb,index=work_clm_name).transpose()
+    # p1.style.format(precision=2).highlight_min()
+    return p1
 
-# print(make_comp_tb('2023-08-10','2023-09-20','2023-08-29',comp_day=-2))
 
 def plt_bms_index_min(bms_tb:pd.DataFrame,
                       idx_name:tuple=BMS_Index_Name,
@@ -170,7 +173,6 @@ def plt_bms_index_min(bms_tb:pd.DataFrame,
     plt.show()
 
 
-
 def make_echarts_zig(code:str,beg='2018-06-01',end='2019-04-30',**kwargs):
     _plt_range_len = kwargs.get('df_range_len',100)
     _plt_width = kwargs.get('plt_width',1200)
@@ -179,7 +181,7 @@ def make_echarts_zig(code:str,beg='2018-06-01',end='2019-04-30',**kwargs):
     _plt_zig_price = kwargs.get('zig_price','c')
     _plt_ma_days = kwargs.get('ma_args',(20,60))
 
-    df = get_index_zig(code,_plt_zig_pct,'2016-01-01',end)
+    df = get_index_zigs(code,_plt_zig_pct,'2016-01-01',end)
     for d in _plt_ma_days:
         df['ma'+str(d)] = df['Close'].rolling(d).mean()
     data = df.loc[beg:end,['Open','Close','Low','High']]
@@ -330,13 +332,24 @@ def make_echarts_zig(code:str,beg='2018-06-01',end='2019-04-30',**kwargs):
     # grid_chart.render("professional_kline_brush.html")
     return grid_chart
 
-def make_codes_zig(idx_names=BMS_Index_Name,beg='2018-06-01',end='2019-04-30',**kwargs):
+def echart_indexs_zig(idx_names=BMS_Index_Name,beg='2018-06-01',end='2019-04-30',**kwargs):
+    ''' 一系列指数的折线图
+        save_pth:       生成折线图的保存地址
+        df_range_len:   窗口显示的长度
+        plt_width:      整幅图像的宽度
+        plt_height:     整幅图像的高度
+        zig_pct:        zig设定的转角大小
+    '''
     tab = Tab()
+    save_pth = kwargs.get('save_pth',None)
     idx_names = ['国证A指'] + [a for a in idx_names if a!='国证A指']
     for nm in idx_names:
         tab.add(make_echarts_zig(nm,beg,end,**kwargs),nm)
-    tab.render('codes_zig.html')
+    if save_pth:
+        tab.render('codes_zig.html')
+    return tab
 
 # plt_bms_index_min(arange_bms_index_min('2023-10-19'))
 # print(find_zigs('国证2000',5,'2023-07-05','2023-07-26'))
-make_codes_zig(beg='2022-10-10',end='2023-12-09',zig_pct=4)
+print(index_comp_tb('2023-08-10','2023-09-20','2023-08-29',comp_day=-2))
+# make_indexs_zig(beg='2022-10-10',end='2023-12-09',save_pth=True,zig_pct=4)

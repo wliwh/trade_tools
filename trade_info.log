@@ -228,7 +228,7 @@
 2023-08-31 22:04:02,500 [test.py] - WARNING: Try update bdsearch hour 3 times. (All objects passed were None)
 2023-08-31 22:04:02,500 [test.py] - ERROR: Can't update bdsearch hour.
 2023-08-31 22:04:02,677 [test.py] - INFO: Update margin-sh to 2023-08-30.
-2023-08-31 22:05:40,050 [test.py] - WARNING: Try update margin-sz 1 times. (('Connection aborted.', TimeoutError(10060, 'ÓÉÓÚÁ¬½Ó·½ÔÚÒ»¶ÎÊ±¼äºóÃ»ÓÐÕýÈ·´ð¸´»òÁ¬½ÓµÄÖ÷»úÃ»ÓÐ·´Ó¦£¬Á¬½Ó³¢ÊÔÊ§°Ü¡£', None, 10060, None)))
+2023-08-31 22:05:40,050 [test.py] - WARNING: Try update margin-sz 1 times. (('Connection aborted.', TimeoutError(10060, 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó·ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ê±ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½È·ï¿½ð¸´»ï¿½ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½Ð·ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½Ó³ï¿½ï¿½ï¿½Ê§ï¿½Ü¡ï¿½', None, 10060, None)))
 2023-08-31 22:05:40,896 [test.py] - INFO: Update margin-sz to 2023-08-30.
 2023-08-31 22:05:43,785 [test.py] - INFO: Update high-low-legu to 2023-08-31.
 2023-08-31 22:05:52,347 [test.py] - INFO: Update day etf amount to 2023-08-31.
@@ -596,7 +596,7 @@
 2023-10-30 23:09:50,659 [test.py] - ERROR: Can't update margin-sz.
 2023-10-30 23:09:53,669 [test.py] - INFO: Update high-low-legu to 2023-10-30.
 2023-10-30 23:09:55,957 [test.py] - WARNING: Try update etf amount 1 times. ('513120')
-2023-10-31 19:53:48,156 [test.py] - WARNING: Try update etf amount 2 times. (("Connection broken: ConnectionAbortedError(10053, 'ÄãµÄÖ÷»úÖÐµÄÈí¼þÖÐÖ¹ÁËÒ»¸öÒÑ½¨Á¢µÄÁ¬½Ó¡£', None, 10053, None)", ConnectionAbortedError(10053, 'ÄãµÄÖ÷»úÖÐµÄÈí¼þÖÐÖ¹ÁËÒ»¸öÒÑ½¨Á¢µÄÁ¬½Ó¡£', None, 10053, None)))
+2023-10-31 19:53:48,156 [test.py] - WARNING: Try update etf amount 2 times. (("Connection broken: ConnectionAbortedError(10053, 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ðµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¹ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ñ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¡ï¿½', None, 10053, None)", ConnectionAbortedError(10053, 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ðµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¹ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ñ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¡ï¿½', None, 10053, None)))
 2023-10-31 19:53:48,318 [test.py] - WARNING: Try update etf amount 3 times. (HTTPConnectionPool(host='88.push2.eastmoney.com', port=80): Max retries exceeded with url: /api/qt/clist/get?pn=1&pz=2000&po=1&np=1&ut=bd1d9ddb04089700cf9c27f6f7426281&fltt=2&invt=2&wbp2u=%7C0%7C0%7C0%7Cweb&fid=f3&fs=b%3AMK0021%2Cb%3AMK0022%2Cb%3AMK0023%2Cb%3AMK0024&fields=f1%2Cf2%2Cf3%2Cf4%2Cf5%2Cf6%2Cf7%2Cf8%2Cf9%2Cf10%2Cf12%2Cf13%2Cf14%2Cf15%2Cf16%2Cf17%2Cf18%2Cf20%2Cf21%2Cf23%2Cf24%2Cf25%2Cf22%2Cf11%2Cf62%2Cf128%2Cf136%2Cf115%2Cf152&_=1672806290972 (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x0000024CD2921DC0>: Failed to establish a new connection: [Errno 11001] getaddrinfo failed')))
 2023-10-31 19:53:48,318 [test.py] - ERROR: Can't update etf amount.
 2023-11-01 22:54:02,113 [test.py] - INFO: Update qvix minute to 2023-11-01.
@@ -861,3 +861,15 @@
 2023-12-14 22:15:10,664 [test.py] - WARNING: Try update margin-sz 3 times. ('20230921')
 2023-12-14 22:15:10,665 [test.py] - ERROR: Can't update margin-sz.
 2023-12-14 22:15:13,504 [test.py] - INFO: Update high-low-legu to 2023-12-14.
+2023-12-15 22:58:17,302 [test.py] - INFO: Update qvix minute to 2023-12-15.
+2023-12-15 22:58:20,031 [test.py] - WARNING: Try update bdsearch day 1 times. (All objects passed were None)
+2023-12-15 22:58:22,279 [test.py] - WARNING: Try update bdsearch day 2 times. (All objects passed were None)
+2023-12-15 22:58:25,072 [test.py] - WARNING: Try update bdsearch day 3 times. (All objects passed were None)
+2023-12-15 22:58:25,072 [test.py] - ERROR: Can't update bdsearch day.
+2023-12-15 22:58:31,432 [test.py] - WARNING: Try update bdsearch hour 1 times. (All objects passed were None)
+2023-12-15 22:58:37,426 [test.py] - WARNING: Try update bdsearch hour 2 times. (All objects passed were None)
+2023-12-15 22:58:43,551 [test.py] - WARNING: Try update bdsearch hour 3 times. (All objects passed were None)
+2023-12-15 22:58:43,551 [test.py] - ERROR: Can't update bdsearch hour.
+2023-12-15 22:58:43,733 [test.py] - INFO: Update margin-sh to 2023-12-04.
+2023-12-15 23:02:55,173 [test.py] - INFO: Update qvix minute ready.
+2023-12-15 23:02:58,015 [test.py] - INFO: Update high-low-legu to 2023-12-15.
