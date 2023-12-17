@@ -503,7 +503,7 @@ def append_bsearch_day_file(cfg_file=''):
     fpth = os.path.join('../data_save', config.get(cfg_sec, 'fpath'))
     cookpth = os.path.join('../data_save', '.cooks')
     with open(cookpth,'r') as ckf:
-        cookie = ckf.readlines()[1].strip()
+        cookie = ckf.readlines()[0].strip()
     up_date = config.get(cfg_sec, 'update_date')
     next_date = (pd.to_datetime(up_date) + pd.offsets.Day(1)).strftime('%Y-%m-%d')
     now_date = datetime.date.today().strftime('%Y-%m-%d')
@@ -529,7 +529,7 @@ def append_bsearch_hour_file(cfg_file=''):
     fpth = os.path.join('../data_save', config.get(cfg_sec, 'fpath'))
     cookpth = os.path.join('../data_save', '.cooks')
     with open(cookpth,'r') as ckf:
-        cookie = ckf.readlines()[1].strip()
+        cookie = ckf.readlines()[0].strip()
     up_date = config.get(cfg_sec, 'update_date')
     up_hour = config.get(cfg_sec, 'update_time')
     next_tm = (pd.to_datetime(up_date) + pd.offsets.Hour(int(up_hour)+10)).strftime('%Y-%m-%d %H')
@@ -633,6 +633,7 @@ def analyse_bsearch_table(qut=120,diff_method='super_smooth',savef=True):
     if savef:
         wpth = os.path.join(os.path.dirname(fpth),'bsearch_tmp.csv')
         ball_tab.to_csv(wpth,index_label='i',float_format='%.2f')
+    return 0
 
     
 def make_bsearch_day_qu(winds, bdf:pd.DataFrame, is_norm:bool=True):
@@ -728,7 +729,7 @@ def doc_bsearch_info(cfg_file=''):
 
 if __name__=='__main__':
     # append_bsearch_day_file()
-    analyse_bsearch_table()
+    # analyse_bsearch_table()
     # append_bsearch_hour_file()
     # kk = doc_bsearch_info()
     # print(kk)

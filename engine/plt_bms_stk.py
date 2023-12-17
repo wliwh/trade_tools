@@ -5,13 +5,16 @@ import efinance as ef
 import os
 import os.path as osp
 import zigzag
+import matplotlib
 import matplotlib.pyplot as plt
-import matplotlib.ticker as ticker
-import matplotlib.dates as dates
 from common.trade_date import get_delta_trade_day,get_trade_day
 from pyecharts import options as opts
 from pyecharts.commons.utils import JsCode
 from pyecharts.charts import Kline, Bar, Grid, Line, Tab
+
+plt.style.use('seaborn-v0_8')
+plt.rcParams['font.sans-serif'] = ['SimHei']
+plt.rcParams['axes.unicode_minus'] = False
 
 Kline_Min_Dir = osp.join(osp.dirname(__file__),'../kmin')
 Kline_Min_Pth = [osp.join(Kline_Min_Dir,p)
@@ -133,44 +136,105 @@ def find_first_zig(p1:pd.DataFrame, pct:int, beg:str, end:str):
                 high=bd1_inc[1],
                 inc=bd1_inc[1]/bd1_inc[0]*100-100)
 
-def index_comp_tb(beg:str,end:str,start:str,**kwargs):
-    idx_name = kwargs.get('idx_name',BMS_Index_Name)
-    zig_pct = kwargs.get('zig_pct',5)
-    idx_ticks = kwargs.get('index_ticks',Index_Ticks)
+def plt_bms_index_min(bms_tb:pd.DataFrame,
+                      amt_tb:pd.DataFrame=None,
+                      tday:str='',
+                      comp_day:int=-1,
+                      idx_name:tuple=BMS_Index_Name,
+                      idx_ticks:list=Index_Ticks,
+                      idx_cmp:dict=Index_CMap):
+    ''' 绘制分钟级涨跌幅、量比的图形 '''
+    idx_ticks = idx_ticks if (1 in idx_ticks) else [1]+idx_ticks
+    ccm = idx_cmp['up']
+    if bms_tb.loc[240].mean()<-0.5: ccm = idx_cmp['down']
+    if amt_tb is not None:
+        fig, (ax, axa) = plt.subplots(2, 1, sharex=True,height_ratios=(0.6,0.4))
+        ax.set_xscale('log',base=5)
+        for nm in idx_name:
+            ax.plot(bms_tb[nm],color=ccm[nm],label=nm)
+            ax.scatter(idx_ticks,bms_tb.loc[idx_ticks,nm],
+                        color=ccm[nm]) # cm['pts'][nm])
+            ax.set_ylabel('inc,%')
+            ax.set_title('BMS Index inc'+(', {}'.format(tday) if tday else ''))
+            ax.legend()
+        for nm in idx_name:
+            axa.plot(amt_tb[nm], color=ccm[nm])
+            axa.scatter(idx_ticks, amt_tb.loc[idx_ticks,nm],
+                        color=ccm[nm])
+            axa.set_ylabel('volume ratio')
+            axa.set_title('Accumulate Volume ratio, {} day{} ago'.format(-comp_day,'' if comp_day==-1 else 's'))
+    else:
+        fig, ax = plt.subplots()
+        ax.set_xscale('log',base=5)
+        for nm in idx_name:
+            ax.plot(bms_tb[nm],color=ccm[nm],label=nm)
+            ax.scatter(idx_ticks,bms_tb.loc[idx_ticks,nm],
+                        color=ccm[nm]) # cm['pts'][nm])
+            ax.set_ylabel('inc,%')
+            ax.set_title('BMS Index inc'+(', {}'.format(tday) if tday else ''))
+        ax.legend()
+    # plt.show()
 
+def make_index_info_tb(bms_tb:pd.DataFrame,
+                       amt_tb:pd.DataFrame,
+                       beg:str,end:str,start:str,
+                       zig_pct:int=None,
+                       idx_name:tuple=BMS_Index_Name,
+                       idx_ticks:list=Index_Ticks):
+    now_d = get_trade_day().strftime('%Y-%m-%d')
+    pstart_d = get_delta_trade_day(start,-1).strftime('%Y-%m-%d')
+    use_zig = (isinstance(zig_pct,int) and zig_pct>=2)
     work_tb = defaultdict(list)
-    work_clm_name = [str(t)+"'" for t in idx_ticks[:-1]] + ['inc','incD','Low2C','amtP'] + ['Zbeg','Zend','Zdays','Zinc']
-    p_day, amt_day = arange_bms_index_min(start,**kwargs)
-    # start日的时间点
+    work_clm_name = ["0'"] + [str(t)+"'" for t in idx_ticks[:-1]] + ['inc','incOC','incLC','amtP']
+    hlight_name = work_clm_name
+    if use_zig:
+        work_clm_name = work_clm_name + ['Zbeg','Zend','Zdays','Zinc']
+        hlight_name = hlight_name + ['Zinc']
+
     for nm in idx_name:
+        itb = get_index_pd(nm,beg,now_d)
+        work_tb[nm].append(itb.loc[start,'o']/itb.loc[pstart_d,'c']*100-100)
         for i_tick in idx_ticks:
-            work_tb[nm].append(p_day.loc[i_tick,nm])
-        itb = get_index_pd(nm,beg,get_trade_day().strftime('%Y-%m-%d'))
+            work_tb[nm].append(bms_tb.loc[i_tick,nm])
         work_tb[nm].append(itb.loc[start,'c']/itb.loc[start,'o']*100-100)
         work_tb[nm].append(itb.loc[start,'c']/itb.loc[start,'l']*100-100)
-        work_tb[nm].append(amt_day.loc[240,nm])
-        zigs = find_first_zig(itb,zig_pct,beg,end)
-        if zigs:
-            work_tb[nm].extend([zigs['beg'],zigs['end'],zigs['days'],zigs['inc']])
-        else:
-            work_tb[nm].extend(['-','-','-','-'])
+        work_tb[nm].append(amt_tb.loc[240,nm])
+        if use_zig:
+            zigs = find_first_zig(itb,zig_pct,beg,end)
+            if zigs:
+                work_tb[nm].extend([zigs['beg'],zigs['end'],zigs['days'],zigs['inc']])
+            else:
+                work_tb[nm].extend(['-','-','-','-'])
     p1 = pd.DataFrame(work_tb,index=work_clm_name).transpose()
+    return p1, hlight_name
+
+def index_comp_desc(beg:str,end:str,start:str,zig_pct=None,fig='All',**kwargs):
+    ''' 输出由各个指数构成列表和图像
+        beg:        区间起始日期
+        end:        区间结束日期
+        start:      转折当日日期
+        zig_pct:    int, 波段采用的幅度设定
+        fig:        输出何种类型图像, 可选 all/inc
+        idx_name:   list, 指数名称列表
+        idx_ticks:  list, 指数中start日使用的时间点
+        idx_cmp:    dict, 指数配色
+        compy_day:  int, 设定比较成交量所用的前某日
+    '''
+    idx_name = kwargs.get('idx_name',BMS_Index_Name)
+    idx_ticks = kwargs.get('idx_ticks',Index_Ticks)
+    idx_cmp = kwargs.get('idx_cmp',Index_CMap)
+    comp_day = kwargs.get('comp_day',-1)
+
+    p_day, amt_day = arange_bms_index_min(start,**kwargs)
+    # 图像绘制
+    if fig.lower() == 'all':
+        plt_bms_index_min(p_day,amt_day,start,comp_day,idx_name,idx_ticks,idx_cmp)
+    elif fig.lower() in ('inc','no-vol','no-volume'):
+        plt_bms_index_min(p_day,None,start,comp_day,idx_name,idx_ticks,idx_cmp)
+    # 列表输出
+    p1 = make_index_info_tb(p_day,amt_day,beg,end,start,zig_pct,idx_name,idx_ticks)
     # p1.style.format(precision=2).highlight_min()
     return p1
-
-
-def plt_bms_index_min(bms_tb:pd.DataFrame,
-                      idx_name:tuple=BMS_Index_Name,
-                      cm:dict=Index_CMap):
-    ccm = cm['up']
-    if bms_tb.loc[240].mean()<-0.5: ccm = cm['down']
-    plt.xscale('log',base=5)
-    for nm in idx_name:
-        plt.plot(bms_tb[nm],color=ccm[nm])
-        plt.scatter(Index_Ticks,bms_tb.loc[Index_Ticks,nm],
-                    color=ccm[nm]) # cm['pts'][nm])
-    plt.legend()
-    plt.show()
 
 
 def make_echarts_zig(code:str,beg='2018-06-01',end='2019-04-30',**kwargs):
@@ -349,7 +413,7 @@ def echart_indexs_zig(idx_names=BMS_Index_Name,beg='2018-06-01',end='2019-04-30'
         tab.render('codes_zig.html')
     return tab
 
-# plt_bms_index_min(arange_bms_index_min('2023-10-19'))
-# print(find_zigs('国证2000',5,'2023-07-05','2023-07-26'))
-print(index_comp_tb('2023-08-10','2023-09-20','2023-08-29',comp_day=-2))
+
+# print(index_comp_desc('2023-09-10','2023-10-16','2023-09-22',5,comp_day=-1))
 # make_indexs_zig(beg='2022-10-10',end='2023-12-09',save_pth=True,zig_pct=4)
+echart_indexs_zig(beg='2022-10-10',end='2023-12-01',save_pth=True)

@@ -873,3 +873,12 @@
 2023-12-15 22:58:43,733 [test.py] - INFO: Update margin-sh to 2023-12-04.
 2023-12-15 23:02:55,173 [test.py] - INFO: Update qvix minute ready.
 2023-12-15 23:02:58,015 [test.py] - INFO: Update high-low-legu to 2023-12-15.
+2023-12-15 23:48:40,208 [test.py] - INFO: Update qvix minute ready.
+2023-12-15 23:49:02,692 [test.py] - WARNING: Try update bdsearch q table 1 times. (can only concatenate str (not "NoneType") to str)
+2023-12-15 23:49:25,100 [test.py] - WARNING: Try update bdsearch q table 2 times. (can only concatenate str (not "NoneType") to str)
+2023-12-15 23:49:47,711 [test.py] - WARNING: Try update bdsearch q table 3 times. (can only concatenate str (not "NoneType") to str)
+2023-12-15 23:49:47,711 [test.py] - ERROR: Can't update bdsearch q table.
+2023-12-15 23:49:47,712 [test.py] - INFO: Update high-low-legu ready.
+2023-12-17 21:42:35,702 [test.py] - INFO: Update qvix minute ready.
+2023-12-17 21:43:02,181 [test.py] - INFO: Update bdsearch q table ready.
+2023-12-17 21:43:02,183 [test.py] - INFO: Update high-low-legu ready.
