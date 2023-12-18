@@ -29,6 +29,8 @@ def get_funds_kline(cname:str,Ytd:int=242,Ypair=(3,)):
     plt.xticks(rotation=60)
     plt.show()
 
+# get_funds_kline('社保重仓')
+
 # 社融底
 
 def get_afre_with_month():
@@ -84,4 +86,4 @@ def plt_index_zigzag(idx_name:str,zigpct:int,**paras:dict):
     # return idx_p
 
 
-plt_index_zigzag('上证50',3)
+# plt_index_zigzag('上证50',3)
