@@ -416,4 +416,4 @@ def echart_indexs_zig(idx_names=BMS_Index_Name,beg='2018-06-01',end='2019-04-30'
 
 # print(index_comp_desc('2023-09-10','2023-10-16','2023-09-22',5,comp_day=-1))
 # make_indexs_zig(beg='2022-10-10',end='2023-12-09',save_pth=True,zig_pct=4)
-echart_indexs_zig(beg='2022-10-10',end='2023-12-01',save_pth=True)
+# echart_indexs_zig(beg='2022-10-10',end='2023-12-01',save_pth=True)
