@@ -11,6 +11,7 @@ from common.trade_date import get_delta_trade_day,get_trade_day
 from pyecharts import options as opts
 from pyecharts.commons.utils import JsCode
 from pyecharts.charts import Kline, Bar, Grid, Line, Tab
+from chart_core import make_echarts
 
 plt.style.use('seaborn-v0_8')
 plt.rcParams['font.sans-serif'] = ['SimHei']
@@ -417,3 +418,8 @@ def echart_indexs_zig(idx_names=BMS_Index_Name,beg='2018-06-01',end='2019-04-30'
 # print(index_comp_desc('2023-09-10','2023-10-16','2023-09-22',5,comp_day=-1))
 # make_indexs_zig(beg='2022-10-10',end='2023-12-09',save_pth=True,zig_pct=4)
 # echart_indexs_zig(beg='2022-10-10',end='2023-12-01',save_pth=True)
+
+# df = get_index_zigs('国证A指',4,'2016-01-01','2023-12-22')
+df = get_index_pd('国证A指','2016-01-01','2023-12-22')
+rd = make_echarts(df,'2022-02-01','2023-12-22',ohlc_names=('o','c','h','l','vol'),plt_title_opts={'title':'国证A指'}, plt_add_ma=(10,20,60))
+rd.render("professional_kline_brush.html")

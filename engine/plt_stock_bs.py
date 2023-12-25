@@ -770,13 +770,7 @@ def multi_tab_echarts(notebook='stock',start='2022-01-01',end='2023-08-04',**kwa
     tab = Tab()
     for k in IdxKey:
         tab.add(make_echarts(k[0],k[1],start,end,**kwargs),k[2])
-    # tab.add(make_echarts('螺纹钢','螺纹钢',beg='2021-09-01',end=end), '螺纹钢')
-    # tab.add(make_echarts('原油','原油',beg='2021-09-01',end=end), '原油')
-    # tab.add(make_echarts('豆粕','豆粕价格',beg='2021-09-01',end=end), '豆粕')
-    # if notebook:
-    #     return tab
-    # else:
-        tab.render('stockPlot.html')
+    tab.render('stockPlot.html')
 
 
 if __name__=='__main__':

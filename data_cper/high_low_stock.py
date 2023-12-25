@@ -64,6 +64,7 @@ def check_hl_legu_file_dates():
 
 
 def append_high_low_legu_file(cfg_file=''):
+    ''' 生成新高新低统计文件 '''
     if not cfg_file:
         cfg_file = '../trade.ini'
     cfg_sec = 'High_Low_Legu'
@@ -74,6 +75,16 @@ def append_high_low_legu_file(cfg_file=''):
     next_date = config.get(cfg_sec, 'next_update')
     now_date = get_trade_day(20).strftime('%Y-%m-%d')
     next_day = get_delta_trade_day(now_date).strftime('%Y-%m-%d')
+    # 缺失日期的填写 TODO: 更智能一些
+    other_days = list(check_hl_legu_file_dates()-{now_date})
+    if other_days:
+        oth_tb = [get_today_high_low_legu(d) for d in other_days]
+        oth_tb = pd.concat(oth_tb,axis=0)
+        oth_tb.index = oth_tb.index.map(lambda x:x.strftime('%Y-%m-%d'))
+        spd = pd.read_csv(fpth,index_col=0)
+        spd = pd.concat([spd,oth_tb],axis=0)
+        spd.sort_index(inplace=True)
+        spd.to_csv(fpth,mode='w')
     if not os.path.exists(fpth):
         config.set(cfg_sec, 'update_date', now_date)
         config.set(cfg_sec, 'next_update', next_day)
@@ -92,6 +103,7 @@ def append_high_low_legu_file(cfg_file=''):
         return 0
     return 0
 
+# print(get_today_high_low_legu('2023-12-21'))
 
 def _get_constituent_codes(cons_pd:pd.DataFrame, code: str, date: str):
     ''' 获取指数的成分股代码, 返回成分股调样的日期列表和对应表格 '''
@@ -266,7 +278,7 @@ def doc_high_low_legu(cfg_file=''):
     return hl_legu_doc_dict
 
 if __name__ == '__main__':
-    # append_high_low_legu_file()
     # print(doc_high_low_legu())
     print(check_hl_legu_file_dates())
+    append_high_low_legu_file()
     pass
