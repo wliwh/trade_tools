@@ -7,14 +7,17 @@ from pyecharts.charts import Kline, Bar, Grid, Line
 def get_grid_hts(nc:int = None):
     kline_vol_cls = {
         0: (60,73,18),
+        1: (52,63,15),
         2: (45,55,13),
         4: (34,43,11),
     }
     others_cls = {
+        1: (79,),
         2: (68,82),
         4: (53,64,74,85),
     }
     others_high = {
+        1: (14,),
         2: (12, 10),
         4: (10, 10, 10, 10)
     }
@@ -26,7 +29,7 @@ def get_grid_hts(nc:int = None):
     all_cls = {k:(0 if v==0 else tuple(str(x)+'%' for x in v)) for k,v in all_cls.items()}
     return all_cls
 
-print(get_grid_hts(4))
+print(get_grid_hts(1))
 
 def make_echarts(ohlc:pd.DataFrame, beg, end,
                  ohlc_names:tuple=None,

@@ -932,3 +932,13 @@
 2023-12-22 22:18:44,296 [test.py] - ERROR: Can't update margin-sz.
 2023-12-22 22:19:09,660 [test.py] - INFO: Update bdsearch q table ready.
 2023-12-22 22:19:12,601 [test.py] - INFO: Update high-low-legu to 2023-12-22.
+2023-12-25 23:19:20,918 [test.py] - INFO: Update qvix minute to 2023-12-25.
+2023-12-25 23:19:28,742 [test.py] - INFO: Update bdsearch day to 2023-12-24.
+2023-12-25 23:19:37,169 [test.py] - INFO: Update bdsearch hour to 2023-12-25 22.
+2023-12-25 23:19:37,369 [test.py] - INFO: Update margin-sh to 2023-12-12.
+2023-12-25 23:19:37,922 [test.py] - WARNING: Try update margin-sz 1 times. ('20230921')
+2023-12-25 23:19:38,300 [test.py] - WARNING: Try update margin-sz 2 times. ('20230921')
+2023-12-25 23:19:38,739 [test.py] - WARNING: Try update margin-sz 3 times. ('20230921')
+2023-12-25 23:19:38,739 [test.py] - ERROR: Can't update margin-sz.
+2023-12-25 23:20:03,322 [test.py] - INFO: Update bdsearch q table ready.
+2023-12-25 23:20:06,605 [test.py] - INFO: Update high-low-legu to 2023-12-25.
