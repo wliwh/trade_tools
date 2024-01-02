@@ -958,3 +958,44 @@
 2023-12-26 23:20:16,807 [test.py] - ERROR: Can't update margin-sz.
 2023-12-26 23:20:37,326 [test.py] - INFO: Update bdsearch q table ready.
 2023-12-26 23:20:40,360 [test.py] - INFO: Update high-low-legu to 2023-12-26.
+2023-12-28 23:49:34,113 [test.py] - INFO: Update qvix minute to 2023-12-28.
+2023-12-28 23:49:38,303 [test.py] - WARNING: Try update bdsearch day 1 times. (All objects passed were None)
+2023-12-28 23:49:41,549 [test.py] - WARNING: Try update bdsearch day 2 times. (All objects passed were None)
+2023-12-28 23:49:45,298 [test.py] - WARNING: Try update bdsearch day 3 times. (All objects passed were None)
+2023-12-28 23:49:45,298 [test.py] - ERROR: Can't update bdsearch day.
+2023-12-28 23:49:51,340 [test.py] - WARNING: Try update bdsearch hour 1 times. (All objects passed were None)
+2023-12-28 23:49:57,357 [test.py] - WARNING: Try update bdsearch hour 2 times. (All objects passed were None)
+2023-12-28 23:50:04,201 [test.py] - WARNING: Try update bdsearch hour 3 times. (All objects passed were None)
+2023-12-28 23:50:04,201 [test.py] - ERROR: Can't update bdsearch hour.
+2023-12-28 23:50:04,394 [test.py] - INFO: Update margin-sh to 2023-12-27.
+2023-12-28 23:50:05,304 [test.py] - INFO: Update margin-sz to 2023-12-27.
+2023-12-28 23:50:25,781 [test.py] - INFO: Update bdsearch q table ready.
+2023-12-28 23:50:28,876 [test.py] - INFO: Update high-low-legu to 2023-12-28.
+2023-12-29 23:30:43,754 [test.py] - INFO: Update qvix minute to 2023-12-29.
+2023-12-29 23:30:46,489 [test.py] - WARNING: Try update bdsearch day 1 times. (All objects passed were None)
+2023-12-29 23:30:49,284 [test.py] - WARNING: Try update bdsearch day 2 times. (All objects passed were None)
+2023-12-29 23:30:51,844 [test.py] - WARNING: Try update bdsearch day 3 times. (All objects passed were None)
+2023-12-29 23:30:51,845 [test.py] - ERROR: Can't update bdsearch day.
+2023-12-29 23:30:57,989 [test.py] - WARNING: Try update bdsearch hour 1 times. (All objects passed were None)
+2023-12-29 23:31:04,645 [test.py] - WARNING: Try update bdsearch hour 2 times. (All objects passed were None)
+2023-12-29 23:31:10,758 [test.py] - WARNING: Try update bdsearch hour 3 times. (All objects passed were None)
+2023-12-29 23:31:10,758 [test.py] - ERROR: Can't update bdsearch hour.
+2023-12-29 23:31:10,964 [test.py] - INFO: Update margin-sh to 2023-12-28.
+2023-12-29 23:31:12,189 [test.py] - INFO: Update margin-sz to 2023-12-28.
+2023-12-29 23:31:37,361 [test.py] - INFO: Update bdsearch q table ready.
+2023-12-29 23:31:40,602 [test.py] - INFO: Update high-low-legu to 2023-12-29.
+2024-01-02 23:03:20,700 [test.py] - INFO: Update qvix minute to 2024-01-02.
+2024-01-02 23:03:23,525 [test.py] - WARNING: Try update bdsearch day 1 times. (All objects passed were None)
+2024-01-02 23:03:26,295 [test.py] - WARNING: Try update bdsearch day 2 times. (All objects passed were None)
+2024-01-02 23:03:28,504 [test.py] - WARNING: Try update bdsearch day 3 times. (All objects passed were None)
+2024-01-02 23:03:28,504 [test.py] - ERROR: Can't update bdsearch day.
+2024-01-02 23:03:34,533 [test.py] - WARNING: Try update bdsearch hour 1 times. (All objects passed were None)
+2024-01-02 23:03:40,841 [test.py] - WARNING: Try update bdsearch hour 2 times. (All objects passed were None)
+2024-01-02 23:03:46,968 [test.py] - WARNING: Try update bdsearch hour 3 times. (All objects passed were None)
+2024-01-02 23:03:46,968 [test.py] - ERROR: Can't update bdsearch hour.
+2024-01-02 23:03:47,150 [test.py] - INFO: Update margin-sh to 2023-12-29.
+2024-01-02 23:05:24,592 [test.py] - WARNING: Try update margin-sz 1 times. (('Connection aborted.', TimeoutError(10060, '由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。', None, 10060, None)))
+2024-01-02 23:06:33,695 [test.py] - WARNING: Try update margin-sz 2 times. (('Connection aborted.', ConnectionResetError(10054, '远程主机强迫关闭了一个现有的连接。', None, 10054, None)))
+2024-01-02 23:06:34,713 [test.py] - INFO: Update margin-sz to 2023-12-29.
+2024-01-02 23:06:59,931 [test.py] - INFO: Update bdsearch q table ready.
+2024-01-02 23:07:03,132 [test.py] - INFO: Update high-low-legu to 2024-01-02.

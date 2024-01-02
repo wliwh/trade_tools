@@ -5,6 +5,7 @@ from pyecharts.charts import Kline, Bar, Grid, Line
 
 
 def get_grid_hts(nc:int = None):
+    ''' kline 的整体框架设计, 有volume '''
     kline_vol_cls = {
         0: (60,73,18),
         1: (52,63,15),
@@ -29,7 +30,6 @@ def get_grid_hts(nc:int = None):
     all_cls = {k:(0 if v==0 else tuple(str(x)+'%' for x in v)) for k,v in all_cls.items()}
     return all_cls
 
-print(get_grid_hts(1))
 
 def make_echarts(ohlc:pd.DataFrame, beg, end,
                  ohlc_names:tuple=None,
@@ -39,6 +39,15 @@ def make_echarts(ohlc:pd.DataFrame, beg, end,
                  plt_add_lines:list=None,
                  plt_add_drawdown:list=None,
                  *other_tbs):
+    ''' 输出使用echarts绘制的kline图形
+        @param ohlc,            日线表格, 题头至少需要有ohlcv五项
+        @param beg,end          起始日期-结束日期
+        @param ohlc_names       用于转换ohlc表格的题头
+        @param plt_shape        kline图形的整体大小
+        @param plt_title_opts   kline标题设置
+        @param plt_add_ma       在kline中添加均线的参数
+        @param plt_add_lines    在kline中添加别的线
+    '''
     # TODO 多个窗口比例尺推测，多tab输出
     ohlc_tb = ohlc.copy()
     std_col_names = ['Open','Close','Low', 'High', 'Volume']
@@ -52,6 +61,8 @@ def make_echarts(ohlc:pd.DataFrame, beg, end,
     _plt_titleopts = {'subtitle': f"{beg} ~ {end}"} if plt_title_opts is None else plt_title_opts
     if plt_add_lines:
         assert all(x in ohlc_tb.columns for x in plt_add_lines)
+    _plt_wind_n = len(other_tbs)
+    _plt_grids = get_grid_hts(_plt_wind_n)
 
     data = ohlc_tb.loc[beg:end,std_col_names[:4]]
     volume_ser = ohlc_tb.loc[beg:end,std_col_names[4]]
@@ -187,12 +198,12 @@ def make_echarts(ohlc:pd.DataFrame, beg, end,
     grid_chart.add_js_funcs("var barData = {}".format(data.values.tolist()))
     grid_chart.add(
         overlap_kline_line,
-        grid_opts=opts.GridOpts(pos_left="10%", pos_right="8%", height="60%"),
+        grid_opts=opts.GridOpts(pos_left="10%", pos_right="8%", height=_plt_grids['kline_cls'][0]),
     )
     grid_chart.add(
         bar,
         grid_opts=opts.GridOpts(
-            pos_left="10%", pos_right="8%", pos_top="73%", height="18%"
+            pos_left="10%", pos_right="8%", pos_top=_plt_grids['kline_cls'][1], height=_plt_grids['kline_cls'][2]
         ),
     )
     # grid_chart.render("professional_kline_brush.html")
