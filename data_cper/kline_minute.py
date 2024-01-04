@@ -90,9 +90,17 @@ def remove_txt_file():
 def save_jq_tabs():
     for p in Saved_Txt_Pth:
         nm = osp.basename(p)[:-4]
+        csv_nm = p[:-4]+'.csv'
         vp = pd.read_csv(p,index_col=0)
         ncsv = change_jq_file(vp,nm)
-        ncsv.to_csv(p[:-4]+'.csv')
+        if osp.exists(csv_nm):
+            old_p = pd.read_csv(csv_nm,index_col=0)
+            old_max_day = old_p.index.max()
+            ncsv = ncsv[ncsv.index>old_max_day]
+            ncsv = pd.concat([old_p,ncsv],axis=0)
+            ncsv.to_csv(csv_nm)
+        else:
+            ncsv.to_csv(csv_nm)
 
 
 # save_jq_tabs()

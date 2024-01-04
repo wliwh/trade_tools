@@ -999,3 +999,31 @@
 2024-01-02 23:06:34,713 [test.py] - INFO: Update margin-sz to 2023-12-29.
 2024-01-02 23:06:59,931 [test.py] - INFO: Update bdsearch q table ready.
 2024-01-02 23:07:03,132 [test.py] - INFO: Update high-low-legu to 2024-01-02.
+2024-01-03 22:42:32,634 [test.py] - INFO: Update qvix minute to 2024-01-03.
+2024-01-03 22:42:35,004 [test.py] - WARNING: Try update bdsearch day 1 times. (All objects passed were None)
+2024-01-03 22:42:37,560 [test.py] - WARNING: Try update bdsearch day 2 times. (All objects passed were None)
+2024-01-03 22:42:40,318 [test.py] - WARNING: Try update bdsearch day 3 times. (All objects passed were None)
+2024-01-03 22:42:40,318 [test.py] - ERROR: Can't update bdsearch day.
+2024-01-03 22:42:46,437 [test.py] - WARNING: Try update bdsearch hour 1 times. (All objects passed were None)
+2024-01-03 22:42:52,538 [test.py] - WARNING: Try update bdsearch hour 2 times. (All objects passed were None)
+2024-01-03 22:42:58,488 [test.py] - WARNING: Try update bdsearch hour 3 times. (All objects passed were None)
+2024-01-03 22:42:58,488 [test.py] - ERROR: Can't update bdsearch hour.
+2024-01-03 22:42:58,679 [test.py] - INFO: Update margin-sh to 2024-01-02.
+2024-01-03 22:42:59,624 [test.py] - INFO: Update margin-sz to 2024-01-02.
+2024-01-03 22:43:27,516 [test.py] - INFO: Update bdsearch q table ready.
+2024-01-03 22:43:30,907 [test.py] - INFO: Update high-low-legu to 2024-01-03.
+2024-01-04 23:22:26,544 [test.py] - INFO: Update qvix minute to 2024-01-04.
+2024-01-04 23:22:29,101 [test.py] - WARNING: Try update bdsearch day 1 times. (All objects passed were None)
+2024-01-04 23:22:31,879 [test.py] - WARNING: Try update bdsearch day 2 times. (All objects passed were None)
+2024-01-04 23:22:34,354 [test.py] - WARNING: Try update bdsearch day 3 times. (All objects passed were None)
+2024-01-04 23:22:34,354 [test.py] - ERROR: Can't update bdsearch day.
+2024-01-04 23:22:40,292 [test.py] - WARNING: Try update bdsearch hour 1 times. (All objects passed were None)
+2024-01-04 23:22:46,447 [test.py] - WARNING: Try update bdsearch hour 2 times. (All objects passed were None)
+2024-01-04 23:22:52,552 [test.py] - WARNING: Try update bdsearch hour 3 times. (All objects passed were None)
+2024-01-04 23:22:52,552 [test.py] - ERROR: Can't update bdsearch hour.
+2024-01-04 23:22:52,728 [test.py] - INFO: Update margin-sh to 2024-01-03.
+2024-01-04 23:22:53,547 [test.py] - INFO: Update margin-sz to 2024-01-03.
+2024-01-04 23:23:15,836 [test.py] - INFO: Update bdsearch q table ready.
+2024-01-04 23:23:18,968 [test.py] - INFO: Update high-low-legu to 2024-01-04.
+2024-01-04 23:25:52,398 [test.py] - WARNING: Try update etf amount 1 times. ('513350')
+2024-01-04 23:39:12,048 [test.py] - INFO: Update week etf amount to 2024-01-04.
