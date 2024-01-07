@@ -17,7 +17,7 @@ def parse_other_tb_name(k:str):
 
 def get_grid_hts(snc:Union[int,None] = None,
                  add_vol:bool = True):
-    ''' kline 的整体框架设计, 有volume '''
+    ''' kline 的整体框架设计 '''
     snc = 0 if snc is None else snc
     nc = snc if add_vol else -snc-1
     kline_vol_cls = {

@@ -1,5 +1,5 @@
 from .etfs_amount import append_funds_trade_file, funds_amt_rate_table, docs_funds_amt
-from .funds_positions import get_hsgt_acc_flow, get_north_flow_bias, append_margin_file, doc_north_flow
+from .funds_positions import get_hsgt_acc_flow, get_north_flow_bias, append_north_flow_file, append_margin_file, doc_north_flow
 from .high_low_stock import append_high_low_legu_file,doc_high_low_legu
 from .qvix_stat import append_qvix_minute_file,doc_qvix_day
 from .baidu_index_base import append_bsearch_day_file, append_bsearch_hour_file,doc_bsearch_info,analyse_bsearch_table

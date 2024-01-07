@@ -64,8 +64,8 @@ def update_files(retry:int=3):
         download_type = 2
     elif now_time[7:9] in ('04','11','18','25'):
         download_type = 3
+    # print(now_time, download_type)
     # 交易日 QVIX 分钟级数据
-    print(now_time, download_type)
     if download_type==1:
         basic_append_fun(append_qvix_minute_file,retry,words='qvix minute')
     # ;; QVIX 数据
@@ -74,14 +74,15 @@ def update_files(retry:int=3):
         basic_append_fun(append_bsearch_day_file,retry,words='bdsearch day')
         basic_append_fun(append_bsearch_hour_file,retry,words='bdsearch hour')
         basic_append_fun(analyse_bsearch_table,retry,words='bdsearch q table')
-    # ;; 北上资金
+    # 北上资金
+    if download_type==1:
+        basic_append_fun(append_north_flow_file, retry, args=(20,'ema'), words='north-flow')
+    # 交易日新高新低-乐股数据
+        basic_append_fun(append_high_low_legu_file,retry,words='high-low-legu')
     # 延迟的两融数据
     if download_type>=1:
         basic_append_fun(append_margin_file,retry,args='sh',words='margin-sh')
         basic_append_fun(append_margin_file,retry,args='sz',words='margin-sz')
-    # 交易日新高新低-乐股数据
-    if download_type==1:
-        basic_append_fun(append_high_low_legu_file,retry,words='high-low-legu')
     # 当日ETF成交数据
     if download_type==3:
         for r in range(retry):

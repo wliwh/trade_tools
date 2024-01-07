@@ -36,8 +36,20 @@ def get_delta_trade_day(day:str,delta:int=1):
         return n_trade if n_trade else None
     else: 
         return Trade_List.loc[n_idx+delta-(1 if n_trade else 0),'trade_date']
+    
+def get_trade_day_between(fday:str,cut_hour=16,left=True):
+    ''' 获取fday至最近交易日间的所有交易日, 包括两端 '''
+    f_idx = (Trade_List.trade_date>=datetime.datetime.strptime(fday,'%Y-%m-%d').date()).argmax()
+    ntime = datetime.datetime.now()
+    n_idx = (Trade_List.trade_date<=ntime.date()).argmin()
+    n_idx = n_idx-1 if ntime.hour>=cut_hour else n_idx-2
+    if f_idx>n_idx: return
+    if not left and f_idx==n_idx: return
+    return Trade_List.loc[(f_idx if left else f_idx+1):n_idx,'trade_date'].to_list()
 
 def get_next_weekday(day:str,weekday=6):
     ''' 获取某一日的下个为指定weekday的交易日 '''
     nday = get_delta_trade_day(day,1)
     return nday+pd.offsets.Week(1,weekday=weekday-1)
+
+# print(get_trade_day_between('2024-01-02',left=False))

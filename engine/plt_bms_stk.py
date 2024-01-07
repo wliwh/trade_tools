@@ -421,5 +421,5 @@ def echart_indexs_zig(idx_names=BMS_Index_Name,beg='2018-06-01',end='2019-04-30'
 
 # df = get_index_zigs('国证A指',4,'2016-01-01','2023-12-22')
 df = get_index_pd('国证A指','2016-01-01','2023-12-22')
-rd = make_echarts(df,'2022-02-01','2023-12-22',ohlc_names=('o','c','h','l','vol'),plt_title_opts={'title':'国证A指'}, plt_add_ma=(10,20,60))
+rd = make_echarts(df,'2022-02-01','2023-12-22',ohlc_names=('o','c','h','l','vol'),plt_title_opts={'title':'国证A指','subtitle':'22/02/01 ~ 23/12/22'}, plt_add_ma=(10,20,60))
 rd.render("professional_kline_brush.html")

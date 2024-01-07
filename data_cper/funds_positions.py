@@ -53,7 +53,6 @@ def get_hsgt_acc_flow():
     north_acc_flow.fillna(method='ffill', inplace=True)
     return north_acc_flow
 
-
 def get_north_flow_bias(north_flow: pd.DataFrame, N=20, windows=(60,120), ma_type='ema'):
     ''' 北向流入资金偏离度及其分位数 '''
     north_name = north_flow.columns
@@ -67,11 +66,35 @@ def get_north_flow_bias(north_flow: pd.DataFrame, N=20, windows=(60,120), ma_typ
             north_flow[north_name[i]+'_Q'+str(w)] = min_max_dist_series(north_flow[north_name[i]+'_bias'], w)
     return north_flow
 
+
 def make_north_flow_tline(sym:str,winds,nfl_dt:dict):
     ''' 输出北向流入偏离度-分位数的一行 '''
     basic_line = '{}:\t{:.2f}\t({},{},{})'
     nfl_q = [M80_20(nfl_dt[sym+'_Q'+str(w)]) for w in winds]
     return basic_line.format(sym,nfl_dt[sym+'_bias'],*nfl_q)
+
+def append_north_flow_file(mean_day=20, mean_fun='ema', cfg_file=''):
+    ''' 添加北向流入数据, 更新整个表格 '''
+    if not cfg_file:
+        cfg_file = '../trade.ini'
+    cfg_sec = 'North_Flow'
+    config = configparser.ConfigParser()
+    config.read(cfg_file, encoding='utf-8')
+    fpth = os.path.join('../data_save', config.get(cfg_sec, 'fpath'))
+    up_date = config.get(cfg_sec, 'update_date')
+    if get_trade_day().strftime('%Y-%m-%d')<=up_date:
+        return 0
+    all_periods = config.get(cfg_sec, 'north_flow_periods')
+    all_prds = [int(a.strip()) for a in all_periods.split(',')]
+    all_prds = list(sorted(all_prds))
+    flow_pd = get_hsgt_acc_flow()
+    nflow_tbs = get_north_flow_bias(flow_pd, mean_day, all_prds, mean_fun)
+    new_date = nflow_tbs.index[-1]
+    nflow_tbs.to_csv(fpth, mode='w')
+    config.set(cfg_sec, 'update_date', new_date)
+    config.write(open(cfg_file,'w'))
+    return new_date
+
 
 def make_north_flow_plt(idx_name:str,sym:str,fpth:str,nfl:pd.DataFrame,winds):
     index_cl = ak.stock_zh_index_daily_em(idx_name).tail(120)
@@ -309,7 +332,7 @@ def make_margin_concat_pd(ntype:str='all',pday=1):
     return marg
 
 if __name__=='__main__':
-    append_margin_file('sh')
-    append_margin_file('sz')
+    # append_margin_file('sh')
+    # append_margin_file('sz')
     # doc_north_flow()
     pass

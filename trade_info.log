@@ -1027,3 +1027,8 @@
 2024-01-04 23:23:18,968 [test.py] - INFO: Update high-low-legu to 2024-01-04.
 2024-01-04 23:25:52,398 [test.py] - WARNING: Try update etf amount 1 times. ('513350')
 2024-01-04 23:39:12,048 [test.py] - INFO: Update week etf amount to 2024-01-04.
+2024-01-05 23:26:23,297 [test.py] - INFO: Update qvix minute to 2024-01-05.
+2024-01-05 23:26:23,469 [test.py] - INFO: Update margin-sh to 2024-01-04.
+2024-01-05 23:26:24,253 [test.py] - INFO: Update margin-sz to 2024-01-04.
+2024-01-05 23:26:27,360 [test.py] - INFO: Update high-low-legu to 2024-01-05.
+2024-01-06 23:24:41,846 [test.py] - INFO: Update north-flow ready.

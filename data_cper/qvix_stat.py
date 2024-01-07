@@ -3,14 +3,15 @@ import numpy as np
 import re
 import os
 import sys
+import akshare as ak
 import configparser
 import matplotlib.pyplot as plt
 import mplfinance as mpf
 import talib
-sys.path.append('..')
-os.chdir(os.path.dirname(__file__))
+# sys.path.append('..')
+# os.chdir(os.path.dirname(__file__))
 
-from common.trade_date import get_trade_day, get_delta_trade_day
+from common.trade_date import get_trade_day, get_delta_trade_day, get_trade_day_between
 from common.mpf_set import Mpf_Style,M80_20
 from common.smooth_tool import LLT_MA, HMA, super_smoother, min_max_dist_series
 
@@ -96,6 +97,63 @@ def option_min_qvix(symbol='50') -> pd.DataFrame:
     ]
     return temp_df
 
+def _option_call_put_positon(p1:pd.DataFrame,ename:str='510050'):
+    tt = p1.copy()
+    s1,s2,s3,s4 = [],[],[],[]
+    # tt[['call_pos','call5','put_pos','put5']] = np.nan
+    for t in tt.date:
+        s_t = t.strftime('%Y%m%d')
+        try:
+            rr=ak.option_lhb_em(ename,'期权持仓情况-认购持仓量',s_t)
+            amts=rr.loc[rr['机构']=='总成交量','持仓量'].values[0]
+            amt5=rr.loc[rr['机构']=='前五名合计','持仓量'].values[0]
+            s1.append(amts); s2.append(amt5)
+        except:
+            s1.append(np.nan); s2.append(np.nan)
+            print('call',s_t)
+        try:
+            r2=ak.option_lhb_em(ename,'期权持仓情况-认沽持仓量',s_t)
+            amps=rr.loc[r2['机构']=='总成交量','持仓量'].values[0]
+            amp5=rr.loc[r2['机构']=='前五名合计','持仓量'].values[0]
+            s3.append(amps); s4.append(amp5)
+        except:
+            s3.append(np.nan); s4.append(np.nan)
+            print('put', s_t)
+    tt['call_pos'] = s1; tt['call5'] = s2
+    tt['put_pos'] = s3; tt['put5'] = s4
+    return tt
+
+def _make_option_day_pds():
+    symb_lst = ('50ETF','300ETF','500ETF','CYB','1000ETF')
+    ss_pds = list()
+    for s in symb_lst:
+        print('>>>', s)
+        p1 = option_qvix(s)
+        p1.insert(1,'code',s)
+        if s in ('50ETF','300ETF'):
+            p1 = _option_call_put_positon(p1,'510050' if s=='50ETF' else '510300')
+        ss_pds.append(p1)
+    ss_tb = pd.concat(ss_pds,axis=0)
+    ss_tb.set_index('date',inplace=True)
+    ss_tb.sort_index(inplace=True)
+    ss_tb.to_csv('qvix_day.csv')
+    # return ss_tb
+
+def update_qvix_infos(dt_lst:list) -> pd.DataFrame:
+    ''' 根据时间列表填充qvix数据 '''
+    symb_lst = ('50ETF','300ETF','500ETF','CYB','1000ETF')
+    ss_pds = list()
+    for s in symb_lst:
+        p1 = option_qvix(s)
+        p1 = p1[p1['date'].apply(lambda x:x in dt_lst)]
+        p1.insert(1,'code',s)
+        if s in ('50ETF','300ETF'):
+            p1 = _option_call_put_positon(p1,'510050' if s=='50ETF' else '510300')
+        ss_pds.append(p1)
+    ss_tb = pd.concat(ss_pds,axis=0)
+    ss_tb.set_index('date',inplace=True)
+    ss_tb.sort_index(inplace=True)
+    return ss_tb
 
 def qvix_minute_pds(pref_date=''):
     ''' QVIX 分钟级数据汇总 '''
@@ -108,6 +166,30 @@ def qvix_minute_pds(pref_date=''):
         qvix_min_pd[sym] = option_min_qvix(sym)['qvix'].values
     return qvix_min_pd
 
+
+def append_qvix_day_file(cfg_file=''):
+    ''' 更新qvix分钟级别数据 '''
+    if not cfg_file:
+        cfg_file = '../trade.ini'
+    config = configparser.ConfigParser()
+    config.read(cfg_file, encoding='utf-8')
+    fpth = os.path.join('../data_save', config.get('Qvix_Day', 'fpath'))
+    up_date = config.get('Qvix_Day', 'update_date')
+    next_date = config.get('Qvix_Day', 'next_update')
+    now_date = get_trade_day(16).strftime('%Y-%m-%d')
+    next_day = get_delta_trade_day(now_date).strftime('%Y-%m-%d')
+    if up_date>=now_date:
+        return 0
+    elif next_date <= now_date:
+        dlst = get_trade_day_between(up_date,16,False)
+        if dlst is None: return 0
+        config.set('Qvix_Day', 'update_date', now_date)
+        config.set('Qvix_Day', 'next_update', next_day)
+        qvix_pds = update_qvix_infos(dlst)
+        qvix_pds.to_csv(fpth, mode='a', header=False)
+        config.write(open(cfg_file,'w'))
+        return now_date
+    return 0
 
 def append_qvix_minute_file(cfg_file=''):
     ''' 更新qvix分钟级别数据 '''
@@ -228,7 +310,9 @@ def doc_qvix_day(cfg_file=''):
     return qvix_doc_dict
 
 if __name__=='__main__':
-    append_qvix_minute_file()
+    # append_qvix_minute_file()
     # make_qvix_day_plt(make_qvix_macd_smooth(),'../data_save/300.png')
     # print(doc_qvix_day())
+    # option_call_put_positon(option_qvix('50'),'510050')
+    # make_option_day_pds()
     pass
