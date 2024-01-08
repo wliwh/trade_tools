@@ -66,9 +66,10 @@ def update_files(retry:int=3):
         download_type = 3
     # print(now_time, download_type)
     # 交易日 QVIX 分钟级数据
+    # ;; QVIX 数据
     if download_type==1:
         basic_append_fun(append_qvix_minute_file,retry,words='qvix minute')
-    # ;; QVIX 数据
+        basic_append_fun(append_qvix_day_file, retry, words='qvix day')
     # bdsearch 检索词数据
     if download_type>=2:
         basic_append_fun(append_bsearch_day_file,retry,words='bdsearch day')

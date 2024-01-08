@@ -304,7 +304,9 @@ def append_margin_file(market='sh', cfg_file=''):
     return 0
 
 def make_margin_concat_pd(ntype:str='all',pday=1):
-    ''' 合并处理两融表格 '''
+    ''' 合并处理两融表格
+        pday, 计算变动所用的天数
+    '''
     cfg_file = '../trade.ini'
     if ntype.lower() not in ('all', 'sh', 'sz'):
         return

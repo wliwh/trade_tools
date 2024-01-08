@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import mplfinance as mpf
 import talib
 # sys.path.append('..')
-# os.chdir(os.path.dirname(__file__))
+os.chdir(os.path.dirname(__file__))
 
 from common.trade_date import get_trade_day, get_delta_trade_day, get_trade_day_between
 from common.mpf_set import Mpf_Style,M80_20
@@ -168,7 +168,7 @@ def qvix_minute_pds(pref_date=''):
 
 
 def append_qvix_day_file(cfg_file=''):
-    ''' 更新qvix分钟级别数据 '''
+    ''' 更新qvix日级别数据 '''
     if not cfg_file:
         cfg_file = '../trade.ini'
     config = configparser.ConfigParser()
@@ -178,6 +178,7 @@ def append_qvix_day_file(cfg_file=''):
     next_date = config.get('Qvix_Day', 'next_update')
     now_date = get_trade_day(16).strftime('%Y-%m-%d')
     next_day = get_delta_trade_day(now_date).strftime('%Y-%m-%d')
+    # print(up_date, now_date, next_date)
     if up_date>=now_date:
         return 0
     elif next_date <= now_date:
@@ -311,8 +312,8 @@ def doc_qvix_day(cfg_file=''):
 
 if __name__=='__main__':
     # append_qvix_minute_file()
+    # append_qvix_day_file()
     # make_qvix_day_plt(make_qvix_macd_smooth(),'../data_save/300.png')
-    # print(doc_qvix_day())
     # option_call_put_positon(option_qvix('50'),'510050')
     # make_option_day_pds()
     pass
