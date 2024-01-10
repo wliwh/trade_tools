@@ -155,6 +155,8 @@ def update_qvix_infos(dt_lst:list) -> pd.DataFrame:
     ss_tb.sort_index(inplace=True)
     return ss_tb
 
+# print(type(update_qvix_infos([pd.to_datetime('2024-01-08').date()]).index[-1]))
+
 def qvix_minute_pds(pref_date=''):
     ''' QVIX 分钟级数据汇总 '''
     qvix_min_pd = pd.DataFrame()
@@ -184,9 +186,11 @@ def append_qvix_day_file(cfg_file=''):
     elif next_date <= now_date:
         dlst = get_trade_day_between(up_date,16,False)
         if dlst is None: return 0
-        config.set('Qvix_Day', 'update_date', now_date)
-        config.set('Qvix_Day', 'next_update', next_day)
         qvix_pds = update_qvix_infos(dlst)
+        if qvix_pds.empty: return 0
+        m_date = qvix_pds.index[-1].strftime('%Y-%m-%d')
+        config.set('Qvix_Day', 'update_date', m_date)
+        config.set('Qvix_Day', 'next_update', next_day)
         qvix_pds.to_csv(fpth, mode='a', header=False)
         config.write(open(cfg_file,'w'))
         return now_date
@@ -312,7 +316,7 @@ def doc_qvix_day(cfg_file=''):
 
 if __name__=='__main__':
     # append_qvix_minute_file()
-    # append_qvix_day_file()
+    append_qvix_day_file()
     # make_qvix_day_plt(make_qvix_macd_smooth(),'../data_save/300.png')
     # option_call_put_positon(option_qvix('50'),'510050')
     # make_option_day_pds()

@@ -994,8 +994,8 @@
 2024-01-02 23:03:46,968 [test.py] - WARNING: Try update bdsearch hour 3 times. (All objects passed were None)
 2024-01-02 23:03:46,968 [test.py] - ERROR: Can't update bdsearch hour.
 2024-01-02 23:03:47,150 [test.py] - INFO: Update margin-sh to 2023-12-29.
-2024-01-02 23:05:24,592 [test.py] - WARNING: Try update margin-sz 1 times. (('Connection aborted.', TimeoutError(10060, 'ÓÉÓÚÁ¬½Ó·½ÔÚÒ»¶ÎÊ±¼äºóÃ»ÓÐÕýÈ·´ð¸´»òÁ¬½ÓµÄÖ÷»úÃ»ÓÐ·´Ó¦£¬Á¬½Ó³¢ÊÔÊ§°Ü¡£', None, 10060, None)))
-2024-01-02 23:06:33,695 [test.py] - WARNING: Try update margin-sz 2 times. (('Connection aborted.', ConnectionResetError(10054, 'Ô¶³ÌÖ÷»úÇ¿ÆÈ¹Ø±ÕÁËÒ»¸öÏÖÓÐµÄÁ¬½Ó¡£', None, 10054, None)))
+2024-01-02 23:05:24,592 [test.py] - WARNING: Try update margin-sz 1 times. (('Connection aborted.', TimeoutError(10060, 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó·ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ê±ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½È·ï¿½ð¸´»ï¿½ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½Ð·ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½Ó³ï¿½ï¿½ï¿½Ê§ï¿½Ü¡ï¿½', None, 10060, None)))
+2024-01-02 23:06:33,695 [test.py] - WARNING: Try update margin-sz 2 times. (('Connection aborted.', ConnectionResetError(10054, 'Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¿ï¿½È¹Ø±ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½Ðµï¿½ï¿½ï¿½ï¿½Ó¡ï¿½', None, 10054, None)))
 2024-01-02 23:06:34,713 [test.py] - INFO: Update margin-sz to 2023-12-29.
 2024-01-02 23:06:59,931 [test.py] - INFO: Update bdsearch q table ready.
 2024-01-02 23:07:03,132 [test.py] - INFO: Update high-low-legu to 2024-01-02.
@@ -1038,3 +1038,8 @@
 2024-01-08 22:04:10,555 [test.py] - INFO: Update high-low-legu to 2024-01-08.
 2024-01-08 22:04:10,733 [test.py] - INFO: Update margin-sh to 2024-01-05.
 2024-01-08 22:04:11,780 [test.py] - INFO: Update margin-sz to 2024-01-05.
+2024-01-09 23:16:16,349 [test.py] - INFO: Update qvix minute to 2024-01-09.
+2024-01-09 23:16:25,261 [test.py] - INFO: Update north-flow to 2024-01-09.
+2024-01-09 23:16:31,995 [test.py] - INFO: Update high-low-legu to 2024-01-09.
+2024-01-09 23:16:32,171 [test.py] - INFO: Update margin-sh to 2024-01-08.
+2024-01-09 23:16:32,964 [test.py] - INFO: Update margin-sz to 2024-01-08.

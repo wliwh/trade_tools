@@ -13,10 +13,9 @@ Tdx_Data_Dir = r'C:\\new_tdx_zcgl\\T0002\\export'
 All_Name = os.listdir(Tdx_Data_Dir)
 All_Pth = [osp.join(Tdx_Data_Dir,p) for p in All_Name]
 Save_Csv_Dir = osp.join(osp.dirname(__file__),'..\\kmin')
-Saved_Txt_Pth = [osp.join(Save_Csv_Dir,p)for p in os.listdir(Save_Csv_Dir)
+Saved_Txt_Pth = [osp.join(Save_Csv_Dir,p) for p in os.listdir(Save_Csv_Dir)
                         if p.endswith('txt')]
-
-
+Save_index_name = [osp.splitext(p)[0] for p in os.listdir(Save_Csv_Dir) if p.endswith('csv')]
 
 def get_first_close(name:str,code:str,dts:str)->float:
     ''' 查询开始日期前一日的收盘价 '''
@@ -74,6 +73,20 @@ def change_jq_file(p:pd.DataFrame,name:str):
     for d in datas:
         tmp.loc[tmp.index.strftime('%Y-%m-%d')==d,'pdclose'] = kold_cls[d]
     return tmp
+
+def get_index_mins(name:str, date:str):
+    first_d = dt.datetime.strftime(get_delta_trade_day(date,-1),'%Y%m%d')
+    date = date.replace('-','').replace('/','')
+    if name=='上证综指': name='上证指数'
+    fclose = get_first_close(name,'',first_d)
+    tt = ef.stock.get_quote_history(name, beg=date, end=date, klt=1, fqt=1)
+    tt = tt.loc[:,'日期':'成交额']
+    tt.columns = ('date','open','close','high','low','volume','amount')
+    tt.insert(4,'pdclose',fclose)
+    tt.set_index('date',inplace=True)
+    return tt
+
+# print(get_index_mins('上证综指','2024-01-04','2024-01-09'))
 
 def save_tdx_tabs():
     for p in All_Pth:
