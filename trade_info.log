@@ -1061,3 +1061,9 @@
 2024-01-12 23:08:33,542 [test.py] - INFO: Update high-low-legu to 2024-01-12.
 2024-01-12 23:08:33,721 [test.py] - INFO: Update margin-sh to 2024-01-11.
 2024-01-12 23:08:34,511 [test.py] - INFO: Update margin-sz to 2024-01-11.
+2024-01-12 23:10:18,144 [test.py] - INFO: Update qvix minute ready.
+2024-01-12 23:10:18,146 [test.py] - INFO: Update qvix day ready.
+2024-01-12 23:10:18,147 [test.py] - INFO: Update north-flow ready.
+2024-01-12 23:10:18,320 [test.py] - INFO: Update high-low-legu ready.
+2024-01-12 23:10:18,322 [test.py] - INFO: Update margin-sh ready.
+2024-01-12 23:10:18,324 [test.py] - INFO: Update margin-sz ready.
