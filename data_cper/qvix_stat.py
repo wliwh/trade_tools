@@ -1,3 +1,4 @@
+import time
 import pandas as pd
 import numpy as np
 import re
@@ -8,7 +9,7 @@ import configparser
 import matplotlib.pyplot as plt
 import mplfinance as mpf
 import talib
-# sys.path.append('..')
+sys.path.append('..')
 os.chdir(os.path.dirname(__file__))
 
 from common.trade_date import get_trade_day, get_delta_trade_day, get_trade_day_between
@@ -103,7 +104,9 @@ def _option_call_put_positon(p1:pd.DataFrame,ename:str='510050'):
     # tt[['call_pos','call5','put_pos','put5']] = np.nan
     for t in tt.date:
         s_t = t.strftime('%Y%m%d')
+        print(s_t)
         try:
+            time.sleep(0.5)
             rr=ak.option_lhb_em(ename,'期权持仓情况-认购持仓量',s_t)
             amts=rr.loc[rr['机构']=='总成交量','持仓量'].values[0]
             amt5=rr.loc[rr['机构']=='前五名合计','持仓量'].values[0]
@@ -112,13 +115,15 @@ def _option_call_put_positon(p1:pd.DataFrame,ename:str='510050'):
             s1.append(np.nan); s2.append(np.nan)
             print('call',s_t)
         try:
+            time.sleep(0.5)
             r2=ak.option_lhb_em(ename,'期权持仓情况-认沽持仓量',s_t)
-            amps=rr.loc[r2['机构']=='总成交量','持仓量'].values[0]
-            amp5=rr.loc[r2['机构']=='前五名合计','持仓量'].values[0]
+            amps=r2.loc[r2['机构']=='总成交量','持仓量'].values[0]
+            amp5=r2.loc[r2['机构']=='前五名合计','持仓量'].values[0]
             s3.append(amps); s4.append(amp5)
         except:
             s3.append(np.nan); s4.append(np.nan)
             print('put', s_t)
+    # print(s1,s3)
     tt['call_pos'] = s1; tt['call5'] = s2
     tt['put_pos'] = s3; tt['put5'] = s4
     return tt
@@ -129,6 +134,7 @@ def _make_option_day_pds():
     for s in symb_lst:
         print('>>>', s)
         p1 = option_qvix(s)
+        p1 = p1.tail(200)
         p1.insert(1,'code',s)
         if s in ('50ETF','300ETF'):
             p1 = _option_call_put_positon(p1,'510050' if s=='50ETF' else '510300')
@@ -136,7 +142,7 @@ def _make_option_day_pds():
     ss_tb = pd.concat(ss_pds,axis=0)
     ss_tb.set_index('date',inplace=True)
     ss_tb.sort_index(inplace=True)
-    ss_tb.to_csv('qvix_day.csv')
+    ss_tb.to_csv('qvix_day1.csv')
     # return ss_tb
 
 def update_qvix_infos(dt_lst:list) -> pd.DataFrame:
@@ -316,8 +322,8 @@ def doc_qvix_day(cfg_file=''):
 
 if __name__=='__main__':
     # append_qvix_minute_file()
-    append_qvix_day_file()
+    # append_qvix_day_file()
+    _make_option_day_pds()
     # make_qvix_day_plt(make_qvix_macd_smooth(),'../data_save/300.png')
     # option_call_put_positon(option_qvix('50'),'510050')
-    # make_option_day_pds()
     pass
