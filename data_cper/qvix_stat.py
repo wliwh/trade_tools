@@ -104,7 +104,7 @@ def _option_call_put_positon(p1:pd.DataFrame,ename:str='510050'):
     # tt[['call_pos','call5','put_pos','put5']] = np.nan
     for t in tt.date:
         s_t = t.strftime('%Y%m%d')
-        print(s_t)
+        # print(s_t)
         try:
             time.sleep(0.5)
             rr=ak.option_lhb_em(ename,'期权持仓情况-认购持仓量',s_t)
