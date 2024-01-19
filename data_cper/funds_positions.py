@@ -1,4 +1,5 @@
 import datetime
+import json
 import pandas as pd
 import numpy as np
 import akshare as ak
@@ -94,6 +95,29 @@ def append_north_flow_file(mean_day=20, mean_fun='ema', cfg_file=''):
     config.set(cfg_sec, 'update_date', new_date)
     config.write(open(cfg_file,'w'))
     return new_date
+
+
+def set_north_flow_warncond(cond:dict,update:bool=True,cfg_file:str=''):
+    if not cfg_file:
+        cfg_file = '../trade.ini'
+    cfg_sec = 'North_Flow'
+    config = configparser.ConfigParser(interpolation=configparser.ExtendedInterpolation())
+    config.read(cfg_file, encoding='utf-8')
+    fpth = os.path.join('../data_save', config.get(cfg_sec, 'fpath'))
+    items = pd.read_csv(fpth,index_col=0).columns.to_list()
+    if cond == dict():
+        return items
+    assert all(c in items for c in cond.keys())
+    source_cond = json.loads(config.get(cfg_sec, cfg_sec.lower()+'_cond'))
+    if update:
+        source_cond.update(cond)
+    else:
+        source_cond = cond
+    config.set(cfg_sec, cfg_sec.lower()+'_cond', str(source_cond))
+    config.write(open(cfg_file,'w'))
+    return source_cond
+
+# [&,{},[|,{},{},{}]]
 
 
 def make_north_flow_plt(idx_name:str,sym:str,fpth:str,nfl:pd.DataFrame,winds):
@@ -337,4 +361,5 @@ if __name__=='__main__':
     # append_margin_file('sh')
     # append_margin_file('sz')
     # doc_north_flow()
+    print(set_north_flow_warncond({'purchase_Q60':[90,10],'purchase_Q200':[85,15]},False))
     pass

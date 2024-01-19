@@ -64,14 +64,26 @@ def make_line_echarts(lpic:pd.Series,
                       plt_add_lines:Union[pd.Series, pd.DataFrame, None] = None,
                       plt_add_drawdown:Union[List,Tuple,None] = None,
                       other_tbs:Union[List,Tuple,None] = None):
-    # TODO 多个窗口比例尺推测，多tab输出
+    ''' 输出使用echarts绘制的line图形
+        @param lpic,            数据列
+        @param beg,end          起始日期-结束日期
+        @param plt_shape        line图形的整体大小
+        @param plt_title_opts   line标题设置
+        @param plt_volume       line中的成交量, 可选
+        @param plt_add_ma       在line中添加均线的参数
+        @param plt_add_lines    在line中添加别的线
+        @param plt_add_drawdown 在line中添加纵向区域或直线
+        @param other_tbs        在line之外的窗口添加图形
+        需注意 `lpic`, `plt_volume`, `plt_add_lines`, `other_tbs`
+        时间范围包含beg--end
+    '''
     # lpic_src = lpic.copy()
     _plt_range_len = plt_shape.get('df_range_len',100)
     _plt_width = plt_shape.get('plt_width',1200)
     _plt_height = plt_shape.get('plt_height',700)
     _plt_titleopts = {'subtitle': f"{beg} ~ {end}"} if plt_title_opts is None else plt_title_opts
     if other_tbs:
-        assert all(parse_other_tb_name(k)>0 for k in other_tbs.keys())
+        assert all(parse_other_tb_name(j)>0 for k in other_tbs for j in k.keys())
     _plt_wind_n = len(other_tbs) if other_tbs is not None else 0
     _plt_grids = get_grid_hts(_plt_wind_n,plt_volume is not None)
     _data_zoom_index = 1 if _plt_wind_n else 0
@@ -204,7 +216,7 @@ def make_line_echarts(lpic:pd.Series,
             tb_type_num = parse_other_tb_name(n)
             if isinstance(tb, pd.Series):
                 tb_clm_names = [f'val{_i+1}'] if tb.name is None else [tb.name]
-                tbb = tb[beg:end]
+                tbb = pd.DataFrame(tb[beg:end])
             else:
                 tb_clm_names, tbb = (tb.columns, tb.loc[beg:end])
             if tb_type_num==1:
@@ -213,7 +225,7 @@ def make_line_echarts(lpic:pd.Series,
                     othL.add_xaxis(xaxis_data=tbb.index.tolist())\
                         .add_yaxis(
                             series_name=cnm,
-                            y_axis=tbb[cnm].tolist(),
+                            y_axis= tbb[cnm].tolist(),
                             is_smooth=False,
                             # yaxis_index=1,
                             symbol_size=2,
@@ -302,7 +314,7 @@ def make_line_echarts(lpic:pd.Series,
     # grid_chart.render("professional_kline_brush.html")
     return grid_chart
 
-def make_kline_echarts(ohlc:pd.DataFrame,
+def make_candle_echarts(ohlc:pd.DataFrame,
                  beg:str, end:str,
                  ohlc_names:Union[List,Tuple,None] = None,
                  plt_shape:dict = dict(),
@@ -600,7 +612,8 @@ def chart_test():
         xx = np.array([np.random.normal(x,x*0.05,10) for x in xx])
         xx = pd.DataFrame(dict(o=xx[:,0],c=xx[:,-1],l=xx.min(axis=1),h=xx.max(axis=1),v=xx[:,4]*10,qq=xx[:,5]*10))
         xx.index = pd.date_range(start='2022-01-10',periods=len(xx),freq='B')
-    tend = make_kline_echarts(xx, '2022-05-31', '2023-05-31',ohlc_names=('o','h','l','c','v'),plt_add_ma=(10,20,60), plt_volume=False,other_tbs=[{'l':['v']}])
+    # tend = make_candle_echarts(xx, '2022-05-31', '2023-05-31',ohlc_names=('o','h','l','c','v'),plt_add_ma=(10,20,60), plt_volume=False,other_tbs=[{'l':['v']}])
+    tend = make_line_echarts(xx.c, '2022-05-31', '2023-05-31', plt_add_ma=(10,20,60), other_tbs=[{'line':xx.v}])
     tend.render('ggg.html')
     return xx
 
