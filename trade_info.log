@@ -1125,3 +1125,28 @@
 2024-01-25 22:30:43,677 [test.py] - WARNING: Try update margin-sz 2 times. (('Connection aborted.', TimeoutError(10060, '由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。', None, 10060, None)))
 2024-01-25 22:31:52,850 [test.py] - WARNING: Try update margin-sz 3 times. (('Connection aborted.', ConnectionResetError(10054, '远程主机强迫关闭了一个现有的连接。', None, 10054, None)))
 2024-01-25 22:31:52,850 [test.py] - ERROR: Can't update margin-sz.
+2024-01-26 22:50:01,409 [test.py] - INFO: Update qvix minute to 2024-01-26.
+2024-01-26 22:55:20,465 [test.py] - INFO: Update qvix minute ready.
+2024-01-26 22:55:27,539 [test.py] - INFO: Update qvix day to 2024-01-26.
+2024-01-26 22:55:31,522 [test.py] - INFO: Update north-flow to 2024-01-26.
+2024-01-26 22:55:34,525 [test.py] - INFO: Update high-low-legu to 2024-01-26.
+2024-01-26 22:55:34,711 [test.py] - INFO: Update margin-sh to 2024-01-25.
+2024-01-26 22:55:35,590 [test.py] - INFO: Update margin-sz to 2024-01-24.
+2024-01-29 22:29:58,117 [test.py] - INFO: Update qvix minute to 2024-01-29.
+2024-01-29 22:30:05,640 [test.py] - INFO: Update qvix day to 2024-01-29.
+2024-01-29 22:30:09,420 [test.py] - INFO: Update north-flow to 2024-01-29.
+2024-01-29 22:30:12,854 [test.py] - INFO: Update high-low-legu to 2024-01-29.
+2024-01-29 22:30:13,046 [test.py] - INFO: Update margin-sh to 2024-01-26.
+2024-01-29 22:30:14,130 [test.py] - INFO: Update margin-sz to 2024-01-26.
+2024-01-30 22:54:27,838 [test.py] - INFO: Update qvix minute to 2024-01-30.
+2024-01-30 22:54:34,717 [test.py] - INFO: Update qvix day to 2024-01-30.
+2024-01-30 22:54:39,524 [test.py] - INFO: Update north-flow to 2024-01-30.
+2024-01-30 22:54:43,040 [test.py] - INFO: Update high-low-legu to 2024-01-30.
+2024-01-30 22:54:43,224 [test.py] - INFO: Update margin-sh to 2024-01-29.
+2024-01-30 22:54:44,043 [test.py] - INFO: Update margin-sz to 2024-01-29.
+2024-01-31 22:58:28,175 [test.py] - INFO: Update qvix minute to 2024-01-31.
+2024-01-31 22:58:36,344 [test.py] - INFO: Update qvix day to 2024-01-31.
+2024-01-31 22:58:40,261 [test.py] - INFO: Update north-flow to 2024-01-31.
+2024-01-31 22:58:43,548 [test.py] - INFO: Update high-low-legu to 2024-01-31.
+2024-01-31 22:58:43,755 [test.py] - INFO: Update margin-sh to 2024-01-30.
+2024-01-31 22:58:44,840 [test.py] - INFO: Update margin-sz to 2024-01-30.

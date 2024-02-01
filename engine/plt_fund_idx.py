@@ -104,6 +104,7 @@ def get_near_funds_prop(funds_cni:list=Basic_Funds_CNI,ann_day:int=243):
                             ann=_ann,
                             Value=_v2,
                             shift=_i2-_i1)
+    # print('ggg',pL.iloc[-1,0])
     return near_idx
 
 def all_funds_propline(funds_cni:list = Basic_Funds_CNI,
