@@ -358,8 +358,8 @@ def make_margin_concat_pd(ntype:str='all',pday=1):
     return marg
 
 if __name__=='__main__':
-    # append_margin_file('sh')
-    # append_margin_file('sz')
+    append_margin_file('sh')
+    append_margin_file('sz')
     # doc_north_flow()
     # print(set_north_flow_warncond({'purchase_Q60':[90,10],'purchase_Q200':[85,15]},False))
     pass
