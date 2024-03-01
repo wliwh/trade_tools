@@ -323,7 +323,7 @@ def doc_qvix_day(cfg_file=''):
 if __name__=='__main__':
     # print(option_qvix('50ETF'))
     # append_qvix_minute_file()
-    # append_qvix_day_file()
+    append_qvix_day_file()
     # _make_option_day_pds()
     # make_qvix_day_plt(make_qvix_macd_smooth(),'../data_save/300.png')
     # option_call_put_positon(option_qvix('50'),'510050')
