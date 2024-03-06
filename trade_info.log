@@ -1216,3 +1216,10 @@
 2024-03-01 23:06:56,246 [test.py] - INFO: Update high-low-legu to 2024-03-01.
 2024-03-01 23:06:56,432 [test.py] - INFO: Update margin-sh to 2024-02-28.
 2024-03-01 23:06:57,298 [test.py] - INFO: Update margin-sz to 2024-02-28.
+2024-03-05 23:11:06,670 [test.py] - INFO: Update qvix minute to 2024-03-05.
+2024-03-05 23:11:12,708 [test.py] - INFO: Update qvix day to 2024-03-05.
+2024-03-05 23:11:15,733 [test.py] - INFO: Update north-flow to 2024-03-05.
+2024-03-05 23:11:15,861 [test.py] - INFO: Update high-low-legu ready.
+2024-03-05 23:11:16,035 [test.py] - INFO: Update margin-sh to 2024-02-29.
+2024-03-05 23:12:05,440 [test.py] - WARNING: Try update margin-sz 1 times. (('Connection aborted.', ConnectionResetError(10054, '远程主机强迫关闭了一个现有的连接。', None, 10054, None)))
+2024-03-05 23:12:06,235 [test.py] - INFO: Update margin-sz to 2024-02-29.
