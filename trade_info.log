@@ -1234,3 +1234,9 @@
 2024-03-11 08:10:07,147 [test.py] - INFO: Update bdsearch q table ready.
 2024-03-11 08:10:07,312 [test.py] - INFO: Update margin-sh to 2024-03-07.
 2024-03-11 08:10:08,129 [test.py] - INFO: Update margin-sz to 2024-03-07.
+2024-03-11 23:47:25,639 [test.py] - INFO: Update qvix minute to 2024-03-11.
+2024-03-11 23:47:39,494 [test.py] - INFO: Update qvix day to 2024-03-11.
+2024-03-11 23:47:43,620 [test.py] - INFO: Update north-flow to 2024-03-11.
+2024-03-11 23:47:46,690 [test.py] - INFO: Update high-low-legu to 2024-03-11.
+2024-03-11 23:47:46,860 [test.py] - INFO: Update margin-sh to 2024-03-08.
+2024-03-11 23:47:47,625 [test.py] - INFO: Update margin-sz to 2024-03-08.
