@@ -1240,3 +1240,21 @@
 2024-03-11 23:47:46,690 [test.py] - INFO: Update high-low-legu to 2024-03-11.
 2024-03-11 23:47:46,860 [test.py] - INFO: Update margin-sh to 2024-03-08.
 2024-03-11 23:47:47,625 [test.py] - INFO: Update margin-sz to 2024-03-08.
+2024-03-12 23:02:52,135 [test.py] - INFO: Update qvix minute to 2024-03-12.
+2024-03-12 23:02:58,425 [test.py] - INFO: Update qvix day ready.
+2024-03-12 23:03:06,965 [test.py] - INFO: Update north-flow to 2024-03-12.
+2024-03-12 23:03:13,494 [test.py] - INFO: Update high-low-legu to 2024-03-12.
+2024-03-12 23:03:13,747 [test.py] - INFO: Update margin-sh to 2024-03-11.
+2024-03-12 23:03:14,926 [test.py] - INFO: Update margin-sz to 2024-03-11.
+2024-03-13 23:21:22,700 [test.py] - INFO: Update qvix minute to 2024-03-13.
+2024-03-13 23:21:30,075 [test.py] - INFO: Update qvix day to 2024-03-13.
+2024-03-13 23:21:34,474 [test.py] - INFO: Update north-flow to 2024-03-13.
+2024-03-13 23:21:37,790 [test.py] - INFO: Update high-low-legu to 2024-03-13.
+2024-03-13 23:21:37,952 [test.py] - INFO: Update margin-sh to 2024-03-12.
+2024-03-13 23:21:39,040 [test.py] - INFO: Update margin-sz to 2024-03-12.
+2024-03-13 23:23:05,804 [test.py] - INFO: Update qvix minute ready.
+2024-03-13 23:23:05,806 [test.py] - INFO: Update qvix day ready.
+2024-03-13 23:23:05,808 [test.py] - INFO: Update north-flow ready.
+2024-03-13 23:23:06,068 [test.py] - INFO: Update high-low-legu ready.
+2024-03-13 23:23:06,069 [test.py] - INFO: Update margin-sh ready.
+2024-03-13 23:23:06,071 [test.py] - INFO: Update margin-sz ready.
