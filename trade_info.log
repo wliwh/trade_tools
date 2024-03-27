@@ -1306,3 +1306,15 @@
 2024-03-25 23:12:05,401 [test.py] - INFO: Update high-low-legu to 2024-03-25.
 2024-03-25 23:12:05,587 [test.py] - INFO: Update margin-sh to 2024-03-22.
 2024-03-25 23:12:06,412 [test.py] - INFO: Update margin-sz to 2024-03-22.
+2024-03-26 23:06:06,064 [test.py] - INFO: Update qvix minute to 2024-03-26.
+2024-03-26 23:06:15,120 [test.py] - INFO: Update qvix day to 2024-03-26.
+2024-03-26 23:06:18,963 [test.py] - INFO: Update north-flow to 2024-03-26.
+2024-03-26 23:06:21,934 [test.py] - INFO: Update high-low-legu to 2024-03-26.
+2024-03-26 23:06:22,116 [test.py] - INFO: Update margin-sh to 2024-03-25.
+2024-03-26 23:07:59,576 [test.py] - WARNING: Try update margin-sz 1 times. (('Connection aborted.', TimeoutError(10060, '由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。', None, 10060, None)))
+2024-03-26 23:11:08,646 [test.py] - WARNING: Try update margin-sz 2 times. (('Connection aborted.', TimeoutError(10060, '由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。', None, 10060, None)))
+2024-03-26 23:12:32,998 [test.py] - INFO: Update qvix minute ready.
+2024-03-26 23:12:33,000 [test.py] - INFO: Update qvix day ready.
+2024-03-26 23:12:33,001 [test.py] - INFO: Update north-flow ready.
+2024-03-26 23:12:33,121 [test.py] - INFO: Update high-low-legu ready.
+2024-03-26 23:12:33,122 [test.py] - INFO: Update margin-sh ready.
