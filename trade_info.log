@@ -1417,3 +1417,12 @@
 2024-04-22 23:14:34,705 [test.py] - INFO: Update high-low-legu to 2024-04-22.
 2024-04-22 23:14:34,877 [test.py] - INFO: Update margin-sh to 2024-04-19.
 2024-04-22 23:14:35,752 [test.py] - INFO: Update margin-sz to 2024-04-19.
+2024-04-23 22:15:26,879 [test.py] - WARNING: Try update qvix minute 1 times. (Length of values (239) does not match length of index (240))
+2024-04-23 22:15:27,220 [test.py] - WARNING: Try update qvix minute 2 times. (Length of values (239) does not match length of index (240))
+2024-04-23 22:15:27,552 [test.py] - WARNING: Try update qvix minute 3 times. (Length of values (239) does not match length of index (240))
+2024-04-23 22:15:27,552 [test.py] - ERROR: Can't update qvix minute.
+2024-04-23 22:15:34,959 [test.py] - INFO: Update qvix day to 2024-04-23.
+2024-04-23 22:15:38,523 [test.py] - INFO: Update north-flow to 2024-04-23.
+2024-04-23 22:15:41,743 [test.py] - INFO: Update high-low-legu to 2024-04-23.
+2024-04-23 22:15:41,910 [test.py] - INFO: Update margin-sh to 2024-04-22.
+2024-04-23 22:15:42,697 [test.py] - INFO: Update margin-sz to 2024-04-22.
