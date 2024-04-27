@@ -1444,3 +1444,12 @@
 2024-04-25 22:02:06,789 [test.py] - ERROR: Can't update high-low-legu.
 2024-04-25 22:02:06,954 [test.py] - INFO: Update margin-sh to 2024-04-24.
 2024-04-25 22:02:07,731 [test.py] - INFO: Update margin-sz to 2024-04-24.
+2024-04-27 17:34:10,406 [test.py] - INFO: Update qvix minute to 2024-04-26.
+2024-04-27 17:34:19,832 [test.py] - INFO: Update qvix day to 2024-04-26.
+2024-04-27 17:34:23,260 [test.py] - INFO: Update north-flow to 2024-04-26.
+2024-04-27 17:34:23,845 [test.py] - WARNING: Try update high-low-legu 1 times. (Expecting value: line 1 column 1 (char 0))
+2024-04-27 17:34:24,385 [test.py] - WARNING: Try update high-low-legu 2 times. (Expecting value: line 1 column 1 (char 0))
+2024-04-27 17:34:24,859 [test.py] - WARNING: Try update high-low-legu 3 times. (Expecting value: line 1 column 1 (char 0))
+2024-04-27 17:34:24,859 [test.py] - ERROR: Can't update high-low-legu.
+2024-04-27 17:34:25,024 [test.py] - INFO: Update margin-sh to 2024-04-25.
+2024-04-27 17:34:25,960 [test.py] - INFO: Update margin-sz to 2024-04-25.
