@@ -16,6 +16,11 @@ from common.trade_date import get_trade_day, get_delta_trade_day
 from common.smooth_tool import min_max_dist_pd, log_min_max_dist_pd
 from common.mpf_set import M80_20,Mpf_Style
 
+Headers = {
+    'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36 QIHU 360SE'
+}
+
+
 High_Low_Legu_Indexs = {
     'all':'sh000985','sz50':'sh000016', 'hs300':'sh000300', 
     'zz500':'sh000905','cyb':'sz399006', 'cy50':'sz399673', 'kc50':'sh000688'}
@@ -31,7 +36,7 @@ def high_low_from_legu(symbol: str = "all") -> pd.DataFrame:
     """
     if symbol in High_Low_Legu_Indexs:
         url = f"https://www.legulegu.com/stockdata/member-ship/get-high-low-statistics/{symbol}"
-    r = requests.get(url)
+    r = requests.get(url,headers=Headers)
     data_json = r.json()
     temp_df = pd.DataFrame(data_json)
     temp_df["date"] = pd.to_datetime(temp_df["date"], unit="ms").dt.date
@@ -60,7 +65,7 @@ def check_hl_legu_file_dates():
     all_days = ak.tool_trade_date_hist_sina()
     all_days['trade_date'] = all_days['trade_date'].apply(lambda x:x.strftime('%Y-%m-%d'))
     rg_days = set(all_days.loc[(all_days['trade_date']>=min(hl_days)) & (all_days['trade_date']<=max(hl_days)),'trade_date'])
-    return rg_days - hl_days
+    return (rg_days - hl_days)
 
 
 def append_high_low_legu_file(cfg_file=''):
