@@ -1476,3 +1476,15 @@
 2024-05-06 21:58:52,475 [test.py] - INFO: Update high-low-legu to 2024-05-06.
 2024-05-06 21:58:52,675 [test.py] - INFO: Update margin-sh to 2024-04-30.
 2024-05-06 21:58:53,443 [test.py] - INFO: Update margin-sz to 2024-04-30.
+2024-05-07 22:12:39,538 [test.py] - INFO: Update qvix minute to 2024-05-07.
+2024-05-07 22:12:46,599 [test.py] - INFO: Update qvix day ready.
+2024-05-07 22:12:51,054 [test.py] - INFO: Update north-flow to 2024-05-07.
+2024-05-07 22:12:55,161 [test.py] - INFO: Update high-low-legu to 2024-05-07.
+2024-05-07 22:12:55,439 [test.py] - INFO: Update margin-sh to 2024-05-06.
+2024-05-07 22:12:56,549 [test.py] - INFO: Update margin-sz to 2024-05-06.
+2024-05-10 23:02:46,686 [test.py] - INFO: Update qvix minute to 2024-05-10.
+2024-05-10 23:02:59,433 [test.py] - INFO: Update qvix day to 2024-05-10.
+2024-05-10 23:03:03,738 [test.py] - INFO: Update north-flow to 2024-05-10.
+2024-05-10 23:03:07,318 [test.py] - INFO: Update high-low-legu to 2024-05-10.
+2024-05-10 23:03:07,536 [test.py] - INFO: Update margin-sh to 2024-05-07.
+2024-05-10 23:03:08,545 [test.py] - INFO: Update margin-sz to 2024-05-07.
