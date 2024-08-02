@@ -1488,3 +1488,12 @@
 2024-05-10 23:03:07,318 [test.py] - INFO: Update high-low-legu to 2024-05-10.
 2024-05-10 23:03:07,536 [test.py] - INFO: Update margin-sh to 2024-05-07.
 2024-05-10 23:03:08,545 [test.py] - INFO: Update margin-sz to 2024-05-07.
+2024-05-18 17:50:39,125 [test.py] - INFO: Update qvix minute to 2024-05-17.
+2024-05-18 17:50:56,616 [test.py] - INFO: Update qvix day to 2024-05-17.
+2024-05-18 17:51:01,557 [test.py] - INFO: Update north-flow to 2024-05-17.
+2024-05-18 17:51:10,843 [test.py] - INFO: Update high-low-legu to 2024-05-16.
+2024-05-18 17:51:11,049 [test.py] - INFO: Update margin-sh to 2024-05-08.
+2024-05-18 17:52:48,492 [test.py] - WARNING: Try update margin-sz 1 times. (('Connection aborted.', TimeoutError(10060, '由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。', None, 10060, None)))
+2024-05-18 17:55:57,634 [test.py] - WARNING: Try update margin-sz 2 times. (('Connection aborted.', TimeoutError(10060, '由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。', None, 10060, None)))
+2024-05-18 17:59:06,826 [test.py] - WARNING: Try update margin-sz 3 times. (('Connection aborted.', TimeoutError(10060, '由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。', None, 10060, None)))
+2024-05-18 17:59:06,826 [test.py] - ERROR: Can't update margin-sz.
